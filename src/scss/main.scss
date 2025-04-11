@@ -1,0 +1,163 @@
+// Variables et mixins
+@import 'utils/variables';
+@import 'utils/mixins';
+
+// Layout
+@import 'layout/navbar';
+@import 'layout/footer';
+
+// Components
+@import 'components/buttons';
+@import 'components/cards';
+@import 'components/forms';
+@import 'components/tables';
+@import 'components/alerts';
+
+// Pages
+@import 'pages/home';
+@import 'pages/appareils';
+@import 'pages/personnes';
+@import 'pages/peripheriques';
+
+// Adaptations globales pour petits écrans
+@include small-screen {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    @include adaptive-content;
+    overflow-x: hidden;
+  }
+  
+  // Container adaptatif
+  .container {
+    width: 100%;
+    padding-right: $spacing-unit;
+    padding-left: $spacing-unit;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  // Grille adaptative
+  .grid {
+    @include adaptive-grid;
+  }
+  
+  // Cartes adaptatives
+  .card {
+    @include adaptive-card;
+  }
+  
+  // Formulaires adaptatifs
+  form {
+    @include adaptive-form;
+  }
+  
+  // Tableaux adaptatifs
+  table {
+    @include adaptive-table;
+  }
+  
+  // Navigation adaptative
+  nav {
+    @include adaptive-nav;
+  }
+  
+  // Modales adaptatives
+  .modal {
+    @include adaptive-modal;
+  }
+  
+  // Boutons adaptatifs
+  .buttons-container {
+    @include adaptive-buttons;
+  }
+  
+  // Images adaptatives
+  .images-container {
+    @include adaptive-images;
+  }
+  
+  // Icônes adaptatives
+  .icons-container {
+    @include adaptive-icons;
+  }
+  
+  // Espacement adaptatif
+  .spacing-container {
+    @include adaptive-spacing;
+  }
+  
+  // Optimisations spécifiques pour mobile
+  .mobile-optimizations {
+    // Masquer les éléments non essentiels sur mobile
+    .desktop-only {
+      display: none !important;
+    }
+    
+    // Afficher les éléments spécifiques à mobile
+    .mobile-only {
+      display: block !important;
+    }
+    
+    // Ajuster la taille des polices
+    .text-mobile {
+      font-size: 0.875rem;
+    }
+    
+    // Ajuster les marges et paddings
+    .spacing-mobile {
+      margin: $spacing-unit;
+      padding: $spacing-unit;
+    }
+    
+    // Optimiser les performances de défilement
+    .smooth-scroll {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    
+    // Améliorer la lisibilité
+    .text-contrast {
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    // Optimiser les interactions tactiles
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+      padding: $spacing-unit;
+    }
+  }
+  
+  // Adaptations pour les appareils à écran tactile
+  @include touch-device {
+    // Améliorer la navigation tactile
+    .touch-nav {
+      @include swipeable;
+      @include swipe-indicators;
+    }
+    
+    // Optimiser les interactions tactiles
+    .touch-interaction {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      
+      &:active {
+        opacity: 0.7;
+      }
+    }
+    
+    // Améliorer le défilement
+    .touch-scroll {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: y mandatory;
+      
+      > * {
+        scroll-snap-align: start;
+      }
+    }
+  }
+} 

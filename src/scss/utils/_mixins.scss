@@ -1,0 +1,472 @@
+// Media queries
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == "sm" {
+    @media (min-width: $breakpoint-sm) { @content; }
+  }
+  @else if $breakpoint == "md" {
+    @media (min-width: $breakpoint-md) { @content; }
+  }
+  @else if $breakpoint == "lg" {
+    @media (min-width: $breakpoint-lg) { @content; }
+  }
+  @else if $breakpoint == "xl" {
+    @media (min-width: $breakpoint-xl) { @content; }
+  }
+}
+
+// Media queries pour appareils tactiles
+@mixin touch-device {
+  @media (hover: none) and (pointer: coarse) { @content; }
+}
+
+// Flexbox
+@mixin flex($direction: row, $justify: flex-start, $align: stretch) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+// Position absolue centrée
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Texte tronqué avec ellipsis
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Transition
+@mixin transition($properties...) {
+  $transitions: ();
+  @each $property in $properties {
+    $transitions: append($transitions, $property $transition-base, comma);
+  }
+  transition: $transitions;
+}
+
+// Card
+@mixin card {
+  background: white;
+  border-radius: 4px;
+  box-shadow: $shadow-sm;
+  padding: $spacing-unit * 2;
+  @include transition(box-shadow);
+  
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+// Button
+@mixin button($bg-color: $primary-color, $text-color: white) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  border-radius: 4px;
+  padding: $spacing-unit $spacing-unit * 2;
+  cursor: pointer;
+  @include transition(background-color);
+  
+  &:hover {
+    background-color: darken($bg-color, 10%);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// Gestion du glissement de doigts
+@mixin swipeable {
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .swipe-item {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    width: 100%;
+    
+    @include respond-to("sm") {
+      width: 50%;
+    }
+    
+    @include respond-to("md") {
+      width: 33.333%;
+    }
+    
+    @include respond-to("lg") {
+      width: 25%;
+    }
+  }
+}
+
+// Indicateurs de glissement
+@mixin swipe-indicators {
+  .swipe-indicators {
+    @include flex(row, center, center);
+    gap: $spacing-unit;
+    margin-top: $spacing-unit * 2;
+    
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: $border-color;
+      @include transition(background-color);
+      
+      &.active {
+        background-color: $accent-color;
+      }
+    }
+  }
+}
+
+// Menu latéral pour mobile
+@mixin mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100vh;
+  background-color: white;
+  z-index: $z-index-modal;
+  box-shadow: $shadow-lg;
+  @include transition(left);
+  
+  &.active {
+    left: 0;
+  }
+  
+  .sidebar-header {
+    @include flex(row, space-between, center);
+    padding: $spacing-unit * 2;
+    border-bottom: 1px solid $border-color;
+  }
+  
+  .sidebar-content {
+    padding: $spacing-unit * 2;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: $z-index-modal - 1;
+    opacity: 0;
+    @include transition(opacity);
+    
+    &.active {
+      opacity: 1;
+    }
+  }
+}
+
+// Grille responsive avec options de réorganisation
+@mixin responsive-grid($columns: 1, $gap: $spacing-unit * 2) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+  
+  @include respond-to("sm") {
+    grid-template-columns: repeat(min($columns, 2), 1fr);
+  }
+  
+  @include respond-to("md") {
+    grid-template-columns: repeat(min($columns, 3), 1fr);
+  }
+  
+  @include respond-to("lg") {
+    grid-template-columns: repeat(min($columns, 4), 1fr);
+  }
+  
+  @include respond-to("xl") {
+    grid-template-columns: repeat($columns, 1fr);
+  }
+  
+  // Option pour réorganiser les éléments sur mobile
+  &.reorder-mobile {
+    @media (max-width: $breakpoint-md) {
+      display: flex;
+      flex-direction: column;
+      
+      .priority-high {
+        order: -1;
+      }
+      
+      .priority-low {
+        order: 1;
+      }
+    }
+  }
+}
+
+// Mixins pour la détection des petits écrans
+@mixin small-screen {
+  @media (max-width: 576px) {
+    @content;
+  }
+}
+
+@mixin medium-screen {
+  @media (min-width: 577px) and (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin large-screen {
+  @media (min-width: 769px) and (max-width: 992px) {
+    @content;
+  }
+}
+
+@mixin extra-large-screen {
+  @media (min-width: 993px) {
+    @content;
+  }
+}
+
+// Mixin pour l'adaptation du contenu
+@mixin adaptive-content {
+  @include small-screen {
+    padding: $spacing-unit;
+    font-size: 0.875rem;
+    
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.125rem; }
+    
+    .container {
+      padding-left: $spacing-unit;
+      padding-right: $spacing-unit;
+    }
+  }
+  
+  @include medium-screen {
+    padding: $spacing-unit * 1.5;
+    font-size: 1rem;
+    
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+  }
+}
+
+// Mixin pour la grille adaptative
+@mixin adaptive-grid($columns: 12, $gap: $spacing-unit) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+  
+  @include small-screen {
+    grid-template-columns: 1fr;
+  }
+  
+  @include medium-screen {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include large-screen {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @include extra-large-screen {
+    grid-template-columns: repeat($columns, 1fr);
+  }
+}
+
+// Mixin pour les cartes adaptatives
+@mixin adaptive-card {
+  @include small-screen {
+    margin-bottom: $spacing-unit;
+    padding: $spacing-unit;
+    
+    .card-header {
+      padding: $spacing-unit;
+    }
+    
+    .card-body {
+      padding: $spacing-unit;
+    }
+    
+    .card-footer {
+      padding: $spacing-unit;
+    }
+  }
+}
+
+// Mixin pour les formulaires adaptatifs
+@mixin adaptive-form {
+  @include small-screen {
+    .form-group {
+      margin-bottom: $spacing-unit * 1.5;
+    }
+    
+    .form-control {
+      font-size: 16px; // Évite le zoom automatique sur iOS
+      padding: $spacing-unit * 1.5;
+    }
+    
+    .form-label {
+      margin-bottom: $spacing-unit / 2;
+    }
+  }
+}
+
+// Mixin pour les tableaux adaptatifs
+@mixin adaptive-table {
+  @include small-screen {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    th, td {
+      min-width: 120px;
+      padding: $spacing-unit;
+    }
+    
+    .table-responsive {
+      margin: 0 -#{$spacing-unit};
+    }
+  }
+}
+
+// Mixin pour la navigation adaptative
+@mixin adaptive-nav {
+  @include small-screen {
+    .nav-item {
+      width: 100%;
+      text-align: center;
+      padding: $spacing-unit;
+      
+      .nav-link {
+        padding: $spacing-unit;
+        font-size: 1rem;
+      }
+    }
+    
+    .dropdown-menu {
+      position: static;
+      width: 100%;
+      margin-top: 0;
+    }
+  }
+}
+
+// Mixin pour les modales adaptatives
+@mixin adaptive-modal {
+  @include small-screen {
+    .modal-dialog {
+      margin: 0;
+      height: 100%;
+      max-width: none;
+    }
+    
+    .modal-content {
+      height: 100%;
+      border-radius: 0;
+    }
+    
+    .modal-header {
+      padding: $spacing-unit;
+    }
+    
+    .modal-body {
+      padding: $spacing-unit;
+    }
+    
+    .modal-footer {
+      padding: $spacing-unit;
+    }
+  }
+}
+
+// Mixin pour les boutons adaptatifs
+@mixin adaptive-buttons {
+  @include small-screen {
+    .btn {
+      width: 100%;
+      margin-bottom: $spacing-unit;
+      padding: $spacing-unit * 1.5;
+      font-size: 1rem;
+      
+      &.btn-group {
+        display: flex;
+        flex-direction: column;
+        
+        .btn {
+          margin-bottom: $spacing-unit;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}
+
+// Mixin pour les images adaptatives
+@mixin adaptive-images {
+  @include small-screen {
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .img-fluid {
+      width: 100%;
+    }
+  }
+}
+
+// Mixin pour les icônes adaptatives
+@mixin adaptive-icons {
+  @include small-screen {
+    .icon {
+      font-size: 1.25rem;
+    }
+    
+    .icon-lg {
+      font-size: 1.5rem;
+    }
+    
+    .icon-xl {
+      font-size: 2rem;
+    }
+  }
+}
+
+// Mixin pour les marges et paddings adaptatifs
+@mixin adaptive-spacing {
+  @include small-screen {
+    .m-0 { margin: 0 !important; }
+    .mt-0 { margin-top: 0 !important; }
+    .mb-0 { margin-bottom: 0 !important; }
+    .ml-0 { margin-left: 0 !important; }
+    .mr-0 { margin-right: 0 !important; }
+    
+    .p-0 { padding: 0 !important; }
+    .pt-0 { padding-top: 0 !important; }
+    .pb-0 { padding-bottom: 0 !important; }
+    .pl-0 { padding-left: 0 !important; }
+    .pr-0 { padding-right: 0 !important; }
+  }
+} 

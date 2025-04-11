@@ -1,0 +1,62 @@
+// Couleurs principales
+$bg-primary: #1a1d21;
+$bg-secondary: #242830;
+$accent-color: #7289da;
+$text-primary: #ffffff;
+$text-secondary: #b9bbbe;
+$border-color: #2f3136;
+
+// Couleurs fonctionnelles
+$success-color: #43b581;
+$danger-color: #f04747;
+$warning-color: #faa61a;
+$info-color: #7289da;
+
+// Espacements
+$spacing-unit: 1rem;
+$container-padding: 2rem 1rem;
+$section-spacing: 2rem;
+$element-spacing: 1rem;
+$component-padding: 0.5rem;
+
+// Typographie
+$font-family-base: system-ui, -apple-system, sans-serif;
+$font-size-base: 16px;
+$font-size-sm: 14px;
+$font-size-lg: 18px;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 600;
+$line-height-base: 1.5;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+$z-index-navbar: 1080;
+
+// Transitions
+$transition-base: 0.3s ease;
+$transition-fast: 0.15s ease;
+$transition-slow: 0.5s ease;
+
+// Ombres
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+// Bordures
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-pill: 50rem; 

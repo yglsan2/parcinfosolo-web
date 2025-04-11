@@ -1,0 +1,523 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-unit * 1.5 $spacing-unit * 2;
+  font-size: $font-size-base;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  @include transition(background-color, border-color, color, box-shadow);
+  
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba($accent-color, 0.25);
+  }
+  
+  &:disabled {
+    opacity: 0.65;
+    pointer-events: none;
+  }
+  
+  // Variantes de taille
+  &.btn-sm {
+    padding: $spacing-unit $spacing-unit * 1.5;
+    font-size: 0.875rem;
+    border-radius: 3px;
+  }
+  
+  &.btn-lg {
+    padding: $spacing-unit * 2 $spacing-unit * 3;
+    font-size: 1.25rem;
+    border-radius: 5px;
+  }
+  
+  // Variantes de couleur
+  &.btn-primary {
+    color: white;
+    background-color: $primary-color;
+    border-color: $primary-color;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      border-color: darken($primary-color, 10%);
+    }
+  }
+  
+  &.btn-secondary {
+    color: white;
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    
+    &:hover {
+      background-color: darken($secondary-color, 10%);
+      border-color: darken($secondary-color, 10%);
+    }
+  }
+  
+  &.btn-success {
+    color: white;
+    background-color: $success-color;
+    border-color: $success-color;
+    
+    &:hover {
+      background-color: darken($success-color, 10%);
+      border-color: darken($success-color, 10%);
+    }
+  }
+  
+  &.btn-danger {
+    color: white;
+    background-color: $danger-color;
+    border-color: $danger-color;
+    
+    &:hover {
+      background-color: darken($danger-color, 10%);
+      border-color: darken($danger-color, 10%);
+    }
+  }
+  
+  &.btn-warning {
+    color: $text-color;
+    background-color: $warning-color;
+    border-color: $warning-color;
+    
+    &:hover {
+      background-color: darken($warning-color, 10%);
+      border-color: darken($warning-color, 10%);
+    }
+  }
+  
+  &.btn-info {
+    color: white;
+    background-color: $info-color;
+    border-color: $info-color;
+    
+    &:hover {
+      background-color: darken($info-color, 10%);
+      border-color: darken($info-color, 10%);
+    }
+  }
+  
+  // Variantes de style
+  &.btn-outline {
+    background-color: transparent;
+    
+    &.btn-primary {
+      color: $primary-color;
+      border-color: $primary-color;
+      
+      &:hover {
+        color: white;
+        background-color: $primary-color;
+      }
+    }
+    
+    &.btn-secondary {
+      color: $secondary-color;
+      border-color: $secondary-color;
+      
+      &:hover {
+        color: white;
+        background-color: $secondary-color;
+      }
+    }
+    
+    &.btn-success {
+      color: $success-color;
+      border-color: $success-color;
+      
+      &:hover {
+        color: white;
+        background-color: $success-color;
+      }
+    }
+    
+    &.btn-danger {
+      color: $danger-color;
+      border-color: $danger-color;
+      
+      &:hover {
+        color: white;
+        background-color: $danger-color;
+      }
+    }
+    
+    &.btn-warning {
+      color: $warning-color;
+      border-color: $warning-color;
+      
+      &:hover {
+        color: $text-color;
+        background-color: $warning-color;
+      }
+    }
+    
+    &.btn-info {
+      color: $info-color;
+      border-color: $info-color;
+      
+      &:hover {
+        color: white;
+        background-color: $info-color;
+      }
+    }
+  }
+  
+  // Variantes de style
+  &.btn-link {
+    color: $accent-color;
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0;
+    
+    &:hover {
+      color: darken($accent-color, 15%);
+      text-decoration: underline;
+    }
+  }
+  
+  // Boutons avec icônes
+  .btn-icon {
+    margin-right: $spacing-unit;
+    font-size: 1.25em;
+  }
+  
+  &.btn-icon-only {
+    padding: $spacing-unit * 1.5;
+    
+    .btn-icon {
+      margin-right: 0;
+    }
+  }
+  
+  // Groupe de boutons
+  &.btn-group {
+    display: inline-flex;
+    position: relative;
+    vertical-align: middle;
+    
+    .btn {
+      position: relative;
+      flex: 1 1 auto;
+      border-radius: 0;
+      
+      &:first-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      
+      &:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      
+      &:not(:first-child) {
+        margin-left: -1px;
+      }
+    }
+  }
+}
+
+// Adaptations pour appareils mobiles
+@include touch-device {
+  .btn {
+    // Augmenter la taille des boutons pour une meilleure zone tactile
+    min-height: 44px;
+    min-width: 44px;
+    padding: $spacing-unit * 2 $spacing-unit * 3;
+    
+    // Augmenter l'espacement entre les boutons
+    & + .btn {
+      margin-left: $spacing-unit * 2;
+    }
+    
+    // Supprimer les effets de survol qui ne sont pas pertinents sur mobile
+    &:hover {
+      transform: none;
+    }
+    
+    // Ajouter un retour haptique visuel
+    &:active {
+      transform: scale(0.98);
+      background-color: darken(currentColor, 5%);
+    }
+    
+    // Ajouter un indicateur de chargement
+    &.loading {
+      position: relative;
+      color: transparent;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: button-loading 0.8s linear infinite;
+      }
+    }
+    
+    // Ajouter un effet de ripple au toucher
+    &.ripple {
+      position: relative;
+      overflow: hidden;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+        transform: scale(0);
+        opacity: 0;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+      }
+      
+      &:active::after {
+        transform: scale(2);
+        opacity: 1;
+        transition: 0s;
+      }
+    }
+    
+    // Ajouter un indicateur de progression
+    &.progress {
+      position: relative;
+      overflow: hidden;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.2);
+        transition: width 0.3s ease;
+      }
+      
+      &[data-progress]::before {
+        width: attr(data-progress);
+      }
+    }
+    
+    // Adapter les groupes de boutons
+    &.btn-group {
+      width: 100%;
+      
+      .btn {
+        flex: 1;
+        padding: $spacing-unit * 2;
+        font-size: 1rem;
+      }
+    }
+    
+    // Adapter les boutons d'action flottants
+    &.btn-floating {
+      position: fixed;
+      bottom: $spacing-unit * 3;
+      right: $spacing-unit * 3;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      padding: 0;
+      box-shadow: $shadow-lg;
+      z-index: $z-index-modal;
+      
+      .btn-icon {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+    }
+  }
+  
+  // Barre d'actions fixes en bas de l'écran
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    box-shadow: $shadow-md;
+    z-index: $z-index-navbar;
+    padding: $spacing-unit * 2;
+    
+    .action-buttons {
+      @include flex(row, space-around, center);
+      
+      .action-button {
+        @include flex(column, center, center);
+        color: $secondary-color;
+        text-decoration: none;
+        font-size: 0.75rem;
+        
+        .action-icon {
+          font-size: 1.5rem;
+          margin-bottom: $spacing-unit / 2;
+        }
+        
+        &.active {
+          color: $accent-color;
+        }
+      }
+    }
+  }
+  
+  // Boutons de navigation tactile
+  .swipe-nav {
+    @include flex(row, space-between, center);
+    margin: $spacing-unit * 2 0;
+    
+    .swipe-nav-btn {
+      @include flex(row, center, center);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: $light-gray;
+      color: $secondary-color;
+      border: none;
+      box-shadow: $shadow-sm;
+      
+      &:active {
+        background-color: darken($light-gray, 5%);
+      }
+      
+      &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    }
+  }
+  
+  // Ajouter une barre d'actions contextuelle
+  .context-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    box-shadow: $shadow-lg;
+    z-index: $z-index-modal;
+    padding: $spacing-unit * 2;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    
+    &.show {
+      transform: translateY(0);
+    }
+    
+    .context-actions {
+      @include flex(row, space-between, center);
+      
+      .context-action {
+        @include flex(column, center, center);
+        flex: 1;
+        padding: $spacing-unit;
+        
+        .action-icon {
+          font-size: 1.5rem;
+          margin-bottom: $spacing-unit / 2;
+        }
+        
+        .action-label {
+          font-size: 0.75rem;
+          text-align: center;
+        }
+      }
+    }
+  }
+  
+  // Ajouter des boutons de gestes
+  .gesture-buttons {
+    @include flex(row, space-around, center);
+    margin: $spacing-unit * 2 0;
+    
+    .gesture-button {
+      @include flex(column, center, center);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: $light-gray;
+      color: $secondary-color;
+      border: none;
+      box-shadow: $shadow-sm;
+      
+      .gesture-icon {
+        font-size: 1.5rem;
+        margin-bottom: $spacing-unit / 2;
+      }
+      
+      .gesture-label {
+        font-size: 0.75rem;
+        text-align: center;
+      }
+      
+      &:active {
+        transform: scale(0.95);
+        background-color: darken($light-gray, 5%);
+      }
+    }
+  }
+  
+  // Ajouter des boutons de vitesse d'action
+  .speed-buttons {
+    @include flex(row, space-between, center);
+    margin: $spacing-unit * 2 0;
+    
+    .speed-button {
+      @include flex(row, center, center);
+      padding: $spacing-unit * 2;
+      border-radius: 8px;
+      background-color: $light-gray;
+      color: $secondary-color;
+      border: none;
+      box-shadow: $shadow-sm;
+      
+      .speed-icon {
+        font-size: 1.25rem;
+        margin-right: $spacing-unit;
+      }
+      
+      .speed-label {
+        font-size: 0.875rem;
+      }
+      
+      &:active {
+        transform: scale(0.98);
+        background-color: darken($light-gray, 5%);
+      }
+      
+      &.fast {
+        background-color: $success-color;
+        color: white;
+      }
+      
+      &.medium {
+        background-color: $warning-color;
+        color: $text-color;
+      }
+      
+      &.slow {
+        background-color: $danger-color;
+        color: white;
+      }
+    }
+  }
+}
+
+@keyframes button-loading {
+  to {
+    transform: rotate(360deg);
+  }
+} 

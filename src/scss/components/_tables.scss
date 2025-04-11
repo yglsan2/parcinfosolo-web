@@ -1,0 +1,355 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: $spacing-unit * 2;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: $shadow-sm;
+  color: $text-primary;
+  margin-bottom: 0;
+
+  th, td {
+    padding: $spacing-unit;
+    text-align: left;
+    border-bottom: 1px solid $border-color;
+  }
+
+  thead {
+    th {
+      border-bottom: 2px solid $border-color;
+      color: $text-secondary;
+      font-weight: $font-weight-medium;
+      padding: $spacing-unit;
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $border-color;
+      vertical-align: middle;
+      
+      td {
+        padding: $spacing-unit;
+      }
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    
+    &.table-striped {
+      tr:nth-of-type(odd) {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+    }
+    
+    &.table-hover {
+      tr:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  // États des cellules
+  .cell-success {
+    color: $success-color;
+  }
+
+  .cell-warning {
+    color: $warning-color;
+  }
+
+  .cell-danger {
+    color: $danger-color;
+  }
+
+  // Actions dans les cellules
+  .cell-actions {
+    @include flex(row, flex-end, center);
+    gap: $spacing-unit;
+    white-space: nowrap;
+  }
+}
+
+// Tableau responsive
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $bg-primary;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $border-color;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: $text-secondary;
+  }
+}
+
+// Pagination
+.table-pagination {
+  @include flex(row, space-between, center);
+  margin-top: $spacing-unit * 2;
+  padding: $spacing-unit * 2;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: $shadow-sm;
+
+  .pagination-info {
+    color: $secondary-color;
+  }
+
+  .pagination-controls {
+    @include flex(row, center, center);
+    gap: $spacing-unit;
+
+    .page-item {
+      .page-link {
+        padding: $spacing-unit $spacing-unit * 1.5;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        color: $text-color;
+        text-decoration: none;
+        @include transition(background-color, color);
+
+        &:hover {
+          background-color: $light-gray;
+        }
+
+        &.active {
+          background-color: $accent-color;
+          color: white;
+          border-color: $accent-color;
+        }
+      }
+    }
+  }
+}
+
+// Tableau avec glissement horizontal pour mobile
+.table-swipeable {
+  @include swipeable;
+  @include swipe-indicators;
+  
+  .table-swipe-container {
+    min-width: 100%;
+    width: max-content;
+  }
+  
+  .table-swipe-column {
+    min-width: 120px;
+    
+    &.column-actions {
+      min-width: 150px;
+    }
+    
+    &.column-date {
+      min-width: 100px;
+    }
+    
+    &.column-status {
+      min-width: 80px;
+    }
+  }
+}
+
+// Tableau avec vue en cartes pour mobile
+.table-cards {
+  @media (min-width: $breakpoint-md) {
+    display: none;
+  }
+  
+  .table-card {
+    @include card;
+    margin-bottom: $spacing-unit * 2;
+    
+    .card-header {
+      @include flex(row, space-between, center);
+      margin-bottom: $spacing-unit;
+      
+      .card-title {
+        font-weight: 600;
+        color: $primary-color;
+      }
+      
+      .card-actions {
+        @include flex(row, flex-end, center);
+        gap: $spacing-unit;
+      }
+    }
+    
+    .card-body {
+      .card-row {
+        @include flex(row, space-between, center);
+        padding: $spacing-unit 0;
+        border-bottom: 1px solid $border-color;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .row-label {
+          color: $secondary-color;
+          font-weight: 500;
+        }
+        
+        .row-value {
+          color: $text-color;
+          
+          &.value-success {
+            color: $success-color;
+          }
+          
+          &.value-warning {
+            color: $warning-color;
+          }
+          
+          &.value-danger {
+            color: $danger-color;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Tableau avec filtres et tri pour mobile
+.table-filters {
+  @include flex(row, space-between, center);
+  flex-wrap: wrap;
+  gap: $spacing-unit * 2;
+  margin-bottom: $spacing-unit * 2;
+  
+  .filter-group {
+    @include flex(row, flex-start, center);
+    gap: $spacing-unit;
+    
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .filter-label {
+      color: $secondary-color;
+      font-weight: 500;
+    }
+    
+    .filter-select {
+      min-width: 150px;
+    }
+  }
+  
+  .filter-actions {
+    @include flex(row, flex-end, center);
+    gap: $spacing-unit;
+    
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+}
+
+// Badges dans les tableaux
+.badge {
+  border-radius: $border-radius-sm;
+  padding: 0.5em 0.75em;
+  font-weight: $font-weight-medium;
+  
+  &.bg-success {
+    background-color: $success-color !important;
+  }
+  
+  &.bg-warning {
+    background-color: $warning-color !important;
+  }
+  
+  &.bg-danger {
+    background-color: $danger-color !important;
+  }
+}
+
+// Adaptations pour les petits écrans
+@include small-screen {
+  .table {
+    thead {
+      th {
+        padding: $spacing-unit / 2;
+        font-size: $font-size-sm;
+      }
+    }
+    
+    tbody {
+      tr {
+        td {
+          padding: $spacing-unit / 2;
+          font-size: $font-size-sm;
+        }
+      }
+    }
+  }
+  
+  // Transformation des tableaux en cartes sur mobile
+  .table-mobile-cards {
+    .table {
+      thead {
+        display: none;
+      }
+      
+      tbody {
+        tr {
+          display: block;
+          margin-bottom: $spacing-unit;
+          border: 1px solid $border-color;
+          border-radius: $border-radius-md;
+          background-color: $bg-secondary;
+          
+          td {
+            display: block;
+            text-align: right;
+            padding: $spacing-unit / 2;
+            border-bottom: 1px solid $border-color;
+            
+            &:before {
+              content: attr(data-label);
+              float: left;
+              font-weight: $font-weight-medium;
+              color: $text-secondary;
+            }
+            
+            &:last-child {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Adaptations pour les appareils tactiles
+@include touch-device {
+  .table {
+    tbody {
+      tr {
+        td {
+          padding: $spacing-unit;
+        }
+      }
+    }
+  }
+} 

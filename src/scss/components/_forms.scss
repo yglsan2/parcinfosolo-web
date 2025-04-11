@@ -1,0 +1,251 @@
+.form-group {
+  margin-bottom: $spacing-unit;
+
+  .form-label {
+    color: $text-secondary;
+    margin-bottom: 0.5rem;
+    font-weight: $font-weight-medium;
+  }
+
+  .form-control, .form-select {
+    background-color: $bg-primary;
+    border: 1px solid $border-color;
+    color: $text-primary;
+    padding: 0.5rem 0.75rem;
+    border-radius: $border-radius-sm;
+    @include transition(border-color, box-shadow);
+    
+    &:focus {
+      background-color: $bg-primary;
+      border-color: $accent-color;
+      box-shadow: 0 0 0 0.25rem rgba($accent-color, 0.25);
+      color: $text-primary;
+      outline: none;
+    }
+    
+    &:disabled {
+      background-color: rgba($bg-primary, 0.5);
+      cursor: not-allowed;
+    }
+    
+    &::placeholder {
+      color: $text-secondary;
+      opacity: 0.7;
+    }
+  }
+
+  .form-text {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+    margin-top: 0.25rem;
+  }
+
+  .invalid-feedback {
+    display: none;
+    color: $danger-color;
+    font-size: 0.875rem;
+    margin-top: $spacing-unit;
+  }
+
+  &.was-validated {
+    .form-control.is-invalid {
+      ~ .invalid-feedback {
+        display: block;
+      }
+    }
+  }
+}
+
+// Grille de formulaire responsive
+.form-row {
+  display: grid;
+  gap: $spacing-unit * 2;
+  grid-template-columns: 1fr;
+
+  @include respond-to("sm") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to("lg") {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Types de formulaires spécifiques
+.form-search {
+  position: relative;
+
+  .form-control {
+    padding-right: $spacing-unit * 4;
+  }
+
+  .search-icon {
+    position: absolute;
+    right: $spacing-unit * 1.5;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $secondary-color;
+  }
+}
+
+.form-inline {
+  @include flex(row, flex-start, center);
+  gap: $spacing-unit * 2;
+  flex-wrap: wrap;
+
+  .form-group {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+// États de chargement
+.form-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid $accent-color;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: form-spinner 0.6s linear infinite;
+  }
+}
+
+@keyframes form-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-unit / 2;
+  
+  .form-check-input {
+    margin-right: $spacing-unit / 2;
+    background-color: $bg-primary;
+    border-color: $border-color;
+    
+    &:checked {
+      background-color: $accent-color;
+      border-color: $accent-color;
+    }
+    
+    &:focus {
+      border-color: $accent-color;
+      box-shadow: 0 0 0 0.25rem rgba($accent-color, 0.25);
+    }
+  }
+  
+  .form-check-label {
+    color: $text-primary;
+  }
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23b9bbbe' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  padding-right: 2.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  
+  .form-control, .form-select {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    
+    &:not(:first-child) {
+      margin-left: -1px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+  
+  .input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    font-weight: $font-weight-normal;
+    line-height: 1.5;
+    color: $text-primary;
+    text-align: center;
+    white-space: nowrap;
+    background-color: $bg-secondary;
+    border: 1px solid $border-color;
+    
+    &:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    
+    &:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}
+
+// Adaptations pour les petits écrans
+@include small-screen {
+  .form-control, .form-select {
+    font-size: 16px; // Évite le zoom automatique sur iOS
+    padding: $spacing-unit * 1.5;
+  }
+  
+  .form-group {
+    margin-bottom: $spacing-unit * 1.5;
+  }
+  
+  .form-label {
+    margin-bottom: $spacing-unit / 2;
+  }
+  
+  .input-group {
+    flex-direction: column;
+    
+    .form-control, .form-select, .input-group-text {
+      width: 100%;
+      margin-left: 0;
+      margin-bottom: $spacing-unit / 2;
+      border-radius: $border-radius-sm;
+    }
+  }
+}
+
+// Adaptations pour les appareils tactiles
+@include touch-device {
+  .form-control, .form-select {
+    padding: $spacing-unit * 1.5;
+  }
+  
+  .form-check {
+    .form-check-input {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+} 
