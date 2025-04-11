@@ -130,12 +130,12 @@
 .form-check {
   display: flex;
   align-items: center;
-  margin-bottom: $spacing-unit / 2;
+  margin-bottom: 0.5rem;
   
   .form-check-input {
-    margin-right: $spacing-unit / 2;
     background-color: $bg-primary;
     border-color: $border-color;
+    margin-right: 0.5rem;
     
     &:checked {
       background-color: $accent-color;
@@ -150,6 +150,7 @@
   
   .form-check-label {
     color: $text-primary;
+    user-select: none;
   }
 }
 
@@ -211,9 +212,9 @@
 
 // Adaptations pour les petits écrans
 @include small-screen {
-  .form-control, .form-select {
-    font-size: 16px; // Évite le zoom automatique sur iOS
-    padding: $spacing-unit * 1.5;
+  .form-control,
+  .form-select {
+    padding: 0.75rem 1rem;
   }
   
   .form-group {
@@ -238,8 +239,15 @@
 
 // Adaptations pour les appareils tactiles
 @include touch-device {
-  .form-control, .form-select {
-    padding: $spacing-unit * 1.5;
+  .form-control,
+  .form-select {
+    padding: 1rem 1.25rem;
+  }
+  
+  .input-group {
+    .input-group-text {
+      padding: 1rem 1.25rem;
+    }
   }
   
   .form-check {

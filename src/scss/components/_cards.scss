@@ -1,59 +1,19 @@
 .card {
   background-color: $bg-secondary;
   border: 1px solid $border-color;
-  border-radius: $border-radius-md;
+  border-radius: $border-radius;
   margin-bottom: $element-spacing;
   box-shadow: $shadow-sm;
-  @include transition(box-shadow);
-  
-  &:hover {
-    box-shadow: $shadow-md;
-  }
   
   .card-header {
     background-color: $bg-secondary;
     border-bottom: 1px solid $border-color;
     color: $text-primary;
     padding: $spacing-unit;
-    
-    h2 {
-      margin-bottom: 0;
-      font-size: 1.25rem;
-      font-weight: $font-weight-medium;
-    }
   }
   
   .card-body {
     padding: $spacing-unit;
-    
-    &.text-center {
-      text-align: center;
-    }
-    
-    &.p-0 {
-      padding: 0;
-    }
-    
-    i {
-      &.fs-1 {
-        font-size: 2.5rem;
-      }
-    }
-    
-    h3 {
-      font-size: 1.5rem;
-      font-weight: $font-weight-bold;
-      margin-bottom: 0.5rem;
-    }
-    
-    p {
-      color: $text-secondary;
-      margin-bottom: 0.5rem;
-    }
-    
-    small {
-      font-size: $font-size-sm;
-    }
   }
   
   .card-footer {
@@ -61,55 +21,54 @@
     border-top: 1px solid $border-color;
     padding: $spacing-unit;
   }
-
-  // Variantes
+  
   &.card-hover {
-    @include transition(transform);
-    cursor: pointer;
-
-    &:hover {
-      transform: translateY(-4px);
-    }
-  }
-
-  &.card-compact {
-    .card-header, .card-body, .card-footer {
-      padding: $spacing-unit;
-    }
-  }
-
-  // Grille responsive
-  .card-grid {
-    @include responsive-grid(4);
+    transition: $transition-base;
     
-    &.reorder-mobile {
-      @media (max-width: $breakpoint-md) {
-        .priority-high {
-          order: -1;
-        }
-        
-        .priority-low {
-          order: 1;
-        }
-      }
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
     }
   }
-
-  // États
+  
   &.card-success {
     border-left: 4px solid $success-color;
   }
-
+  
   &.card-warning {
     border-left: 4px solid $warning-color;
   }
-
+  
   &.card-danger {
     border-left: 4px solid $danger-color;
   }
-
+  
   &.card-info {
     border-left: 4px solid $info-color;
+  }
+}
+
+// Adaptations pour les petits écrans
+@include small-screen {
+  .card {
+    margin-bottom: $spacing-unit;
+    
+    .card-header,
+    .card-body,
+    .card-footer {
+      padding: $spacing-unit * 0.75;
+    }
+  }
+}
+
+// Adaptations pour les appareils tactiles
+@include touch-device {
+  .card {
+    .card-header,
+    .card-body,
+    .card-footer {
+      padding: $spacing-unit * 1.25;
+    }
   }
 }
 
@@ -247,58 +206,26 @@
   }
 }
 
-// Adaptations pour les petits écrans
-@include small-screen {
-  .card {
-    margin-bottom: $spacing-unit;
-    
-    .card-header {
-      padding: $spacing-unit;
-      
-      h2 {
-        font-size: 1.1rem;
-      }
-    }
-    
-    .card-body {
-      padding: $spacing-unit;
-      
-      i {
-        &.fs-1 {
-          font-size: 2rem;
-        }
-      }
-      
-      h3 {
-        font-size: 1.25rem;
-      }
-    }
-    
-    .card-footer {
-      padding: $spacing-unit;
-    }
-  }
+// Grille responsive
+.card-grid {
+  @include responsive-grid(4);
   
-  // Grille de cartes statistiques
-  .d-flex.flex-wrap {
-    gap: $spacing-unit !important;
-    
-    .card {
-      min-width: 100% !important;
-      flex: 1 1 100% !important;
+  &.reorder-mobile {
+    @media (max-width: $breakpoint-md) {
+      .priority-high {
+        order: -1;
+      }
+      
+      .priority-low {
+        order: 1;
+      }
     }
   }
 }
 
-// Adaptations pour les appareils tactiles
-@include touch-device {
-  .card {
-    .card-body {
-      i {
-        &.fs-1 {
-          font-size: 2.25rem;
-        }
-      }
-    }
+// Variantes
+&.card-compact {
+  .card-header, .card-body, .card-footer {
+    padding: $spacing-unit;
   }
 } 

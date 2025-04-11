@@ -1,0 +1,138 @@
+.dashboard {
+  padding: $spacing-unit * 2;
+  
+  .dashboard-card {
+    @include card-style;
+    height: 100%;
+    
+    .icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: $border-radius;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $text-primary;
+      font-size: 1.5rem;
+      
+      &.bg-primary {
+        background-color: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
+      
+      &.bg-success {
+        background-color: rgba($success-color, 0.1);
+        color: $success-color;
+      }
+      
+      &.bg-warning {
+        background-color: rgba($warning-color, 0.1);
+        color: $warning-color;
+      }
+      
+      &.bg-info {
+        background-color: rgba($info-color, 0.1);
+        color: $info-color;
+      }
+    }
+    
+    .card-title {
+      font-size: 1.75rem;
+      font-weight: $font-weight-bold;
+      margin: 0;
+    }
+    
+    .card-subtitle {
+      color: $text-secondary;
+      font-size: 0.875rem;
+    }
+  }
+  
+  .chart-placeholder {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $bg-secondary;
+    border-radius: $border-radius;
+    color: $text-secondary;
+  }
+  
+  .activity-list {
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: $spacing-unit;
+      border-bottom: 1px solid $border-color;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .activity-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: $border-radius-sm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $text-primary;
+        font-size: 1rem;
+      }
+      
+      .activity-content {
+        margin-left: $spacing-unit;
+        
+        p {
+          margin: 0;
+          font-size: 0.875rem;
+        }
+        
+        small {
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+}
+
+// Adaptations pour les petits écrans
+@include small-screen {
+  .dashboard {
+    padding: $spacing-unit;
+    
+    .dashboard-card {
+      .icon-wrapper {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+      }
+      
+      .card-title {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .chart-placeholder {
+      height: 250px;
+    }
+  }
+}
+
+// Adaptations pour les appareils tactiles
+@include touch-device {
+  .dashboard {
+    .dashboard-card {
+      .icon-wrapper {
+        width: 44px;
+        height: 44px;
+      }
+    }
+    
+    .activity-list {
+      .activity-item {
+        padding: $spacing-unit * 1.5;
+      }
+    }
+  }
+} 

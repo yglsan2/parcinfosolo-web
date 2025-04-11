@@ -1,0 +1,155 @@
+.appareils-list {
+  padding: $spacing-unit * 2;
+  
+  .filters {
+    .input-group {
+      .input-group-text {
+        background-color: $bg-secondary;
+        border-color: $border-color;
+        color: $text-secondary;
+      }
+      
+      .form-control,
+      .form-select {
+        border-color: $border-color;
+        background-color: $bg-primary;
+        color: $text-primary;
+        
+        &:focus {
+          border-color: $accent-color;
+          box-shadow: 0 0 0 0.25rem rgba($accent-color, 0.25);
+        }
+      }
+    }
+  }
+  
+  .table {
+    background-color: $bg-primary;
+    border-color: $border-color;
+    
+    thead {
+      th {
+        background-color: $bg-secondary;
+        border-color: $border-color;
+        color: $text-secondary;
+        font-weight: $font-weight-medium;
+        padding: $spacing-unit;
+      }
+    }
+    
+    tbody {
+      tr {
+        border-color: $border-color;
+        
+        &:hover {
+          background-color: rgba($accent-color, 0.05);
+        }
+        
+        td {
+          padding: $spacing-unit;
+          vertical-align: middle;
+          color: $text-primary;
+        }
+      }
+    }
+  }
+  
+  .badge {
+    padding: 0.5em 0.75em;
+    font-weight: $font-weight-medium;
+    
+    &.bg-success {
+      background-color: rgba($success-color, 0.1) !important;
+      color: $success-color;
+    }
+    
+    &.bg-danger {
+      background-color: rgba($danger-color, 0.1) !important;
+      color: $danger-color;
+    }
+    
+    &.bg-warning {
+      background-color: rgba($warning-color, 0.1) !important;
+      color: $warning-color;
+    }
+    
+    &.bg-secondary {
+      background-color: rgba($text-secondary, 0.1) !important;
+      color: $text-secondary;
+    }
+  }
+  
+  .btn {
+    &.btn-outline-primary {
+      color: $accent-color;
+      border-color: $accent-color;
+      
+      &:hover {
+        background-color: $accent-color;
+        color: $text-primary;
+      }
+    }
+    
+    &.btn-outline-danger {
+      color: $danger-color;
+      border-color: $danger-color;
+      
+      &:hover {
+        background-color: $danger-color;
+        color: $text-primary;
+      }
+    }
+  }
+}
+
+// Adaptations pour les petits écrans
+@include small-screen {
+  .appareils-list {
+    padding: $spacing-unit;
+    
+    .filters {
+      .input-group {
+        margin-bottom: $spacing-unit;
+      }
+    }
+    
+    .table {
+      thead {
+        th {
+          padding: $spacing-unit * 0.75;
+          font-size: 0.875rem;
+        }
+      }
+      
+      tbody {
+        td {
+          padding: $spacing-unit * 0.75;
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+}
+
+// Adaptations pour les appareils tactiles
+@include touch-device {
+  .appareils-list {
+    .table {
+      thead {
+        th {
+          padding: $spacing-unit * 1.25;
+        }
+      }
+      
+      tbody {
+        td {
+          padding: $spacing-unit * 1.25;
+        }
+      }
+    }
+    
+    .btn {
+      padding: $spacing-unit * 1.5 $spacing-unit * 2;
+    }
+  }
+} 

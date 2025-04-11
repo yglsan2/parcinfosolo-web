@@ -1,8 +1,8 @@
 .alert {
   position: relative;
-  padding: $spacing-unit * 1.5;
-  margin-bottom: $spacing-unit * 2;
-  border: 1px solid transparent;
+  padding: $spacing-unit;
+  margin-bottom: $element-spacing;
+  border: none;
   border-radius: $border-radius;
   @include transition(opacity, transform);
 
@@ -12,16 +12,15 @@
 
   .alert-close {
     position: absolute;
-    top: $spacing-unit;
-    right: $spacing-unit;
-    background: none;
-    border: none;
-    font-size: 1.25rem;
-    line-height: 1;
+    top: 0;
+    right: 0;
+    padding: $spacing-unit;
     color: inherit;
-    opacity: 0.5;
+    background: transparent;
+    border: 0;
     cursor: pointer;
-    @include transition(opacity);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
 
     &:hover {
       opacity: 1;
@@ -30,33 +29,29 @@
 
   // Types d'alertes
   &.alert-success {
-    color: darken($success-color, 10%);
-    background-color: rgba($success-color, 0.1);
-    border-color: rgba($success-color, 0.2);
+    background-color: rgba($success-color, 0.2);
+    color: $success-color;
   }
 
   &.alert-warning {
-    color: darken($warning-color, 10%);
-    background-color: rgba($warning-color, 0.1);
-    border-color: rgba($warning-color, 0.2);
+    background-color: rgba($warning-color, 0.2);
+    color: $warning-color;
   }
 
   &.alert-danger {
-    color: darken($danger-color, 10%);
-    background-color: rgba($danger-color, 0.1);
-    border-color: rgba($danger-color, 0.2);
+    background-color: rgba($danger-color, 0.2);
+    color: $danger-color;
   }
 
   &.alert-info {
-    color: darken($info-color, 10%);
-    background-color: rgba($info-color, 0.1);
-    border-color: rgba($info-color, 0.2);
+    background-color: rgba($info-color, 0.2);
+    color: $info-color;
   }
 
   .alert-heading {
     color: inherit;
     font-weight: $font-weight-bold;
-    margin-bottom: $spacing-unit / 2;
+    margin-bottom: 0.5rem;
   }
 
   .alert-link {
@@ -144,8 +139,16 @@
 // Adaptations pour les petits écrans
 @include small-screen {
   .alert {
-    padding: $spacing-unit * 2;
-    margin-bottom: $spacing-unit * 1.5;
+    padding: $spacing-unit * 0.75;
+    margin-bottom: $spacing-unit;
+    
+    &.alert-dismissible {
+      padding-right: $spacing-unit * 3;
+      
+      .btn-close {
+        padding: $spacing-unit * 0.75;
+      }
+    }
   }
   
   .toast-container {
@@ -163,8 +166,14 @@
 // Adaptations pour les appareils tactiles
 @include touch-device {
   .alert {
-    .btn-close {
-      padding: $spacing-unit * 2;
+    padding: $spacing-unit * 1.25;
+    
+    &.alert-dismissible {
+      padding-right: $spacing-unit * 5;
+      
+      .btn-close {
+        padding: $spacing-unit * 1.25;
+      }
     }
   }
   
