@@ -1,0 +1,113 @@
+.objet-mobile-details {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+
+        h1 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+
+            .back-btn, .edit-btn {
+                padding: 10px 20px;
+                border-radius: 4px;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    transform: translateY(-2px);
+                }
+            }
+
+            .back-btn {
+                background-color: #6c757d;
+                color: white;
+
+                &:hover {
+                    background-color: #5a6268;
+                }
+            }
+
+            .edit-btn {
+                background-color: #007bff;
+                color: white;
+
+                &:hover {
+                    background-color: #0056b3;
+                }
+            }
+        }
+    }
+
+    .details-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+
+        .detail-group {
+            margin-bottom: 30px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            h2 {
+                color: #495057;
+                font-size: 18px;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #e9ecef;
+            }
+
+            .detail-row {
+                display: flex;
+                margin-bottom: 12px;
+                padding: 8px 0;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                .label {
+                    width: 200px;
+                    font-weight: 600;
+                    color: #6c757d;
+                }
+
+                .value {
+                    flex: 1;
+                    color: #212529;
+                }
+            }
+        }
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+        font-size: 16px;
+    }
+
+    .error {
+        text-align: center;
+        padding: 20px;
+        color: #dc3545;
+        background-color: #f8d7da;
+        border-radius: 4px;
+        margin: 20px 0;
+    }
+} 

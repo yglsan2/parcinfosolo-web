@@ -11,3 +11,45 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Styles globaux pour les icônes Font Awesome */
+.fas, .far, .fab {
+  font-size: 1rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Animation pour les icônes au survol */
+.btn-view:hover .fas,
+.btn-edit:hover .fas,
+.btn-delete:hover .fas {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Couleurs spécifiques pour les icônes */
+.btn-view .fas {
+  color: #2196f3;
+}
+
+.btn-edit .fas {
+  color: #4caf50;
+}
+
+.btn-delete .fas {
+  color: #f44336;
+}
+
+/* Animation de chargement */
+.loading .fas {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

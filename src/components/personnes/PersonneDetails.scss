@@ -1,0 +1,86 @@
+.personne-details {
+    padding: var(--container-padding);
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-primary);
+
+    h1 {
+        color: var(--text-primary);
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: var(--element-spacing);
+        text-align: center;
+    }
+}
+
+.personne-info {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--section-spacing);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-group {
+    display: flex;
+    margin-bottom: var(--element-spacing);
+    padding: var(--component-padding);
+    border-bottom: 1px solid var(--border-color);
+
+    label {
+        font-weight: 500;
+        width: 200px;
+        color: var(--text-secondary);
+    }
+
+    span {
+        color: var(--text-primary);
+    }
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--element-spacing);
+    margin-top: var(--section-spacing);
+}
+
+.edit-btn, .back-btn {
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: var(--accent-color);
+    color: var(--text-primary);
+
+    &:hover {
+        background-color: #5b73c7;
+    }
+}
+
+.back-btn {
+    background-color: var(--danger-color);
+    color: var(--text-primary);
+
+    &:hover {
+        background-color: #d84040;
+    }
+}
+
+.loading {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-top: var(--section-spacing);
+}
+
+.error {
+    text-align: center;
+    color: var(--danger-color);
+    margin-top: var(--section-spacing);
+} 

@@ -1,0 +1,157 @@
+// Variables
+:root {
+  // Couleurs principales
+  --bg-primary: #1a1d21;
+  --bg-secondary: #242830;
+  --accent-color: #7289da;
+  --text-primary: #ffffff;
+  --text-secondary: #b9bbbe;
+  --border-color: #2f3136;
+  
+  // Couleurs fonctionnelles
+  --success-color: #43b581;
+  --danger-color: #f04747;
+  --warning-color: #faa61a;
+  --info-color: #7289da;
+  
+  // Espacements
+  --container-padding: 2rem 1rem;
+  --section-spacing: 2rem;
+  --element-spacing: 1rem;
+  --component-padding: 0.5rem;
+}
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin card-base {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@mixin button-base {
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+// Styles
+.peripherique-details {
+  padding: var(--container-padding);
+  max-width: 800px;
+  margin: 0 auto;
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+
+  h1 {
+    color: var(--text-primary);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: var(--element-spacing);
+    text-align: center;
+  }
+}
+
+.peripherique-info {
+  @include card-base;
+  padding: var(--section-spacing);
+}
+
+.info-group {
+  display: flex;
+  margin-bottom: var(--element-spacing);
+  padding: var(--component-padding);
+  border-bottom: 1px solid var(--border-color);
+
+  label {
+    font-weight: 500;
+    width: 200px;
+    color: var(--text-secondary);
+  }
+
+  span {
+    color: var(--text-primary);
+  }
+}
+
+.actions {
+  @include flex-center;
+  gap: var(--element-spacing);
+  margin-top: var(--section-spacing);
+}
+
+.edit-btn {
+  @include button-base;
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+
+  &:hover {
+    background-color: #5b73c7;
+  }
+}
+
+.back-btn {
+  @include button-base;
+  background-color: var(--danger-color);
+  color: var(--text-primary);
+
+  &:hover {
+    background-color: #d84040;
+  }
+}
+
+.loading {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: var(--section-spacing);
+}
+
+.error {
+  text-align: center;
+  color: var(--danger-color);
+  margin-top: var(--section-spacing);
+}
+
+// Animations
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .peripherique-details {
+    padding: 1rem;
+  }
+  
+  .info-group {
+    flex-direction: column;
+    
+    label {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  .actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+} 

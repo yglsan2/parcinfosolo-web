@@ -1,0 +1,98 @@
+.ordinateur-details {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+
+            a {
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+
+                &.back-btn {
+                    background-color: #6c757d;
+                    color: white;
+
+                    &:hover {
+                        background-color: #5a6268;
+                    }
+                }
+
+                &.edit-btn {
+                    background-color: #007bff;
+                    color: white;
+
+                    &:hover {
+                        background-color: #0056b3;
+                    }
+                }
+            }
+        }
+    }
+
+    .details-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+
+        .info-group {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            h2 {
+                color: #495057;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #dee2e6;
+            }
+
+            .info-row {
+                display: flex;
+                margin-bottom: 1rem;
+
+                .label {
+                    font-weight: 600;
+                    color: #495057;
+                    width: 40%;
+                }
+
+                .value {
+                    color: #212529;
+                    width: 60%;
+                }
+            }
+        }
+    }
+
+    .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #6c757d;
+        font-size: 1.2rem;
+    }
+
+    .error {
+        text-align: center;
+        padding: 2rem;
+        color: #dc3545;
+        font-size: 1.2rem;
+    }
+} 
