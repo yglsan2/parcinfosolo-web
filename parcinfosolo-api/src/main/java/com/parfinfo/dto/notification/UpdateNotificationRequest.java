@@ -1,24 +1,21 @@
 package com.parfinfo.dto.notification;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UpdateNotificationRequest {
-    @NotBlank(message = "Le type est obligatoire")
-    private String type;
+    @NotBlank(message = "Le titre est requis")
+    private String titre;
 
-    @NotBlank(message = "Le message est obligatoire")
+    @NotBlank(message = "Le message est requis")
     private String message;
 
-    @NotBlank(message = "Le destinataire est obligatoire")
-    private String destinataire;
+    @NotBlank(message = "Le type est requis")
+    private String type;
 
-    private boolean lu;
+    @NotBlank(message = "La priorité est requise")
+    private String priorite;
+
+    private Boolean lu;
 } 

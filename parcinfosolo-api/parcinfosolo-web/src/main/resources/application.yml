@@ -1,0 +1,18 @@
+server:
+  port: 8081  # Port différent de l'API
+
+spring:
+  application:
+    name: parcinfosolo-web
+  thymeleaf:
+    cache: false  # Désactive le cache en développement
+  security:
+    basic:
+      enabled: true
+    user:
+      name: admin
+      password: admin
+
+# Configuration pour se connecter à l'API
+api:
+  base-url: http://localhost:8080/api 

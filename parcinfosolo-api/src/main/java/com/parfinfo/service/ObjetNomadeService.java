@@ -1,30 +1,28 @@
 package com.parfinfo.service;
 
-import com.parfinfo.dto.ObjetNomadeRequest;
-import com.parfinfo.dto.ObjetNomadeResponse;
+import com.parfinfo.dto.objetnomade.CreateObjetNomadeRequest;
+import com.parfinfo.dto.objetnomade.ObjetNomadeResponse;
+import com.parfinfo.dto.objetnomade.UpdateObjetNomadeRequest;
+import com.parfinfo.entity.EtatEquipement;
 import com.parfinfo.entity.ObjetNomade;
-import com.parfinfo.entity.Utilisateur;
+import com.parfinfo.entity.TypeObjetNomade;
 import com.parfinfo.repository.ObjetNomadeRepository;
-import com.parfinfo.repository.UtilisateurRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ObjetNomadeService {
+
     private final ObjetNomadeRepository objetNomadeRepository;
-    private final UtilisateurRepository utilisateurRepository;
 
     @Transactional(readOnly = true)
-    public List<ObjetNomadeResponse> getAllObjetsNomades() {
-        return objetNomadeRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public Page<ObjetNomadeResponse> getAllObjetsNomades(Pageable pageable) {
+        return objetNomadeRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
     @Transactional(readOnly = true)
@@ -35,19 +33,17 @@ public class ObjetNomadeService {
     }
 
     @Transactional
-    public ObjetNomadeResponse createObjetNomade(ObjetNomadeRequest request) {
+    public ObjetNomadeResponse createObjetNomade(CreateObjetNomadeRequest request) {
         ObjetNomade objetNomade = new ObjetNomade();
         updateObjetNomadeFromRequest(objetNomade, request);
-        objetNomade.setDateCreation(LocalDateTime.now());
         return mapToResponse(objetNomadeRepository.save(objetNomade));
     }
 
     @Transactional
-    public ObjetNomadeResponse updateObjetNomade(Long id, ObjetNomadeRequest request) {
+    public ObjetNomadeResponse updateObjetNomade(Long id, UpdateObjetNomadeRequest request) {
         ObjetNomade objetNomade = objetNomadeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Objet nomade non trouvé"));
         updateObjetNomadeFromRequest(objetNomade, request);
-        objetNomade.setDateModification(LocalDateTime.now());
         return mapToResponse(objetNomadeRepository.save(objetNomade));
     }
 
@@ -57,28 +53,32 @@ public class ObjetNomadeService {
     }
 
     @Transactional(readOnly = true)
-    public List<String> getAllTypes() {
-        return objetNomadeRepository.findAllTypes();
+    public Page<ObjetNomadeResponse> searchObjetsNomades(
+            TypeObjetNomade type,
+            EtatEquipement statut,
+            String marque,
+            String modele,
+            Pageable pageable) {
+        return objetNomadeRepository.searchObjetsNomades(type, statut, marque, modele, pageable)
+                .map(this::mapToResponse);
     }
 
-    @Transactional(readOnly = true)
-    public List<String> getAllStatuts() {
-        return objetNomadeRepository.findAllStatuts();
-    }
-
-    private void updateObjetNomadeFromRequest(ObjetNomade objetNomade, ObjetNomadeRequest request) {
+    private void updateObjetNomadeFromRequest(ObjetNomade objetNomade, CreateObjetNomadeRequest request) {
         objetNomade.setType(request.getType());
         objetNomade.setStatut(request.getStatut());
         objetNomade.setMarque(request.getMarque());
         objetNomade.setModele(request.getModele());
         objetNomade.setNumeroSerie(request.getNumeroSerie());
         objetNomade.setCommentaire(request.getCommentaire());
-        
-        if (request.getUtilisateurId() != null) {
-            Utilisateur utilisateur = utilisateurRepository.findById(request.getUtilisateurId())
-                    .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-            objetNomade.setUtilisateur(utilisateur);
-        }
+    }
+
+    private void updateObjetNomadeFromRequest(ObjetNomade objetNomade, UpdateObjetNomadeRequest request) {
+        if (request.getType() != null) objetNomade.setType(request.getType());
+        if (request.getStatut() != null) objetNomade.setStatut(request.getStatut());
+        if (request.getMarque() != null) objetNomade.setMarque(request.getMarque());
+        if (request.getModele() != null) objetNomade.setModele(request.getModele());
+        if (request.getNumeroSerie() != null) objetNomade.setNumeroSerie(request.getNumeroSerie());
+        if (request.getCommentaire() != null) objetNomade.setCommentaire(request.getCommentaire());
     }
 
     private ObjetNomadeResponse mapToResponse(ObjetNomade objetNomade) {
@@ -92,12 +92,6 @@ public class ObjetNomadeService {
         response.setCommentaire(objetNomade.getCommentaire());
         response.setDateCreation(objetNomade.getDateCreation());
         response.setDateModification(objetNomade.getDateModification());
-        
-        if (objetNomade.getUtilisateur() != null) {
-            response.setUtilisateurId(objetNomade.getUtilisateur().getId());
-            response.setUtilisateurNom(objetNomade.getUtilisateur().getNom());
-        }
-        
         return response;
     }
 } 

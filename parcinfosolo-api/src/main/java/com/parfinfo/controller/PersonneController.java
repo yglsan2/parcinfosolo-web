@@ -1,6 +1,6 @@
 package com.parfinfo.controller;
 
-import com.parfinfo.dto.personne.PersonneDTO;
+import com.parfinfo.dto.user.PersonneDTO;
 import com.parfinfo.service.PersonneService;
 import lombok.RequiredArgsConstructor;
 import java.util.List;

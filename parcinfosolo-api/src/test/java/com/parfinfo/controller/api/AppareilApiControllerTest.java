@@ -1,6 +1,7 @@
 package com.parfinfo.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.parfinfo.controller.AppareilController;
 import com.parfinfo.dto.appareil.*;
 import com.parfinfo.service.AppareilService;
 import org.junit.jupiter.api.BeforeEach;

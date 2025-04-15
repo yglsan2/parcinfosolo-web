@@ -3,6 +3,7 @@ package com.parfinfo.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -15,10 +16,13 @@ public class User {
     private Long id;
     
     @Column(nullable = false, unique = true)
-    private String email;
+    private String username;
     
     @Column(nullable = false)
     private String password;
+    
+    @Column(nullable = false, unique = true)
+    private String email;
     
     @Column(nullable = false)
     private String nom;
@@ -26,17 +30,23 @@ public class User {
     @Column(nullable = false)
     private String prenom;
     
-    @Column
-    private String departement;
+    private String telephone;
     
-    @Column
-    private String statut;
+    private String service;
     
-    @Column(nullable = false)
-    private boolean enabled = true;
+    private String poste;
     
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private boolean actif = true;
+    
+    @Column(name = "date_creation")
+    private LocalDateTime dateCreation;
+    
+    @Column(name = "date_modification")
+    private LocalDateTime dateModification;
+    
+    @Column(name = "derniere_connexion")
+    private LocalDateTime derniereConnexion;
     
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -44,10 +54,10 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
     
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        dateCreation = LocalDateTime.now();
     }
 } 

@@ -1,7 +1,10 @@
 package com.parfinfo.repository;
 
-import com.parfinfo.model.ObjetNomade;
-import com.parfinfo.model.TypeObjetNomade;
+import com.parfinfo.entity.EtatEquipement;
+import com.parfinfo.entity.ObjetNomade;
+import com.parfinfo.entity.TypeObjetNomade;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,10 +22,17 @@ public interface ObjetNomadeRepository extends JpaRepository<ObjetNomade, Long> 
            "(:statut IS NULL OR o.statut = :statut) AND " +
            "(:marque IS NULL OR o.marque LIKE %:marque%) AND " +
            "(:modele IS NULL OR o.modele LIKE %:modele%)")
-    List<ObjetNomade> searchObjetsNomades(
+    Page<ObjetNomade> searchObjetsNomades(
         @Param("type") TypeObjetNomade type,
-        @Param("statut") String statut,
+        @Param("statut") EtatEquipement statut,
         @Param("marque") String marque,
-        @Param("modele") String modele
+        @Param("modele") String modele,
+        Pageable pageable
     );
+
+    @Query("SELECT DISTINCT o.type FROM ObjetNomade o")
+    List<String> findAllTypes();
+
+    @Query("SELECT DISTINCT o.statut FROM ObjetNomade o")
+    List<String> findAllStatuts();
 } 

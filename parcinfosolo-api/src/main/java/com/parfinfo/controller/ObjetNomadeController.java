@@ -1,82 +1,65 @@
 package com.parfinfo.controller;
 
-import com.parfinfo.dto.ObjetNomadeRequest;
-import com.parfinfo.dto.ObjetNomadeResponse;
+import com.parfinfo.dto.objetnomade.CreateObjetNomadeRequest;
+import com.parfinfo.dto.objetnomade.ObjetNomadeResponse;
+import com.parfinfo.dto.objetnomade.UpdateObjetNomadeRequest;
+import com.parfinfo.entity.EtatEquipement;
+import com.parfinfo.entity.TypeObjetNomade;
+import com.parfinfo.service.EnumerationService;
 import com.parfinfo.service.ObjetNomadeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/objets-nomades")
+@RequestMapping(value = "/api/objets-nomades", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "Objets Nomades", description = "API de gestion des objets nomades")
 public class ObjetNomadeController {
 
     private final ObjetNomadeService objetNomadeService;
+    private final EnumerationService enumerationService;
 
     @GetMapping
-    @Operation(summary = "Liste tous les objets nomades", description = "Récupère la liste paginée des objets nomades")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Liste des objets nomades récupérée avec succès"),
-        @ApiResponse(responseCode = "500", description = "Erreur serveur interne")
-    })
-    public ResponseEntity<Page<ObjetNomadeResponse>> getAllObjetsNomades(Pageable pageable) {
+    @Operation(summary = "Récupérer tous les objets nomades", description = "Retourne une liste paginée des objets nomades")
+    public ResponseEntity<Page<ObjetNomadeResponse>> getAllObjetsNomades(
+            @Parameter(description = "Paramètres de pagination") Pageable pageable) {
         return ResponseEntity.ok(objetNomadeService.getAllObjetsNomades(pageable));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Récupère un objet nomade", description = "Récupère les détails d'un objet nomade par son ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Objet nomade trouvé"),
-        @ApiResponse(responseCode = "404", description = "Objet nomade non trouvé")
-    })
+    @Operation(summary = "Récupérer un objet nomade par son ID")
     public ResponseEntity<ObjetNomadeResponse> getObjetNomadeById(
             @Parameter(description = "ID de l'objet nomade") @PathVariable Long id) {
         return ResponseEntity.ok(objetNomadeService.getObjetNomadeById(id));
     }
 
     @PostMapping
-    @Operation(summary = "Crée un objet nomade", description = "Crée un nouvel objet nomade")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Objet nomade créé avec succès"),
-        @ApiResponse(responseCode = "400", description = "Données invalides")
-    })
+    @Operation(summary = "Créer un nouvel objet nomade")
     public ResponseEntity<ObjetNomadeResponse> createObjetNomade(
-            @Valid @RequestBody ObjetNomadeRequest request) {
+            @Valid @RequestBody CreateObjetNomadeRequest request) {
         return ResponseEntity.ok(objetNomadeService.createObjetNomade(request));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Met à jour un objet nomade", description = "Met à jour les informations d'un objet nomade existant")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Objet nomade mis à jour avec succès"),
-        @ApiResponse(responseCode = "404", description = "Objet nomade non trouvé")
-    })
+    @Operation(summary = "Mettre à jour un objet nomade")
     public ResponseEntity<ObjetNomadeResponse> updateObjetNomade(
             @Parameter(description = "ID de l'objet nomade") @PathVariable Long id,
-            @Valid @RequestBody ObjetNomadeRequest request) {
+            @Valid @RequestBody UpdateObjetNomadeRequest request) {
         return ResponseEntity.ok(objetNomadeService.updateObjetNomade(id, request));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Supprime un objet nomade", description = "Supprime un objet nomade par son ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Objet nomade supprimé avec succès"),
-        @ApiResponse(responseCode = "404", description = "Objet nomade non trouvé")
-    })
+    @Operation(summary = "Supprimer un objet nomade")
     public ResponseEntity<Void> deleteObjetNomade(
             @Parameter(description = "ID de l'objet nomade") @PathVariable Long id) {
         objetNomadeService.deleteObjetNomade(id);
@@ -84,25 +67,35 @@ public class ObjetNomadeController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Recherche des objets nomades", description = "Recherche des objets nomades selon différents critères")
+    @Operation(summary = "Rechercher des objets nomades")
     public ResponseEntity<Page<ObjetNomadeResponse>> searchObjetsNomades(
-            @Parameter(description = "Type d'objet nomade") @RequestParam(required = false) String type,
-            @Parameter(description = "Statut de l'objet nomade") @RequestParam(required = false) String statut,
-            @Parameter(description = "Marque de l'objet nomade") @RequestParam(required = false) String marque,
-            @Parameter(description = "Modèle de l'objet nomade") @RequestParam(required = false) String modele,
-            Pageable pageable) {
+            @Parameter(description = "Type d'objet nomade") @RequestParam(required = false) TypeObjetNomade type,
+            @Parameter(description = "Statut de l'objet") @RequestParam(required = false) EtatEquipement statut,
+            @Parameter(description = "Marque de l'objet") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle de l'objet") @RequestParam(required = false) String modele,
+            @Parameter(description = "Paramètres de pagination") Pageable pageable) {
         return ResponseEntity.ok(objetNomadeService.searchObjetsNomades(type, statut, marque, modele, pageable));
     }
 
     @GetMapping("/types")
-    @Operation(summary = "Liste les types d'objets nomades", description = "Récupère la liste des types d'objets nomades disponibles")
-    public ResponseEntity<List<String>> getAllTypes() {
-        return ResponseEntity.ok(objetNomadeService.getAllTypes());
+    @Operation(summary = "Récupérer tous les types d'objets nomades")
+    public ResponseEntity<List<String>> getTypes() {
+        return ResponseEntity.ok(enumerationService.getTypes());
     }
 
-    @GetMapping("/statuts")
-    @Operation(summary = "Liste les statuts d'objets nomades", description = "Récupère la liste des statuts d'objets nomades disponibles")
-    public ResponseEntity<List<String>> getAllStatuts() {
-        return ResponseEntity.ok(objetNomadeService.getAllStatuts());
+    @GetMapping("/etats")
+    @Operation(summary = "Récupérer tous les états possibles")
+    public ResponseEntity<List<String>> getEtats() {
+        return ResponseEntity.ok(enumerationService.getEtats());
     }
-} 
+
+    @GetMapping("/localisations")
+    @Operation(summary = "Récupérer toutes les localisations possibles")
+    public ResponseEntity<List<String>> getLocalisations() {
+        @GetMapping("/statuts")
+        @Operation(summary = "Récupérer tous les statuts possibles")
+        public ResponseEntity<List<EtatEquipement>> getAllStatuts () {
+            return ResponseEntity.ok(List.of(EtatEquipement.values()));
+        }
+    }
+}

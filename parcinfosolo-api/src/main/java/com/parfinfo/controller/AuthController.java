@@ -1,43 +1,60 @@
 package com.parfinfo.controller;
 
 import com.parfinfo.dto.auth.*;
+import com.parfinfo.security.jwt.JwtTokenUtil;
 import com.parfinfo.service.AuthService;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public LoginResponse login(LoginRequest request) {
-        return authService.login(request);
+    public AuthController(AuthService authService, JwtTokenUtil jwtTokenUtil) {
+        this.authService = authService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public RegisterResponse register(RegisterRequest request) {
-        return authService.register(request);
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.login(loginRequest));
     }
 
-    public UserResponse getCurrentUser() {
-        return authService.getCurrentUser();
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        return ResponseEntity.ok();
     }
 
-    public UserResponse updateProfile(UpdateProfileRequest request) {
-        return authService.updateProfile(request);
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
+        return ResponseEntity.ok(authService.getCurrentUser());
     }
 
-    public void changePassword(ChangePasswordRequest request) {
-        authService.changePassword(request);
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
+        return ResponseEntity.ok(authService.updateProfile(updateProfileRequest));
     }
 
-    public void resetPassword(String email) {
-        authService.resetPassword(email);
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        authService.changePassword(changePasswordRequest);
+        return ResponseEntity.ok().build();
     }
 
-    public void verifyResetToken(String token) {
-        authService.verifyResetToken(token);
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        authService.resetPassword(forgotPasswordRequest.getEmail());
+        return ResponseEntity.ok().build();
     }
 
-    public void setNewPassword(String token, String newPassword) {
-        authService.setNewPassword(token, newPassword);
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        authService.setNewPassword(resetPasswordRequest.getToken(), resetPasswordRequest.getNewPassword());
+        return ResponseEntity.ok().build();
     }
 } 

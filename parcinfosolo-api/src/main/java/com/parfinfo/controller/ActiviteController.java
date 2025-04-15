@@ -1,14 +1,9 @@
 package com.parfinfo.controller;
 
 import com.parfinfo.dto.activite.*;
+import com.parfinfo.entity.Activite;
+import com.parfinfo.mapper.ActiviteMapper;
 import com.parfinfo.service.ActiviteService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,87 +12,75 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/activites")
 @RequiredArgsConstructor
-@Tag(name = "Activités", description = "API de gestion des activités")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class ActiviteController {
 
     private final ActiviteService activiteService;
+    private final ActiviteMapper activiteMapper;
 
     @GetMapping
-    @Operation(summary = "Lister toutes les activités")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Liste des activités récupérée avec succès"),
-        @ApiResponse(responseCode = "500", description = "Erreur serveur interne")
-    })
     public ResponseEntity<Page<ActiviteResponse>> getAllActivites(Pageable pageable) {
-        return ResponseEntity.ok(activiteService.getAllActivites(pageable));
+        Page<Activite> activites = activiteService.getAllActivites(pageable);
+        return ResponseEntity.ok(activites.map(activiteMapper::toResponse));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtenir une activité par son ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Activité trouvée"),
-        @ApiResponse(responseCode = "404", description = "Activité non trouvée")
-    })
     public ResponseEntity<ActiviteResponse> getActiviteById(@PathVariable Long id) {
-        return ResponseEntity.ok(activiteService.getActiviteById(id));
+        Activite activite = activiteService.getActiviteById(id);
+        return ResponseEntity.ok(activiteMapper.toResponse(activite));
     }
 
     @PostMapping
-    @Operation(summary = "Créer une nouvelle activité")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Activité créée avec succès"),
-        @ApiResponse(responseCode = "400", description = "Données invalides")
-    })
     public ResponseEntity<ActiviteResponse> createActivite(@Valid @RequestBody CreateActiviteRequest request) {
-        return ResponseEntity.ok(activiteService.createActivite(request));
+        Activite activite = activiteMapper.toEntity(request);
+        Activite savedActivite = activiteService.createActivite(activite);
+        return ResponseEntity.ok(activiteMapper.toResponse(savedActivite));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Mettre à jour une activité")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Activité mise à jour avec succès"),
-        @ApiResponse(responseCode = "404", description = "Activité non trouvée")
-    })
     public ResponseEntity<ActiviteResponse> updateActivite(
             @PathVariable Long id,
             @Valid @RequestBody UpdateActiviteRequest request) {
-        return ResponseEntity.ok(activiteService.updateActivite(id, request));
+        Activite activite = activiteMapper.toEntity(request);
+        activite.setId(id);
+        Activite updatedActivite = activiteService.updateActivite(id, activite);
+        return ResponseEntity.ok(activiteMapper.toResponse(updatedActivite));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Supprimer une activité")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Activité supprimée avec succès"),
-        @ApiResponse(responseCode = "404", description = "Activité non trouvée")
-    })
     public ResponseEntity<?> deleteActivite(@PathVariable Long id) {
         activiteService.deleteActivite(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Rechercher des activités")
-    public ResponseEntity<List<ActiviteResponse>> searchActivites(
-            @Parameter(description = "Type d'activité") @RequestParam(required = false) String type,
-            @Parameter(description = "Date de début") 
-            @RequestParam(required = false) 
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
-            @Parameter(description = "Date de fin") 
-            @RequestParam(required = false) 
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin,
-            @Parameter(description = "ID de l'utilisateur") @RequestParam(required = false) Long userId) {
-        return ResponseEntity.ok(activiteService.searchActivites(type, dateDebut, dateFin, userId));
+    public ResponseEntity<Page<ActiviteResponse>> searchActivites(
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateDebut,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFin,
+            Pageable pageable) {
+        Page<Activite> activites = activiteService.searchActivites(type, null, dateDebut, dateFin, pageable);
+        return ResponseEntity.ok(activites.map(activiteMapper::toResponse));
     }
 
-    @GetMapping("/types")
-    @Operation(summary = "Lister tous les types d'activités")
-    public ResponseEntity<List<String>> getAllTypes() {
-        return ResponseEntity.ok(activiteService.getAllTypes());
+    @GetMapping("/appareil/{appareilId}")
+    public ResponseEntity<Page<ActiviteResponse>> getActivitesByAppareil(
+            @PathVariable Long appareilId,
+            Pageable pageable) {
+        Page<Activite> activites = activiteService.getActivitesByAppareil(appareilId, pageable);
+        return ResponseEntity.ok(activites.map(activiteMapper::toResponse));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<ActiviteResponse>> getActivitesByUser(
+            @PathVariable Long userId,
+            Pageable pageable) {
+        Page<Activite> activites = activiteService.getActivitesByUser(userId, pageable);
+        return ResponseEntity.ok(activites.map(activiteMapper::toResponse));
     }
 } 

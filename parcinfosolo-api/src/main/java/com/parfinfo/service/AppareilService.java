@@ -1,21 +1,30 @@
 package com.parfinfo.service;
 
-import com.parfinfo.model.Appareil;
-import com.parfinfo.model.Ordinateur;
-import com.parfinfo.model.ObjetNomade;
+import com.parfinfo.dto.appareil.AppareilResponse;
+import com.parfinfo.dto.appareil.CreateAppareilRequest;
+import com.parfinfo.dto.appareil.UpdateAppareilRequest;
+import com.parfinfo.entity.Appareil;
+import com.parfinfo.entity.Ordinateur;
+import com.parfinfo.entity.ObjetNomade;
 import com.parfinfo.model.AppareilStandard;
 import com.parfinfo.model.TypeAppareil;
+import com.parfinfo.model.EtatAppareil;
 import com.parfinfo.repository.AppareilRepository;
 import com.parfinfo.repository.OrdinateurRepository;
 import com.parfinfo.repository.ObjetNomadeRepository;
 import com.parfinfo.repository.AppareilStandardRepository;
 import com.parfinfo.exception.ApiException;
+import com.parfinfo.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -104,12 +113,39 @@ public class AppareilService {
     }
 
     public void deleteById(Long id) {
-        deleteAppareil(id);
+        try {
+            if (!appareilRepository.existsById(id)) {
+                throw new ResourceNotFoundException("Appareil", "id", id);
+            }
+            appareilRepository.deleteById(id);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApiException.Builder()
+                .message("Erreur lors de la suppression de l'appareil")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .code("APPAREIL_DELETE_ERROR")
+                .details(e.getMessage())
+                .build();
+        }
     }
 
     public List<Appareil> findAll() {
         try {
             return appareilRepository.findAll();
+        } catch (Exception e) {
+            throw new ApiException.Builder()
+                .message("Erreur lors de la récupération des appareils")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .code("APPAREIL_FETCH_ERROR")
+                .details(e.getMessage())
+                .build();
+        }
+    }
+
+    public Page<Appareil> findAll(Pageable pageable) {
+        try {
+            return appareilRepository.findAll(pageable);
         } catch (Exception e) {
             throw new ApiException.Builder()
                 .message("Erreur lors de la récupération des appareils")
@@ -206,5 +242,146 @@ public class AppareilService {
 
     public long countByType(String type) {
         return appareilRepository.countByType(type);
+    }
+
+    public List<Appareil> findByType(TypeAppareil type) {
+        try {
+            return appareilRepository.findByType(type);
+        } catch (Exception e) {
+            throw new ApiException.Builder()
+                .message("Erreur lors de la récupération des appareils par type")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .code("APPAREIL_FETCH_ERROR")
+                .details(e.getMessage())
+                .build();
+        }
+    }
+
+    public List<Appareil> findByEtat(EtatAppareil etat) {
+        try {
+            return appareilRepository.findByEtat(etat);
+        } catch (Exception e) {
+            throw new ApiException.Builder()
+                .message("Erreur lors de la récupération des appareils par état")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .code("APPAREIL_FETCH_ERROR")
+                .details(e.getMessage())
+                .build();
+        }
+    }
+
+    public List<TypeAppareil> getAllTypes() {
+        return List.of(TypeAppareil.values());
+    }
+
+    public List<EtatAppareil> getAllEtats() {
+        return List.of(EtatAppareil.values());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AppareilResponse> getAllAppareils(Pageable pageable) {
+        return appareilRepository.findAll(pageable)
+                .map(this::mapToResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public AppareilResponse getAppareilById(Long id) {
+        return appareilRepository.findById(id)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new RuntimeException("Appareil non trouvé"));
+    }
+
+    @Transactional
+    public AppareilResponse createAppareil(CreateAppareilRequest request) {
+        Appareil appareil = new Appareil();
+        updateAppareilFromRequest(appareil, request);
+        appareil.setDateCreation(LocalDateTime.now());
+        return mapToResponse(appareilRepository.save(appareil));
+    }
+
+    @Transactional
+    public AppareilResponse updateAppareil(Long id, UpdateAppareilRequest request) {
+        Appareil appareil = appareilRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appareil non trouvé"));
+        updateAppareilFromRequest(appareil, request);
+        appareil.setDateModification(LocalDateTime.now());
+        return mapToResponse(appareilRepository.save(appareil));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppareilResponse> searchAppareils(String type, String status) {
+        return appareilRepository.findByTypeAndStatus(type, status)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getAllTypes() {
+        return appareilRepository.findAllTypes();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getAllStatus() {
+        return appareilRepository.findAllStatus();
+    }
+
+    private void updateAppareilFromRequest(Appareil appareil, CreateAppareilRequest request) {
+        appareil.setNom(request.getNom());
+        appareil.setType(request.getType());
+        appareil.setMarque(request.getMarque());
+        appareil.setModele(request.getModele());
+        appareil.setNumeroSerie(request.getNumeroSerie());
+        appareil.setStatus(request.getStatus());
+        appareil.setLocalisation(request.getLocalisation());
+        appareil.setDescription(request.getDescription());
+        appareil.setDateAcquisition(request.getDateAcquisition());
+        appareil.setDateDerniereMaintenance(request.getDateDerniereMaintenance());
+        appareil.setDateProchaineMaintenance(request.getDateProchaineMaintenance());
+        appareil.setFournisseur(request.getFournisseur());
+        appareil.setCoutAcquisition(request.getCoutAcquisition());
+        appareil.setGarantie(request.getGarantie());
+        appareil.setNotes(request.getNotes());
+    }
+
+    private void updateAppareilFromRequest(Appareil appareil, UpdateAppareilRequest request) {
+        if (request.getNom() != null) appareil.setNom(request.getNom());
+        if (request.getType() != null) appareil.setType(request.getType());
+        if (request.getMarque() != null) appareil.setMarque(request.getMarque());
+        if (request.getModele() != null) appareil.setModele(request.getModele());
+        if (request.getNumeroSerie() != null) appareil.setNumeroSerie(request.getNumeroSerie());
+        if (request.getStatus() != null) appareil.setStatus(request.getStatus());
+        if (request.getLocalisation() != null) appareil.setLocalisation(request.getLocalisation());
+        if (request.getDescription() != null) appareil.setDescription(request.getDescription());
+        if (request.getDateAcquisition() != null) appareil.setDateAcquisition(request.getDateAcquisition());
+        if (request.getDateDerniereMaintenance() != null) appareil.setDateDerniereMaintenance(request.getDateDerniereMaintenance());
+        if (request.getDateProchaineMaintenance() != null) appareil.setDateProchaineMaintenance(request.getDateProchaineMaintenance());
+        if (request.getFournisseur() != null) appareil.setFournisseur(request.getFournisseur());
+        if (request.getCoutAcquisition() != null) appareil.setCoutAcquisition(request.getCoutAcquisition());
+        if (request.getGarantie() != null) appareil.setGarantie(request.getGarantie());
+        if (request.getNotes() != null) appareil.setNotes(request.getNotes());
+    }
+
+    private AppareilResponse mapToResponse(Appareil appareil) {
+        AppareilResponse response = new AppareilResponse();
+        response.setId(appareil.getId());
+        response.setNom(appareil.getNom());
+        response.setType(appareil.getType());
+        response.setMarque(appareil.getMarque());
+        response.setModele(appareil.getModele());
+        response.setNumeroSerie(appareil.getNumeroSerie());
+        response.setStatus(appareil.getStatus());
+        response.setLocalisation(appareil.getLocalisation());
+        response.setDescription(appareil.getDescription());
+        response.setDateAcquisition(appareil.getDateAcquisition());
+        response.setDateDerniereMaintenance(appareil.getDateDerniereMaintenance());
+        response.setDateProchaineMaintenance(appareil.getDateProchaineMaintenance());
+        response.setFournisseur(appareil.getFournisseur());
+        response.setCoutAcquisition(appareil.getCoutAcquisition());
+        response.setGarantie(appareil.getGarantie());
+        response.setNotes(appareil.getNotes());
+        response.setDateCreation(appareil.getDateCreation());
+        response.setDateModification(appareil.getDateModification());
+        return response;
     }
 } 

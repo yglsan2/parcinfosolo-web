@@ -2,27 +2,22 @@ package com.parfinfo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "peripheriques")
-public class Peripherique extends Appareil {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Peripherique {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String type;
-
-    @Column(nullable = false)
-    private String statut;
+    private String nom;
 
     @Column(nullable = false)
     private String marque;
@@ -30,28 +25,48 @@ public class Peripherique extends Appareil {
     @Column(nullable = false)
     private String modele;
 
+    @Column(nullable = false)
     private String numeroSerie;
-    private String commentaire;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TypePeripherique type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EtatEquipement etat;
+
+    @Column
+    private String description;
+
+    @Column(nullable = false)
+    private String localisation;
+
+    @Column(name = "date_acquisition")
+    private java.time.LocalDate dateAcquisition;
+
+    @Column(name = "derniere_maintenance")
+    private java.time.LocalDate derniereMaintenance;
+
+    @ManyToOne
     @JoinColumn(name = "ordinateur_id")
     private Ordinateur ordinateur;
+
+    @Column
+    private String emplacement;
+
+    @Column
+    private String fabricant;
+
+    @Column
+    private String versionFirmware;
+
+    @Column
+    private String versionDriver;
 
     @Column(name = "date_creation", nullable = false)
     private LocalDateTime dateCreation;
 
     @Column(name = "date_modification")
     private LocalDateTime dateModification;
-
-    private String interfaceType;
-    private String resolution;
-    private String capacite;
-    private String vitesse;
-    private String connectivite;
-    private String alimentation;
-    private String maintenance;
 } 

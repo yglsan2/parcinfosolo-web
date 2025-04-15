@@ -2,35 +2,18 @@ package com.parfinfo.dto.activite;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateActiviteRequest {
-    @NotBlank(message = "Le type est obligatoire")
+    @NotBlank(message = "Le type est requis")
     private String type;
-
-    @NotBlank(message = "La description est obligatoire")
+    
+    @NotBlank(message = "La description est requise")
     private String description;
-
-    @NotBlank(message = "L'utilisateur est obligatoire")
-    private String utilisateur;
-
-    @NotBlank(message = "L'entité est obligatoire")
-    private String entite;
-
-    @NotNull(message = "L'ID de l'entité est obligatoire")
-    private Long entiteId;
-
-    @NotNull(message = "La date d'activité est obligatoire")
-    private LocalDateTime dateActivite;
-
-    private String details;
+    
+    @NotNull(message = "L'ID de l'utilisateur est requis")
+    private Long utilisateurId;
+    
+    private Long appareilId;
 } 

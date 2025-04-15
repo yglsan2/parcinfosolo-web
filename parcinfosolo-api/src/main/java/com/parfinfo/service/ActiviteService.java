@@ -2,9 +2,11 @@ package com.parfinfo.service;
 
 import com.parfinfo.entity.Activite;
 import com.parfinfo.entity.Utilisateur;
+import com.parfinfo.entity.Appareil;
 import com.parfinfo.exception.ResourceNotFoundException;
 import com.parfinfo.repository.ActiviteRepository;
 import com.parfinfo.repository.UtilisateurRepository;
+import com.parfinfo.repository.AppareilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,9 @@ public class ActiviteService {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+
+    @Autowired
+    private AppareilRepository appareilRepository;
 
     public List<Activite> getAllActivites() {
         return activiteRepository.findAll();
@@ -43,6 +48,18 @@ public class ActiviteService {
         return activiteRepository.findByUtilisateur(utilisateur);
     }
 
+    public Page<Activite> getActivitesByUser(Long userId, Pageable pageable) {
+        Utilisateur utilisateur = utilisateurRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur", "id", userId));
+        return activiteRepository.findByUtilisateur(utilisateur, pageable);
+    }
+
+    public Page<Activite> getActivitesByAppareil(Long appareilId, Pageable pageable) {
+        Appareil appareil = appareilRepository.findById(appareilId)
+                .orElseThrow(() -> new ResourceNotFoundException("Appareil", "id", appareilId));
+        return activiteRepository.findByAppareil(appareil, pageable);
+    }
+
     public List<Activite> getActivitesByType(String type) {
         return activiteRepository.findByType(type);
     }
@@ -53,6 +70,13 @@ public class ActiviteService {
 
     public Activite createActivite(Activite activite) {
         activite.setDateCreation(LocalDateTime.now());
+        return activiteRepository.save(activite);
+    }
+
+    public Activite updateActivite(Long id, Activite activiteDetails) {
+        Activite activite = getActiviteById(id);
+        activite.setType(activiteDetails.getType());
+        activite.setDescription(activiteDetails.getDescription());
         return activiteRepository.save(activite);
     }
 

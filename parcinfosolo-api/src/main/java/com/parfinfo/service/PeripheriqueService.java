@@ -188,4 +188,12 @@ public class PeripheriqueService {
                 .build();
         }
     }
+
+    public List<Peripherique> getPeripheriquesByOrdinateur(Long ordinateurId) {
+        return peripheriqueRepository.findByOrdinateurId(ordinateurId);
+    }
+
+    public List<Peripherique> getPeripheriquesByEtat(EtatEquipement etat) {
+        return peripheriqueRepository.findByEtat(etat);
+    }
 } 

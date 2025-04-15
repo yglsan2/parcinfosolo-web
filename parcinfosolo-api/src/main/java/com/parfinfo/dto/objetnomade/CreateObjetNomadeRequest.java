@@ -1,21 +1,18 @@
 package com.parfinfo.dto.objetnomade;
 
+import com.parfinfo.entity.EtatEquipement;
+import com.parfinfo.entity.TypeObjetNomade;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateObjetNomadeRequest {
-    @NotBlank(message = "Le type est obligatoire")
-    private String type;
+    @NotNull(message = "Le type est obligatoire")
+    private TypeObjetNomade type;
+
+    @NotNull(message = "Le statut est obligatoire")
+    private EtatEquipement statut;
 
     @NotBlank(message = "La marque est obligatoire")
     private String marque;
@@ -26,20 +23,5 @@ public class CreateObjetNomadeRequest {
     @NotBlank(message = "Le numéro de série est obligatoire")
     private String numeroSerie;
 
-    @NotBlank(message = "Le statut est obligatoire")
-    private String statut;
-
-    private String description;
-
-    @NotNull(message = "La date d'acquisition est obligatoire")
-    private LocalDateTime dateAcquisition;
-
-    private LocalDateTime dateDerniereMaintenance;
-    private LocalDateTime dateProchaineMaintenance;
-    private String localisation;
-    private String utilisateur;
-    private String fournisseur;
-    private Double coutAcquisition;
-    private String garantie;
-    private String notes;
+    private String commentaire;
 } 

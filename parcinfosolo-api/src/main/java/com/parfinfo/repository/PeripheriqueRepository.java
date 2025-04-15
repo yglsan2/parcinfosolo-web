@@ -1,6 +1,8 @@
 package com.parfinfo.repository;
 
-import com.parfinfo.model.Peripherique;
+import com.parfinfo.entity.Peripherique;
+import com.parfinfo.entity.TypePeripherique;
+import com.parfinfo.entity.EtatEquipement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,8 +12,10 @@ import java.util.List;
 
 @Repository
 public interface PeripheriqueRepository extends JpaRepository<Peripherique, Long> {
-    List<Peripherique> findByType(String type);
-    List<Peripherique> findByStatut(String statut);
+    List<Peripherique> findByType(TypePeripherique type);
+    List<Peripherique> findByEtat(EtatEquipement etat);
+    List<Peripherique> findByLocalisation(String localisation);
+    List<Peripherique> findByMarque(String marque);
 
     @Query("SELECT p FROM Peripherique p WHERE " +
            "(:type IS NULL OR p.type = :type) AND " +

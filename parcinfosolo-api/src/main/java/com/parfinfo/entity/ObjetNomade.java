@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+import com.parfinfo.model.TypeAppareil;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -55,4 +56,13 @@ public class ObjetNomade extends Appareil {
     private String applications;
     private String sauvegardes;
     private String maintenance;
+
+    private String typeNomade;
+    private String capaciteStockage;
+    private String versionSysteme;
+
+    @Override
+    public TypeAppareil getType() {
+        return TypeAppareil.SMARTPHONE;
+    }
 } 

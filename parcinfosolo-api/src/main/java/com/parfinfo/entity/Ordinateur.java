@@ -2,27 +2,24 @@ package com.parfinfo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import java.time.LocalDateTime;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "ordinateurs")
-public class Ordinateur extends Appareil {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Ordinateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String type;
-
-    @Column(nullable = false)
-    private String statut;
+    @Column(nullable = false, unique = true)
+    private String numeroSerie;
 
     @Column(nullable = false)
     private String marque;
@@ -30,31 +27,29 @@ public class Ordinateur extends Appareil {
     @Column(nullable = false)
     private String modele;
 
-    private String numeroSerie;
     private String processeur;
     private String ram;
     private String stockage;
     private String systemeExploitation;
-    private String commentaire;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    private EtatEquipement etat;
+
+    @ManyToOne
     @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
+    private User utilisateur;
 
-    @Column(name = "date_creation", nullable = false)
-    private LocalDateTime dateCreation;
+    @ManyToMany
+    @JoinTable(
+        name = "ordinateur_tags",
+        joinColumns = @JoinColumn(name = "ordinateur_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
 
-    @Column(name = "date_modification")
-    private LocalDateTime dateModification;
+    @OneToMany(mappedBy = "ordinateur", cascade = CascadeType.ALL)
+    private Set<Maintenance> maintenances = new HashSet<>();
 
-    private String carteGraphique;
-    private String carteReseau;
-    private String carteWifi;
-    private String carteBluetooth;
-    private String batterie;
-    private String alimentation;
-    private String antivirus;
-    private String logiciels;
-    private String sauvegardes;
-    private String maintenance;
+    @OneToMany(mappedBy = "ordinateur", cascade = CascadeType.ALL)
+    private Set<Peripherique> peripheriques = new HashSet<>();
 } 

@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateActiviteRequest {
-    @NotBlank(message = "Le type est obligatoire")
+    @NotBlank(message = "Le type est requis")
     private String type;
 
-    @NotBlank(message = "La description est obligatoire")
+    @NotBlank(message = "La description est requise")
     private String description;
 
     @NotBlank(message = "L'utilisateur est obligatoire")

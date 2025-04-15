@@ -2,18 +2,15 @@ package com.parfinfo.dto.appareil;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateAppareilRequest {
+    @NotBlank(message = "Le nom est obligatoire")
+    private String nom;
+
     @NotBlank(message = "Le type est obligatoire")
     private String type;
 
@@ -27,8 +24,9 @@ public class CreateAppareilRequest {
     private String numeroSerie;
 
     @NotBlank(message = "Le statut est obligatoire")
-    private String statut;
+    private String status;
 
+    private String localisation;
     private String description;
 
     @NotNull(message = "La date d'acquisition est obligatoire")
@@ -36,10 +34,14 @@ public class CreateAppareilRequest {
 
     private LocalDateTime dateDerniereMaintenance;
     private LocalDateTime dateProchaineMaintenance;
-    private String localisation;
-    private String utilisateur;
+
+    @NotBlank(message = "Le fournisseur est obligatoire")
     private String fournisseur;
+
+    @NotNull(message = "Le coût d'acquisition est obligatoire")
+    @Positive(message = "Le coût d'acquisition doit être positif")
     private Double coutAcquisition;
+
     private String garantie;
     private String notes;
 } 

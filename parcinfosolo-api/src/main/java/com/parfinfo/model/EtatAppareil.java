@@ -2,7 +2,8 @@ package com.parfinfo.model;
 
 public enum EtatAppareil {
     NEUF,
-    BON,
+    BON_ETAT,
     MOYEN,
-    MAUVAIS
+    MAUVAIS_ETAT,
+    HORS_SERVICE
 } 

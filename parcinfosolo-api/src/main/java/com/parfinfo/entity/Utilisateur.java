@@ -48,4 +48,14 @@ public class Utilisateur {
     private LocalDateTime derniereConnexion;
 
     private boolean actif = true;
+    
+    @PrePersist
+    protected void onCreate() {
+        dateCreation = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        dateModification = LocalDateTime.now();
+    }
 } 

@@ -2,18 +2,16 @@ package com.parfinfo.dto.ordinateur;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateOrdinateurRequest {
+    @NotBlank(message = "Le nom est obligatoire")
+    private String nom;
+
     @NotBlank(message = "Le type est obligatoire")
     private String type;
 
@@ -29,6 +27,25 @@ public class CreateOrdinateurRequest {
     @NotBlank(message = "Le statut est obligatoire")
     private String statut;
 
+    private String localisation;
+    private String description;
+
+    @NotNull(message = "La date d'acquisition est obligatoire")
+    private LocalDateTime dateAcquisition;
+
+    private LocalDateTime dateDerniereMaintenance;
+    private LocalDateTime dateProchaineMaintenance;
+
+    @NotBlank(message = "Le fournisseur est obligatoire")
+    private String fournisseur;
+
+    @NotNull(message = "Le coût d'acquisition est obligatoire")
+    @Positive(message = "Le coût d'acquisition doit être positif")
+    private Double coutAcquisition;
+
+    private String garantie;
+    private String notes;
+
     @NotBlank(message = "Le processeur est obligatoire")
     private String processeur;
 
@@ -41,20 +58,8 @@ public class CreateOrdinateurRequest {
     @NotBlank(message = "Le système d'exploitation est obligatoire")
     private String systemeExploitation;
 
-    @NotBlank(message = "La version du système d'exploitation est obligatoire")
-    private String versionOS;
+    @NotBlank(message = "La version du système est obligatoire")
+    private String versionSysteme;
 
-    private String description;
-
-    @NotNull(message = "La date d'acquisition est obligatoire")
-    private LocalDateTime dateAcquisition;
-
-    private LocalDateTime dateDerniereMaintenance;
-    private LocalDateTime dateProchaineMaintenance;
-    private String localisation;
-    private String utilisateur;
-    private String fournisseur;
-    private Double coutAcquisition;
-    private String garantie;
-    private String notes;
+    private List<Long> peripheriquesIds;
 } 

@@ -34,4 +34,9 @@ public class Notification {
 
     @Column(name = "date_lecture")
     private LocalDateTime dateLecture;
+    
+    @PrePersist
+    protected void onCreate() {
+        dateCreation = LocalDateTime.now();
+    }
 } 
