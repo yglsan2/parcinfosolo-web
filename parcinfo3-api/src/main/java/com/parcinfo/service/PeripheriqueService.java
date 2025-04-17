@@ -44,7 +44,7 @@ public class PeripheriqueService {
     }
 
     public List<Peripherique> getPeripheriquesByOrdinateur(Long idOrdinateur) {
-        return peripheriqueRepository.findByOrdinateurIdOrdinateur(idOrdinateur);
+        return peripheriqueRepository.findByOrdinateurIdAppareil(idOrdinateur);
     }
 
     @Transactional

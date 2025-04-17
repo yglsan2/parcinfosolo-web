@@ -36,6 +36,7 @@ com\parcinfo\dto\AuthenticationResponse$AuthenticationResponseBuilder.class
 com\parcinfo\repository\EmplacementRepository.class
 com\parcinfo\model\ObjetNomade$EtatObjetNomade.class
 com\parcinfo\model\Ordinateur.class
+com\parcinfo\exception\GlobalExceptionHandler.class
 com\parcinfo\controller\ParcController.class
 com\parcinfo\repository\UtilisateurRepository.class
 com\parcinfo\repository\OrdinateurRepository.class

@@ -43,7 +43,7 @@ public class ObjetNomadeService {
     }
 
     public List<ObjetNomade> getObjetsNomadesByUtilisateur(Long utilisateurId) {
-        return objetNomadeRepository.findByUtilisateurId(utilisateurId);
+        return objetNomadeRepository.findByUtilisateurIdPersonne(utilisateurId);
     }
 
     @Transactional

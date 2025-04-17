@@ -15,5 +15,5 @@ public interface PeripheriqueRepository extends JpaRepository<Peripherique, Long
     List<Peripherique> findByMarque(String marque);
     List<Peripherique> findByEstActif(boolean estActif);
     List<Peripherique> findByObjetNomadeIdObjetNomade(Long idObjetNomade);
-    List<Peripherique> findByOrdinateurIdOrdinateur(Long idOrdinateur);
+    List<Peripherique> findByOrdinateurIdAppareil(Long idOrdinateur);
 } 

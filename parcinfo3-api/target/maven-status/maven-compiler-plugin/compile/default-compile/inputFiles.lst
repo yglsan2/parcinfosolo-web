@@ -40,6 +40,7 @@ C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\repository\User
 C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\repository\TypeEmplacementRepository.java
 C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\ParcInfoApplication.java
 C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\controller\OrdinateurController.java
+C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\exception\GlobalExceptionHandler.java
 C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\model\Emplacement.java
 C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\controller\EmplacementController.java
 C:\Users\CDA-05\Desktop\parcinfo3-api\src\main\java\com\parcinfo\controller\ObjetNomadeController.java
