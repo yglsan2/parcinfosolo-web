@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html}">
+<head>
+    <title id="pageTitle">Détails de la personne</title>
+</head>
+<body>
+    <div id="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Détails de la personne</h1>
+            <div>
+                <a href="/personnes" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <a th:href="@{/personnes/{id}/edit(id=${personne.idPersonne})}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="card-title mb-4">Informations personnelles</h5>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 30%">Nom</th>
+                                    <td th:text="${personne.nom}">Nom</td>
+                                </tr>
+                                <tr>
+                                    <th>Prénom</th>
+                                    <td th:text="${personne.prenom}">Prénom</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td th:text="${personne.email}">Email</td>
+                                </tr>
+                                <tr>
+                                    <th>Service</th>
+                                    <td th:text="${personne.service}">Service</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5 class="card-title mb-4">Appareils associés</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Numéro de série</th>
+                                        <th>État</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="appareil : ${appareils}">
+                                        <td th:text="${appareil.type}">Type</td>
+                                        <td th:text="${appareil.numeroSerie}">Numéro de série</td>
+                                        <td th:text="${appareil.etat}">État</td>
+                                        <td>
+                                            <a th:href="@{/appareils/{id}(id=${appareil.idAppareil})}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${appareils == null || appareils.isEmpty()}">
+                                        <td colspan="4" class="text-center">Aucun appareil associé</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a th:href="@{/personnes/{id}/delete(id=${personne.idPersonne})}" 
+                       class="btn btn-danger"
+                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette personne ?')">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

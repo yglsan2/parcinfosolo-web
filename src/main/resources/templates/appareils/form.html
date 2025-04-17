@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${appareil.id == null ? 'Nouvel appareil' : 'Modifier l\'appareil'}"></title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 th:text="${appareil.id == null ? 'Nouvel appareil' : 'Modifier l\'appareil'}"></h1>
+            <a th:href="@{/appareils}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{${appareil.id == null ? '/appareils' : '/appareils/' + appareil.id}}"
+                      th:object="${appareil}"
+                      method="post"
+                      class="needs-validation"
+                      novalidate>
+                    
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="">Sélectionnez un type</option>
+                            <option value="ORDINATEUR">Ordinateur</option>
+                            <option value="SERVEUR">Serveur</option>
+                            <option value="SWITCH">Switch</option>
+                            <option value="ROUTEUR">Routeur</option>
+                            <option value="POINT_ACCES">Point d'accès</option>
+                        </select>
+                        <div class="invalid-feedback">Veuillez sélectionner un type</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="numeroSerie" class="form-label">Numéro de série</label>
+                        <input type="text" class="form-control" id="numeroSerie" th:field="*{numeroSerie}" required>
+                        <div class="invalid-feedback">Veuillez saisir un numéro de série</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="marque" class="form-label">Marque</label>
+                        <input type="text" class="form-control" id="marque" th:field="*{marque}" required>
+                        <div class="invalid-feedback">Veuillez saisir une marque</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modele" class="form-label">Modèle</label>
+                        <input type="text" class="form-control" id="modele" th:field="*{modele}" required>
+                        <div class="invalid-feedback">Veuillez saisir un modèle</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="etat" class="form-label">État</label>
+                        <select class="form-select" id="etat" th:field="*{etat}" required>
+                            <option value="">Sélectionnez un état</option>
+                            <option value="NEUF">Neuf</option>
+                            <option value="BON">Bon</option>
+                            <option value="MOYEN">Moyen</option>
+                            <option value="MAUVAIS">Mauvais</option>
+                        </select>
+                        <div class="invalid-feedback">Veuillez sélectionner un état</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="personne" class="form-label">Utilisateur</label>
+                        <select class="form-select" id="personne" th:field="*{personne}">
+                            <option value="">Non assigné</option>
+                            <option th:each="personne : ${personnes}"
+                                    th:value="${personne.id}"
+                                    th:text="${personne.nom + ' ' + personne.prenom}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            // Validation des formulaires Bootstrap
+            (function () {
+                'use strict'
+                var forms = document.querySelectorAll('.needs-validation')
+                Array.prototype.slice.call(forms).forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+            })()
+        </script>
+    </th:block>
+</body>
+</html> 

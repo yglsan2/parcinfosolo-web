@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html}">
+<head>
+    <title id="pageTitle">Tableau de bord</title>
+</head>
+<body>
+    <div id="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Tableau de bord</h1>
+            <div class="btn-group">
+                <a href="/personnes/new" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Nouvelle personne
+                </a>
+                <a href="/appareils/new" class="btn btn-primary">
+                    <i class="fas fa-laptop"></i> Nouvel appareil
+                </a>
+                <a href="/ordinateurs/new" class="btn btn-primary">
+                    <i class="fas fa-desktop"></i> Nouvel ordinateur
+                </a>
+                <a href="/peripheriques/new" class="btn btn-primary">
+                    <i class="fas fa-keyboard"></i> Nouveau périphérique
+                </a>
+                <a href="/objets-nomades/new" class="btn btn-primary">
+                    <i class="fas fa-mobile-alt"></i> Nouvel objet nomade
+                </a>
+            </div>
+        </div>
+        
+        <!-- Statistiques -->
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Personnes</h6>
+                                <h2 class="mt-2 mb-0" th:text="${personnes != null ? personnes.size() : 0}">0</h2>
+                            </div>
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <a href="/personnes" class="btn btn-sm btn-light mt-3">Voir toutes les personnes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Appareils</h6>
+                                <h2 class="mt-2 mb-0" th:text="${appareils != null ? appareils.size() : 0}">0</h2>
+                            </div>
+                            <i class="fas fa-laptop fa-2x"></i>
+                        </div>
+                        <a href="/appareils" class="btn btn-sm btn-light mt-3">Voir tous les appareils</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Ordinateurs</h6>
+                                <h2 class="mt-2 mb-0" th:text="${ordinateurs != null ? ordinateurs.size() : 0}">0</h2>
+                            </div>
+                            <i class="fas fa-desktop fa-2x"></i>
+                        </div>
+                        <a href="/ordinateurs" class="btn btn-sm btn-light mt-3">Voir tous les ordinateurs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Périphériques</h6>
+                                <h2 class="mt-2 mb-0" th:text="${peripheriques != null ? peripheriques.size() : 0}">0</h2>
+                            </div>
+                            <i class="fas fa-keyboard fa-2x"></i>
+                        </div>
+                        <a href="/peripheriques" class="btn btn-sm btn-light mt-3">Voir tous les périphériques</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Objets nomades</h6>
+                                <h2 class="mt-2 mb-0" th:text="${objetsNomades != null ? objetsNomades.size() : 0}">0</h2>
+                            </div>
+                            <i class="fas fa-mobile-alt fa-2x"></i>
+                        </div>
+                        <a href="/objets-nomades" class="btn btn-sm btn-light mt-3">Voir tous les objets nomades</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-secondary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">Réservations</h6>
+                                <h2 class="mt-2 mb-0" th:text="${reservations != null ? reservations.size() : 0}">0</h2>
+                            </div>
+                            <i class="fas fa-calendar-check fa-2x"></i>
+                        </div>
+                        <a href="/reservations" class="btn btn-sm btn-light mt-3">Voir toutes les réservations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dernières personnes ajoutées -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Dernières personnes ajoutées</h5>
+                <a href="/personnes" class="btn btn-sm btn-primary">Voir tout</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Email</th>
+                                <th>Service</th>
+                                <th>Appareils</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="personne : ${personnes != null ? personnes.subList(0, T(Math).min(5, personnes.size())) : {}}">
+                                <td th:text="${personne.nom}">Nom</td>
+                                <td th:text="${personne.prenom}">Prénom</td>
+                                <td th:text="${personne.email}">Email</td>
+                                <td th:text="${personne.service}">Service</td>
+                                <td>
+                                    <span class="badge bg-primary" th:text="${personne.appareils != null ? personne.appareils.size() : 0}">0</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a th:href="@{/personnes/{id}(id=${personne.idPersonne})}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/personnes/{id}/edit(id=${personne.idPersonne})}" class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${personnes == null || personnes.isEmpty()}">
+                                <td colspan="6" class="text-center">Aucune personne trouvée</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Derniers ordinateurs ajoutés -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Derniers ordinateurs ajoutés</h5>
+                <a href="/ordinateurs" class="btn btn-sm btn-primary">Voir tout</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Numéro de série</th>
+                                <th>Marque</th>
+                                <th>Modèle</th>
+                                <th>Processeur</th>
+                                <th>RAM</th>
+                                <th>État</th>
+                                <th>Utilisateur</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ordinateur : ${ordinateurs != null ? ordinateurs.subList(0, T(Math).min(5, ordinateurs.size())) : {}}">
+                                <td>
+                                    <span class="badge bg-danger" th:text="${ordinateur.type}">Type</span>
+                                </td>
+                                <td th:text="${ordinateur.numeroSerie}">Numéro de série</td>
+                                <td th:text="${ordinateur.marque}">Marque</td>
+                                <td th:text="${ordinateur.modele}">Modèle</td>
+                                <td th:text="${ordinateur.processeur}">Processeur</td>
+                                <td th:text="${ordinateur.ram + ' Go'}">RAM</td>
+                                <td>
+                                    <span class="badge" th:classappend="${ordinateur.etat == 'NEUF' ? 'bg-success' : (ordinateur.etat == 'BON' ? 'bg-primary' : (ordinateur.etat == 'MOYEN' ? 'bg-warning' : 'bg-danger'))}"
+                                          th:text="${ordinateur.etat}">État</span>
+                                </td>
+                                <td>
+                                    <span th:if="${ordinateur.personne != null}" th:text="${ordinateur.personne.nom + ' ' + ordinateur.personne.prenom}">Utilisateur</span>
+                                    <span th:unless="${ordinateur.personne != null}" class="text-muted">Non assigné</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a th:href="@{/ordinateurs/{id}(id=${ordinateur.idOrdinateur})}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/ordinateurs/{id}/edit(id=${ordinateur.idOrdinateur})}" class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${ordinateurs == null || ordinateurs.isEmpty()}">
+                                <td colspan="9" class="text-center">Aucun ordinateur trouvé</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Derniers appareils ajoutés -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Derniers appareils ajoutés</h5>
+                <a href="/appareils" class="btn btn-sm btn-primary">Voir tout</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Numéro de série</th>
+                                <th>Marque</th>
+                                <th>Modèle</th>
+                                <th>État</th>
+                                <th>Utilisateur</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="appareil : ${appareils != null ? appareils.subList(0, T(Math).min(5, appareils.size())) : {}}">
+                                <td>
+                                    <span class="badge" th:classappend="${appareil.type == 'ORDINATEUR' ? 'bg-primary' : (appareil.type == 'SERVEUR' ? 'bg-success' : 'bg-info')}"
+                                          th:text="${appareil.type}">Type</span>
+                                </td>
+                                <td th:text="${appareil.numeroSerie}">Numéro de série</td>
+                                <td th:text="${appareil.marque}">Marque</td>
+                                <td th:text="${appareil.modele}">Modèle</td>
+                                <td>
+                                    <span class="badge" th:classappend="${appareil.etat == 'NEUF' ? 'bg-success' : (appareil.etat == 'BON' ? 'bg-primary' : (appareil.etat == 'MOYEN' ? 'bg-warning' : 'bg-danger'))}"
+                                          th:text="${appareil.etat}">État</span>
+                                </td>
+                                <td>
+                                    <span th:if="${appareil.personne != null}" th:text="${appareil.personne.nom + ' ' + appareil.personne.prenom}">Utilisateur</span>
+                                    <span th:unless="${appareil.personne != null}" class="text-muted">Non assigné</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a th:href="@{/appareils/{id}(id=${appareil.idAppareil})}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/appareils/{id}/edit(id=${appareil.idAppareil})}" class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${appareils == null || appareils.isEmpty()}">
+                                <td colspan="7" class="text-center">Aucun appareil trouvé</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
