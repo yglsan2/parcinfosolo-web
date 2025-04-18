@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Liste des appareils</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Liste des appareils</h1>
+            <a th:href="@{/appareils/new}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nouvel appareil
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Numéro de série</th>
+                        <th>Marque</th>
+                        <th>Modèle</th>
+                        <th>État</th>
+                        <th>Utilisateur</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="appareil : ${appareils}">
+                        <td th:text="${appareil.type}"></td>
+                        <td th:text="${appareil.numeroSerie}"></td>
+                        <td th:text="${appareil.marque}"></td>
+                        <td th:text="${appareil.modele}"></td>
+                        <td>
+                            <span th:class="${'badge ' + 
+                                (appareil.etat == 'NEUF' ? 'bg-success' : 
+                                (appareil.etat == 'BON' ? 'bg-info' : 
+                                (appareil.etat == 'MOYEN' ? 'bg-warning' : 'bg-danger')))}"
+                                  th:text="${appareil.etat}">
+                            </span>
+                        </td>
+                        <td>
+                            <span th:if="${appareil.personne != null}" 
+                                  th:text="${appareil.personne.nom + ' ' + appareil.personne.prenom}">
+                            </span>
+                            <span th:unless="${appareil.personne != null}" class="text-muted">
+                                Non assigné
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a th:href="@{/appareils/{id}(id=${appareil.id})}" 
+                                   class="btn btn-sm btn-info" 
+                                   title="Voir">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/appareils/{id}/edit(id=${appareil.id})}" 
+                                   class="btn btn-sm btn-warning" 
+                                   title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{/appareils/{id}/delete(id=${appareil.id})}" 
+                                   class="btn btn-sm btn-danger" 
+                                   title="Supprimer"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet appareil ?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${appareils.empty}">
+                        <td colspan="7" class="text-center">Aucun appareil trouvé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html> 
