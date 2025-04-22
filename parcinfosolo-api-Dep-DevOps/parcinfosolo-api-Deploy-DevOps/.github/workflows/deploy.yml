@@ -1,0 +1,148 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - production
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  JAVA_VERSION: '17'
+  APP_NAME: 'parcinfo3-api'
+  DEPLOY_PATH: '/opt/parcinfo'
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+          
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: '${{ env.APP_NAME }}'
+          path: '.'
+          format: 'HTML'
+          
+      - name: Upload security report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report
+          path: reports/
+
+  build-and-test:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+          
+      - name: Build with Maven
+        run: mvn clean package
+        
+      - name: Run Tests
+        run: mvn test
+        
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: target/surefire-reports/
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+          
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+        
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy
+          cp target/*.jar deploy/${{ env.APP_NAME }}.jar
+          echo "DEPLOY_TIME=$(date +'%Y%m%d_%H%M%S')" > deploy/env.properties
+          echo "COMMIT_SHA=${{ github.sha }}" >> deploy/env.properties
+          echo "BRANCH=${{ github.ref }}" >> deploy/env.properties
+          
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            #!/bin/bash
+            set -e
+            
+            # Variables
+            DEPLOY_PATH="${{ env.DEPLOY_PATH }}"
+            APP_NAME="${{ env.APP_NAME }}"
+            BACKUP_PATH="$DEPLOY_PATH/backup"
+            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            
+            # Create directories if they don't exist
+            mkdir -p $DEPLOY_PATH $BACKUP_PATH
+            
+            # Stop the application
+            if systemctl is-active --quiet $APP_NAME; then
+              echo "Stopping $APP_NAME service..."
+              sudo systemctl stop $APP_NAME
+            fi
+            
+            # Backup current version
+            if [ -f "$DEPLOY_PATH/$APP_NAME.jar" ]; then
+              echo "Backing up current version..."
+              mv "$DEPLOY_PATH/$APP_NAME.jar" "$BACKUP_PATH/${APP_NAME}_${TIMESTAMP}.jar"
+            fi
+            
+            # Clean old backups (keep last 5)
+            cd $BACKUP_PATH
+            ls -t | tail -n +6 | xargs -r rm
+            
+            # Start the application
+            echo "Starting $APP_NAME service..."
+            sudo systemctl start $APP_NAME
+            
+            # Wait for application to start
+            echo "Waiting for application to start..."
+            sleep 10
+            
+            # Check if application is running
+            if systemctl is-active --quiet $APP_NAME; then
+              echo "Deployment successful!"
+            else
+              echo "Deployment failed! Application is not running."
+              exit 1
+            fi 

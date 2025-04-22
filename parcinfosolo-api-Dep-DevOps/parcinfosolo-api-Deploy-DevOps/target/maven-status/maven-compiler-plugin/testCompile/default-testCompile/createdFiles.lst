@@ -1,0 +1,14 @@
+com\parcinfo\controller\OrdinateurPortableControllerTest.class
+com\parcinfo\model\AffectationTest.class
+com\parcinfo\controller\PersonneControllerTest.class
+com\parcinfo\validation\OrdinateurPortableValidatorTest.class
+com\parcinfo\validation\TabletteValidatorTest.class
+com\parcinfo\validation\SmartphoneValidatorTest.class
+com\parcinfo\model\PersonneTest.class
+com\parcinfo\service\AuthenticationServiceTest.class
+com\parcinfo\validation\ObjetNomadeValidatorTest.class
+com\parcinfo\model\RoleTest.class
+com\parcinfo\model\PeripheriqueTest.class
+com\parcinfo\controller\AuthenticationControllerTest.class
+com\parcinfo\model\OrdinateurPortableTest.class
+com\parcinfo\controller\PeripheriqueControllerTest.class

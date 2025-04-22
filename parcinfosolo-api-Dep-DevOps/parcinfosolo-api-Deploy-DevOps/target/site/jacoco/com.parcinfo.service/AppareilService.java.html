@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppareilService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.service</a> &gt; <span class="el_source">AppareilService.java</span></div><h1>AppareilService.java</h1><pre class="source lang-java linenums">package com.parcinfo.service;
+
+import com.parcinfo.model.Appareil;
+import com.parcinfo.model.Ordinateur;
+import com.parcinfo.model.ObjetNomade;
+import com.parcinfo.repository.AppareilRepository;
+import com.parcinfo.repository.OrdinateurRepository;
+import com.parcinfo.repository.ObjetNomadeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L16">public class AppareilService {</span>
+    
+    @Autowired
+    private AppareilRepository appareilRepository;
+    
+    @Autowired
+    private OrdinateurRepository ordinateurRepository;
+    
+    @Autowired
+    private ObjetNomadeRepository objetNomadeRepository;
+    
+    public List&lt;Appareil&gt; findAll() {
+<span class="nc" id="L28">        return appareilRepository.findAll();</span>
+    }
+    
+    public Optional&lt;Appareil&gt; findById(Long id) {
+<span class="nc" id="L32">        return appareilRepository.findById(id);</span>
+    }
+    
+    public Appareil save(Appareil appareil) {
+<span class="nc" id="L36">        return appareilRepository.save(appareil);</span>
+    }
+    
+    public void deleteById(Long id) {
+<span class="nc" id="L40">        appareilRepository.deleteById(id);</span>
+<span class="nc" id="L41">    }</span>
+    
+    public List&lt;Ordinateur&gt; findAllOrdinateurs() {
+<span class="nc" id="L44">        return ordinateurRepository.findAll();</span>
+    }
+    
+    public Optional&lt;Ordinateur&gt; findOrdinateurById(Long id) {
+<span class="nc" id="L48">        return ordinateurRepository.findById(id);</span>
+    }
+    
+    public Ordinateur saveOrdinateur(Ordinateur ordinateur) {
+<span class="nc" id="L52">        return ordinateurRepository.save(ordinateur);</span>
+    }
+    
+    public List&lt;ObjetNomade&gt; findAllObjetsNomades() {
+<span class="nc" id="L56">        return objetNomadeRepository.findAll();</span>
+    }
+    
+    public Optional&lt;ObjetNomade&gt; findObjetNomadeById(Long id) {
+<span class="nc" id="L60">        return objetNomadeRepository.findById(id);</span>
+    }
+    
+    public ObjetNomade saveObjetNomade(ObjetNomade objetNomade) {
+<span class="nc" id="L64">        return objetNomadeRepository.save(objetNomade);</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

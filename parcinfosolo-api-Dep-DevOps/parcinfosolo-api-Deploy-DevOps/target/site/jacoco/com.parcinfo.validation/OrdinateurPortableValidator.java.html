@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrdinateurPortableValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.validation</a> &gt; <span class="el_source">OrdinateurPortableValidator.java</span></div><h1>OrdinateurPortableValidator.java</h1><pre class="source lang-java linenums">package com.parcinfo.validation;
+
+import com.parcinfo.model.OrdinateurPortable;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+<span class="fc" id="L10">public class OrdinateurPortableValidator {</span>
+    
+    public List&lt;String&gt; validate(OrdinateurPortable ordinateur) {
+<span class="fc" id="L13">        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</span>
+        
+<span class="pc bpc" id="L15" title="1 of 2 branches missed.">        if (ordinateur == null) {</span>
+<span class="nc" id="L16">            errors.add(&quot;L'ordinateur portable ne peut pas être null&quot;);</span>
+<span class="nc" id="L17">            return errors;</span>
+        }
+
+<span class="pc bpc" id="L20" title="1 of 4 branches missed.">        if (ordinateur.getSystemeExploitation() == null || ordinateur.getSystemeExploitation().trim().isEmpty()) {</span>
+<span class="fc" id="L21">            errors.add(&quot;Le système d'exploitation est obligatoire&quot;);</span>
+        }
+
+<span class="pc bpc" id="L24" title="1 of 4 branches missed.">        if (ordinateur.getTailleEcran() != null &amp;&amp; ordinateur.getTailleEcran() &lt; 11.0) {</span>
+<span class="fc" id="L25">            errors.add(&quot;La taille de l'écran doit être d'au moins 11 pouces (minimum)&quot;);</span>
+        }
+
+<span class="pc bpc" id="L28" title="1 of 4 branches missed.">        if (ordinateur.getProcesseur() == null || ordinateur.getProcesseur().trim().isEmpty()) {</span>
+<span class="fc" id="L29">            errors.add(&quot;Le processeur est obligatoire&quot;);</span>
+        }
+
+<span class="pc bpc" id="L32" title="1 of 4 branches missed.">        if (ordinateur.getTailleRam() != null &amp;&amp; ordinateur.getTailleRam() &lt; 8) {</span>
+<span class="fc" id="L33">            errors.add(&quot;La taille de la RAM doit être d'au moins 8 Go (minimum)&quot;);</span>
+        }
+
+<span class="pc bpc" id="L36" title="1 of 4 branches missed.">        if (ordinateur.getTailleStockage() != null &amp;&amp; ordinateur.getTailleStockage() &lt; 256) {</span>
+<span class="fc" id="L37">            errors.add(&quot;La taille du stockage doit être d'au moins 256 Go (minimum)&quot;);</span>
+        }
+
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        if (ordinateur.getAutonomieBatterie() != null &amp;&amp; ordinateur.getAutonomieBatterie() &lt; 6) {</span>
+<span class="fc" id="L41">            errors.add(&quot;L'autonomie de la batterie doit être d'au moins 6 heures (minimum)&quot;);</span>
+        }
+
+<span class="pc bpc" id="L44" title="1 of 4 branches missed.">        if (ordinateur.getTypeStockage() != null &amp;&amp; !ordinateur.getTypeStockage().equalsIgnoreCase(&quot;SSD&quot;)) {</span>
+<span class="fc" id="L45">            errors.add(&quot;Le type de stockage doit être SSD&quot;);</span>
+        }
+
+<span class="pc bpc" id="L48" title="1 of 4 branches missed.">        if (ordinateur.getCarteGraphique() == null || ordinateur.getCarteGraphique().trim().isEmpty()) {</span>
+<span class="fc" id="L49">            errors.add(&quot;La carte graphique est obligatoire&quot;);</span>
+        }
+        
+<span class="fc" id="L52">        return errors;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.controller</a> &gt; <span class="el_source">PersonneController.java</span></div><h1>PersonneController.java</h1><pre class="source lang-java linenums">package com.parcinfo.controller;
+
+import com.parcinfo.api.response.ApiResponse;
+import com.parcinfo.model.Personne;
+import com.parcinfo.service.PersonneService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/api/personnes&quot;)
+<span class="fc" id="L15">public class PersonneController {</span>
+    
+    @Autowired
+    private PersonneService personneService;
+    
+    @GetMapping
+    public ResponseEntity&lt;ApiResponse&lt;List&lt;Personne&gt;&gt;&gt; getAllPersonnes() {
+<span class="fc" id="L22">        List&lt;Personne&gt; personnes = personneService.findAll();</span>
+<span class="fc" id="L23">        return ResponseEntity.ok(new ApiResponse&lt;&gt;(true, &quot;Liste des personnes récupérée avec succès&quot;, personnes));</span>
+    }
+    
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Personne&gt;&gt; getPersonneById(@PathVariable Long id) {
+<span class="fc" id="L28">        Optional&lt;Personne&gt; personne = personneService.findById(id);</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        if (personne.isPresent()) {</span>
+<span class="fc" id="L30">            return ResponseEntity.ok(new ApiResponse&lt;&gt;(true, &quot;Personne trouvée&quot;, personne.get()));</span>
+        }
+<span class="fc" id="L32">        return ResponseEntity.ok(new ApiResponse&lt;&gt;(false, &quot;Personne non trouvée&quot;, null));</span>
+    }
+    
+    @PostMapping
+    public ResponseEntity&lt;ApiResponse&lt;Personne&gt;&gt; createPersonne(@RequestBody Personne personne) {
+<span class="fc" id="L37">        Personne savedPersonne = personneService.save(personne);</span>
+<span class="fc" id="L38">        return ResponseEntity.ok(new ApiResponse&lt;&gt;(true, &quot;Personne créée avec succès&quot;, savedPersonne));</span>
+    }
+    
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Personne&gt;&gt; updatePersonne(@PathVariable Long id, @RequestBody Personne personne) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (!personneService.existsById(id)) {</span>
+<span class="fc" id="L44">            return ResponseEntity.ok(new ApiResponse&lt;&gt;(false, &quot;Personne non trouvée&quot;, null));</span>
+        }
+<span class="fc" id="L46">        personne.setIdPersonne(id);</span>
+<span class="fc" id="L47">        Personne updatedPersonne = personneService.save(personne);</span>
+<span class="fc" id="L48">        return ResponseEntity.ok(new ApiResponse&lt;&gt;(true, &quot;Personne mise à jour avec succès&quot;, updatedPersonne));</span>
+    }
+    
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; deletePersonne(@PathVariable Long id) {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (!personneService.existsById(id)) {</span>
+<span class="nc" id="L54">            return ResponseEntity.ok(ApiResponse.error(&quot;Personne non trouvée&quot;));</span>
+        }
+<span class="nc" id="L56">        personneService.deleteById(id);</span>
+<span class="nc" id="L57">        return ResponseEntity.ok(ApiResponse.success(&quot;Personne supprimée avec succès&quot;, null));</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

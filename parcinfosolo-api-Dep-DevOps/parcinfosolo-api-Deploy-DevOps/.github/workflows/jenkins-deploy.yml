@@ -1,0 +1,74 @@
+name: Trigger Jenkins Deployment
+
+on:
+  push:
+    branches:
+      - production
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      version:
+        description: 'Version to deploy'
+        required: false
+        type: string
+
+env:
+  JENKINS_JOB: 'parcinfo-deploy'
+  APP_NAME: 'parcinfo3-api'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validate branch protection
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+            echo "Checking branch protection rules..."
+            # Add your branch protection validation logic here
+          fi
+
+  trigger-jenkins:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Trigger Jenkins Build
+        uses: appleboy/jenkins-action@master
+        with:
+          url: ${{ secrets.JENKINS_URL }}
+          user: ${{ secrets.JENKINS_USER }}
+          token: ${{ secrets.JENKINS_TOKEN }}
+          job: ${{ env.JENKINS_JOB }}
+          parameters: |
+            BRANCH=${{ github.ref_name }}
+            COMMIT=${{ github.sha }}
+            ENVIRONMENT=${{ github.event.inputs.environment || 'production' }}
+            VERSION=${{ github.event.inputs.version || '' }}
+            TRIGGERED_BY=${{ github.actor }}
+            EVENT_TYPE=${{ github.event_name }}
+            
+      - name: Wait for Jenkins Build
+        uses: appleboy/jenkins-wait@master
+        with:
+          url: ${{ secrets.JENKINS_URL }}
+          user: ${{ secrets.JENKINS_USER }}
+          token: ${{ secrets.JENKINS_TOKEN }}
+          job: ${{ env.JENKINS_JOB }}
+          build: ${{ steps.trigger-jenkins.outputs.build_number }}
+          interval: 10
+          timeout: 3600
+          
+      - name: Check Jenkins Build Status
+        if: failure()
+        run: |
+          echo "Jenkins build failed! Check the Jenkins console for details."
+          exit 1 

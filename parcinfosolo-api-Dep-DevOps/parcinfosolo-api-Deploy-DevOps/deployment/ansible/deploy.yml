@@ -1,0 +1,129 @@
+---
+- name: Déploiement de ParcInfo
+  hosts: production
+  become: yes
+  vars:
+    app_name: parcinfo
+    app_version: "{{ lookup('env', 'APP_VERSION') | default('latest') }}"
+    docker_registry: "{{ lookup('env', 'DOCKER_REGISTRY') }}"
+    docker_username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+    docker_password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+    discord_webhook_url: "{{ lookup('env', 'DISCORD_WEBHOOK_URL') }}"
+    
+  pre_tasks:
+    - name: Mise à jour des paquets
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+      
+    - name: Installation des dépendances
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+          - python3-pip
+          - nginx
+          - certbot
+          - python3-certbot-nginx
+        state: present
+      when: ansible_os_family == "Debian"
+      
+  tasks:
+    - name: Création des répertoires
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      with_items:
+        - /opt/{{ app_name }}
+        - /opt/{{ app_name }}/logs
+        - /opt/{{ app_name }}/config
+        - /opt/{{ app_name }}/ssl
+        
+    - name: Copie des fichiers de configuration
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: '0644'
+      with_items:
+        - { src: '../docker-compose.yml', dest: '/opt/{{ app_name }}/docker-compose.yml' }
+        - { src: '../.env', dest: '/opt/{{ app_name }}/.env' }
+        - { src: '../mysql/conf.d/my.cnf', dest: '/opt/{{ app_name }}/mysql/conf.d/my.cnf' }
+        - { src: '../nginx/conf.d/default.conf', dest: '/opt/{{ app_name }}/nginx/conf.d/default.conf' }
+        
+    - name: Génération des certificats SSL
+      command: >
+        certbot certonly --nginx
+        --non-interactive
+        --agree-tos
+        --email {{ ssl_email }}
+        --domains {{ domain_name }}
+        --redirect
+      args:
+        creates: /etc/letsencrypt/live/{{ domain_name }}
+        
+    - name: Copie des certificats SSL
+      copy:
+        src: "/etc/letsencrypt/live/{{ domain_name }}/{{ item }}"
+        dest: "/opt/{{ app_name }}/ssl/{{ item }}"
+        mode: '0644'
+      with_items:
+        - fullchain.pem
+        - privkey.pem
+        
+    - name: Connexion au registry Docker
+      docker_login:
+        registry: "{{ docker_registry }}"
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
+        
+    - name: Arrêt des conteneurs existants
+      docker_compose:
+        project_src: "/opt/{{ app_name }}"
+        state: absent
+      ignore_errors: yes
+      
+    - name: Déploiement des conteneurs
+      docker_compose:
+        project_src: "/opt/{{ app_name }}"
+        state: present
+        pull: yes
+      register: deploy_result
+        
+    - name: Vérification de la santé de l'application
+      uri:
+        url: "https://{{ domain_name }}/health"
+        method: GET
+        validate_certs: no
+      register: health_check
+      until: health_check.status == 200
+      retries: 6
+      delay: 10
+      
+  post_tasks:
+    - name: Nettoyage des images Docker non utilisées
+      docker_prune:
+        images: yes
+        images_older_than: 1d
+      ignore_errors: yes
+      
+    - name: Notification Discord - Déploiement réussi
+      shell: >
+        /opt/{{ app_name }}/scripts/discord-notify.sh success 
+        "Déploiement terminé avec succès. L'application est accessible sur https://{{ domain_name }}"
+      environment:
+        DISCORD_WEBHOOK_URL: "{{ discord_webhook_url }}"
+        VERSION: "{{ app_version }}"
+        DEPLOYER: "{{ ansible_user }}"
+      when: health_check.status == 200
+      
+    - name: Notification Discord - Échec du déploiement
+      shell: >
+        /opt/{{ app_name }}/scripts/discord-notify.sh error 
+        "Échec du déploiement. Vérifiez les logs pour plus de détails."
+      environment:
+        DISCORD_WEBHOOK_URL: "{{ discord_webhook_url }}"
+        VERSION: "{{ app_version }}"
+        DEPLOYER: "{{ ansible_user }}"
+      when: health_check.status != 200 

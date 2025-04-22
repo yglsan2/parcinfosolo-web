@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ObjetNomadeService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.service</a> &gt; <span class="el_source">ObjetNomadeService.java</span></div><h1>ObjetNomadeService.java</h1><pre class="source lang-java linenums">package com.parcinfo.service;
+
+import com.parcinfo.model.ObjetNomade;
+import com.parcinfo.model.Peripherique;
+import com.parcinfo.model.TypeObjetNomade;
+import com.parcinfo.repository.ObjetNomadeRepository;
+import com.parcinfo.repository.PeripheriqueRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L16">@RequiredArgsConstructor</span>
+public class ObjetNomadeService {
+    private final ObjetNomadeRepository objetNomadeRepository;
+    private final PeripheriqueRepository peripheriqueRepository;
+
+    public List&lt;ObjetNomade&gt; getAllObjetsNomades() {
+<span class="nc" id="L22">        return objetNomadeRepository.findAll();</span>
+    }
+
+    public Optional&lt;ObjetNomade&gt; getObjetNomadeById(Long id) {
+<span class="nc" id="L26">        return objetNomadeRepository.findById(id);</span>
+    }
+
+    public Optional&lt;ObjetNomade&gt; getObjetNomadeByNumeroSerie(String numeroSerie) {
+<span class="nc" id="L30">        return objetNomadeRepository.findByNumeroSerie(numeroSerie);</span>
+    }
+
+    public List&lt;ObjetNomade&gt; getObjetsNomadesByType(TypeObjetNomade type) {
+<span class="nc" id="L34">        return objetNomadeRepository.findByType(type);</span>
+    }
+
+    public List&lt;ObjetNomade&gt; getObjetsNomadesByMarque(String marque) {
+<span class="nc" id="L38">        return objetNomadeRepository.findByMarque(marque);</span>
+    }
+
+    public List&lt;ObjetNomade&gt; getObjetsNomadesActifs() {
+<span class="nc" id="L42">        return objetNomadeRepository.findByEstActif(true);</span>
+    }
+
+    public List&lt;ObjetNomade&gt; getObjetsNomadesByUtilisateur(Long utilisateurId) {
+<span class="nc" id="L46">        return objetNomadeRepository.findByUtilisateurIdPersonne(utilisateurId);</span>
+    }
+
+    @Transactional
+    public ObjetNomade createObjetNomade(ObjetNomade objetNomade) {
+<span class="nc" id="L51">        return objetNomadeRepository.save(objetNomade);</span>
+    }
+
+    @Transactional
+    public ObjetNomade updateObjetNomade(Long id, ObjetNomade objetNomadeDetails) {
+<span class="nc" id="L56">        return objetNomadeRepository.findById(id)</span>
+<span class="nc" id="L57">                .map(objetNomade -&gt; {</span>
+<span class="nc" id="L58">                    objetNomade.setNom(objetNomadeDetails.getNom());</span>
+<span class="nc" id="L59">                    objetNomade.setType(objetNomadeDetails.getType());</span>
+<span class="nc" id="L60">                    objetNomade.setNumeroSerie(objetNomadeDetails.getNumeroSerie());</span>
+<span class="nc" id="L61">                    objetNomade.setMarque(objetNomadeDetails.getMarque());</span>
+<span class="nc" id="L62">                    objetNomade.setModele(objetNomadeDetails.getModele());</span>
+<span class="nc" id="L63">                    objetNomade.setEtat(objetNomadeDetails.getEtat());</span>
+<span class="nc" id="L64">                    objetNomade.setDateAcquisition(objetNomadeDetails.getDateAcquisition());</span>
+<span class="nc" id="L65">                    objetNomade.setDateMiseEnService(objetNomadeDetails.getDateMiseEnService());</span>
+<span class="nc" id="L66">                    objetNomade.setDateDerniereMaintenance(objetNomadeDetails.getDateDerniereMaintenance());</span>
+<span class="nc" id="L67">                    objetNomade.setSystemeExploitation(objetNomadeDetails.getSystemeExploitation());</span>
+<span class="nc" id="L68">                    objetNomade.setVersionSysteme(objetNomadeDetails.getVersionSysteme());</span>
+<span class="nc" id="L69">                    objetNomade.setEstActif(objetNomadeDetails.isEstActif());</span>
+<span class="nc" id="L70">                    objetNomade.setCommentaire(objetNomadeDetails.getCommentaire());</span>
+<span class="nc" id="L71">                    return objetNomadeRepository.save(objetNomade);</span>
+                })
+<span class="nc" id="L73">                .orElseThrow(() -&gt; new RuntimeException(&quot;Objet nomade non trouvé avec l'id : &quot; + id));</span>
+    }
+
+    @Transactional
+    public void deleteObjetNomade(Long id) {
+<span class="nc" id="L78">        ObjetNomade objetNomade = objetNomadeRepository.findById(id)</span>
+<span class="nc" id="L79">                .orElseThrow(() -&gt; new RuntimeException(&quot;Objet nomade non trouvé avec l'id : &quot; + id));</span>
+<span class="nc" id="L80">        objetNomade.setEstActif(false);</span>
+<span class="nc" id="L81">        objetNomadeRepository.save(objetNomade);</span>
+<span class="nc" id="L82">    }</span>
+
+    public List&lt;Peripherique&gt; getPeripheriques(Long idObjetNomade) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (!existsById(idObjetNomade)) {</span>
+<span class="nc" id="L86">            throw new RuntimeException(&quot;Objet nomade non trouvé&quot;);</span>
+        }
+<span class="nc" id="L88">        return peripheriqueRepository.findByObjetNomadeIdObjetNomade(idObjetNomade);</span>
+    }
+
+    public Peripherique ajouterPeripherique(Long idObjetNomade, Peripherique peripherique) {
+<span class="nc" id="L92">        ObjetNomade objetNomade = getObjetNomadeById(idObjetNomade)</span>
+<span class="nc" id="L93">                .orElseThrow(() -&gt; new RuntimeException(&quot;Objet nomade non trouvé&quot;));</span>
+        
+<span class="nc" id="L95">        peripherique.setObjetNomade(objetNomade);</span>
+<span class="nc" id="L96">        return peripheriqueRepository.save(peripherique);</span>
+    }
+
+    public boolean existsById(Long id) {
+<span class="nc" id="L100">        return objetNomadeRepository.existsById(id);</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

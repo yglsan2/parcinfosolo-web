@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TabletteValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.validation</a> &gt; <span class="el_source">TabletteValidator.java</span></div><h1>TabletteValidator.java</h1><pre class="source lang-java linenums">package com.parcinfo.validation;
+
+import com.parcinfo.model.Tablette;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Validateur spécifique pour les tablettes.
+ * Les validations de base sont gérées par les annotations de validation et le validateur de base.
+ * Ce validateur ajoute des validations spécifiques aux tablettes.
+ */
+@Component
+<span class="fc" id="L15">public class TabletteValidator extends ObjetNomadeValidator {</span>
+
+    /**
+     * Valide une tablette en combinant les validations de base et les validations spécifiques.
+     * 
+     * @param tablette La tablette à valider
+     * @return Liste des messages d'erreur, vide si la tablette est valide
+     */
+    public List&lt;String&gt; validate(Tablette tablette) {
+<span class="fc" id="L24">        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</span>
+        
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">        if (tablette == null) {</span>
+<span class="nc" id="L27">            errors.add(&quot;La tablette ne peut pas être null&quot;);</span>
+<span class="nc" id="L28">            return errors;</span>
+        }
+
+        // Validations spécifiques aux tablettes
+<span class="fc bfc" id="L32" title="All 4 branches covered.">        if (tablette.getTailleEcran() != null &amp;&amp; tablette.getTailleEcran() &lt; 8.0) {</span>
+<span class="fc" id="L33">            errors.add(&quot;La taille de l'écran d'une tablette doit être d'au moins 8 pouces&quot;);</span>
+        }
+
+<span class="fc bfc" id="L36" title="All 4 branches covered.">        if (tablette.getCapaciteBatterie() != null &amp;&amp; tablette.getCapaciteBatterie() &lt; 5000) {</span>
+<span class="fc" id="L37">            errors.add(&quot;La capacité de la batterie doit être d'au moins 5000 mAh&quot;);</span>
+        }
+
+        // Vérification de la cohérence des fonctionnalités
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">        if (Boolean.TRUE.equals(tablette.getSupportClavier()) &amp;&amp; tablette.getTailleEcran() != null </span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            &amp;&amp; tablette.getTailleEcran() &lt; 10.0) {</span>
+<span class="fc" id="L43">            errors.add(&quot;Une tablette avec support clavier doit avoir un écran d'au moins 10 pouces&quot;);</span>
+        }
+
+        // Vérification de la RAM minimale pour les tablettes
+<span class="fc bfc" id="L47" title="All 4 branches covered.">        if (tablette.getTailleRam() != null &amp;&amp; tablette.getTailleRam() &lt; 2) {</span>
+<span class="fc" id="L48">            errors.add(&quot;Une tablette doit avoir au moins 2 Go de RAM&quot;);</span>
+        }
+
+        // Vérification du stockage minimal pour les tablettes
+<span class="fc bfc" id="L52" title="All 4 branches covered.">        if (tablette.getTailleStockage() != null &amp;&amp; tablette.getTailleStockage() &lt; 16) {</span>
+<span class="fc" id="L53">            errors.add(&quot;Une tablette doit avoir au moins 16 Go de stockage&quot;);</span>
+        }
+
+        // Vérification pour les tablettes avec support stylet
+<span class="pc bpc" id="L57" title="1 of 4 branches missed.">        if (Boolean.TRUE.equals(tablette.getSupportStylet()) &amp;&amp; tablette.getTailleEcran() != null </span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            &amp;&amp; tablette.getTailleEcran() &lt; 9.0) {</span>
+<span class="fc" id="L59">            errors.add(&quot;Une tablette avec support stylet doit avoir un écran d'au moins 9 pouces&quot;);</span>
+        }
+
+<span class="fc" id="L62">        return errors;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

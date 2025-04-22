@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TypePeripherique.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.model</a> &gt; <span class="el_source">TypePeripherique.java</span></div><h1>TypePeripherique.java</h1><pre class="source lang-java linenums">package com.parcinfo.model;
+
+<span class="fc" id="L3">public enum TypePeripherique {</span>
+    // Périphériques pour ordinateurs
+<span class="fc" id="L5">    CLAVIER(&quot;Clavier&quot;),</span>
+<span class="fc" id="L6">    SOURIS(&quot;Souris&quot;),</span>
+<span class="fc" id="L7">    ECRAN(&quot;Écran&quot;),</span>
+<span class="fc" id="L8">    IMPRIMANTE(&quot;Imprimante&quot;),</span>
+<span class="fc" id="L9">    SCANNEUR(&quot;Scanner&quot;),</span>
+<span class="fc" id="L10">    HAUT_PARLEUR(&quot;Haut-parleur&quot;),</span>
+<span class="fc" id="L11">    MICROPHONE(&quot;Microphone&quot;),</span>
+<span class="fc" id="L12">    WEBCAM(&quot;Webcam&quot;),</span>
+<span class="fc" id="L13">    CASQUE(&quot;Casque&quot;),</span>
+<span class="fc" id="L14">    TOUCHPAD(&quot;Touchpad&quot;),</span>
+<span class="fc" id="L15">    STOCKAGE_EXTERNE(&quot;Stockage externe&quot;),</span>
+<span class="fc" id="L16">    CARTE_GRAPHIQUE(&quot;Carte graphique&quot;),</span>
+<span class="fc" id="L17">    CARTE_RESEAU(&quot;Carte réseau&quot;),</span>
+<span class="fc" id="L18">    CARTE_SON(&quot;Carte son&quot;),</span>
+    
+    // Périphériques pour objets nomades
+<span class="fc" id="L21">    COQUE(&quot;Coque&quot;),</span>
+<span class="fc" id="L22">    PROTECTION_ECRAN(&quot;Protection d'écran&quot;),</span>
+<span class="fc" id="L23">    CHARGEUR(&quot;Chargeur&quot;),</span>
+<span class="fc" id="L24">    BATTERIE_EXTERNE(&quot;Batterie externe&quot;),</span>
+<span class="fc" id="L25">    SUPPORT(&quot;Support&quot;),</span>
+<span class="fc" id="L26">    ETUI(&quot;Étui&quot;),</span>
+<span class="fc" id="L27">    STYLET(&quot;Stylet&quot;),</span>
+<span class="fc" id="L28">    ADAPTATEUR(&quot;Adaptateur&quot;),</span>
+<span class="fc" id="L29">    HUB_USB(&quot;Hub USB&quot;),</span>
+<span class="fc" id="L30">    ENCEINTE_BLUETOOTH(&quot;Enceinte Bluetooth&quot;),</span>
+<span class="fc" id="L31">    ECOUTEURS(&quot;Écouteurs&quot;),</span>
+<span class="fc" id="L32">    STATION_CHARGEMENT(&quot;Station de chargement&quot;);</span>
+
+    private final String libelle;
+
+<span class="fc" id="L36">    TypePeripherique(String libelle) {</span>
+<span class="fc" id="L37">        this.libelle = libelle;</span>
+<span class="fc" id="L38">    }</span>
+
+    public String getLibelle() {
+<span class="nc" id="L41">        return libelle;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

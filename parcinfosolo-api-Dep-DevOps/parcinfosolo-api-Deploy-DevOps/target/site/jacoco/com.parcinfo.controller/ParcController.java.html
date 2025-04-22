@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ParcController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.controller</a> &gt; <span class="el_source">ParcController.java</span></div><h1>ParcController.java</h1><pre class="source lang-java linenums">package com.parcinfo.controller;
+
+import com.parcinfo.model.Parc;
+import com.parcinfo.service.ParcService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/parcs&quot;)
+<span class="fc" id="L13">public class ParcController {</span>
+    
+    @Autowired
+    private ParcService parcService;
+    
+    @GetMapping
+    public List&lt;Parc&gt; getAllParcs() {
+<span class="nc" id="L20">        return parcService.findAll();</span>
+    }
+    
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Parc&gt; getParcById(@PathVariable Long id) {
+<span class="nc" id="L25">        return parcService.findById(id)</span>
+<span class="nc" id="L26">            .map(ResponseEntity::ok)</span>
+<span class="nc" id="L27">            .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @PostMapping
+    public Parc createParc(@RequestBody Parc parc) {
+<span class="nc" id="L32">        return parcService.save(parc);</span>
+    }
+    
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Parc&gt; updateParc(@PathVariable Long id, @RequestBody Parc parc) {
+<span class="nc" id="L37">        return parcService.findById(id)</span>
+<span class="nc" id="L38">            .map(existingParc -&gt; {</span>
+<span class="nc" id="L39">                parc.setIdParc(id);</span>
+<span class="nc" id="L40">                return ResponseEntity.ok(parcService.save(parc));</span>
+            })
+<span class="nc" id="L42">            .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteParc(@PathVariable Long id) {
+<span class="nc" id="L47">        return parcService.findById(id)</span>
+<span class="nc" id="L48">            .map(parc -&gt; {</span>
+<span class="nc" id="L49">                parcService.deleteById(id);</span>
+<span class="nc" id="L50">                return ResponseEntity.ok().&lt;Void&gt;build();</span>
+            })
+<span class="nc" id="L52">            .orElse(ResponseEntity.notFound().build());</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

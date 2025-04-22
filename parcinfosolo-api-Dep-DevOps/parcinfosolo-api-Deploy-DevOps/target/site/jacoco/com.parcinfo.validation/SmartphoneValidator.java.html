@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SmartphoneValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.validation</a> &gt; <span class="el_source">SmartphoneValidator.java</span></div><h1>SmartphoneValidator.java</h1><pre class="source lang-java linenums">package com.parcinfo.validation;
+
+import com.parcinfo.model.Smartphone;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+/**
+ * Validateur spécifique pour les smartphones.
+ * Les validations de base sont gérées par les annotations de validation et le validateur de base.
+ * Ce validateur ajoute des validations spécifiques aux smartphones.
+ */
+@Component
+<span class="fc" id="L14">public class SmartphoneValidator implements Validator {</span>
+
+    @Override
+    public boolean supports(Class&lt;?&gt; clazz) {
+<span class="fc" id="L18">        return Smartphone.class.equals(clazz);</span>
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+<span class="fc" id="L23">        Smartphone smartphone = (Smartphone) target;</span>
+
+        // Validation de la taille de l'écran
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (smartphone.getTailleEcran() != null) {</span>
+<span class="pc bpc" id="L27" title="1 of 4 branches missed.">            if (smartphone.getTailleEcran() &lt; 4.0 || smartphone.getTailleEcran() &gt; 7.0) {</span>
+<span class="fc" id="L28">                errors.rejectValue(&quot;tailleEcran&quot;, &quot;tailleEcran.invalid&quot;, </span>
+                    &quot;La taille de l'écran doit être comprise entre 4.0 et 7.0 pouces&quot;);
+            }
+        }
+
+        // Validation de la RAM
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (smartphone.getTailleRam() != null) {</span>
+<span class="pc bpc" id="L35" title="1 of 4 branches missed.">            if (smartphone.getTailleRam() &lt; 2 || smartphone.getTailleRam() &gt; 16) {</span>
+<span class="fc" id="L36">                errors.rejectValue(&quot;tailleRam&quot;, &quot;tailleRam.invalid&quot;, </span>
+                    &quot;La taille de la RAM doit être comprise entre 2 et 16 Go&quot;);
+            }
+        }
+
+        // Validation du stockage
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (smartphone.getTailleStockage() != null) {</span>
+<span class="pc bpc" id="L43" title="1 of 4 branches missed.">            if (smartphone.getTailleStockage() &lt; 16 || smartphone.getTailleStockage() &gt; 512) {</span>
+<span class="fc" id="L44">                errors.rejectValue(&quot;tailleStockage&quot;, &quot;tailleStockage.invalid&quot;, </span>
+                    &quot;La taille du stockage doit être comprise entre 16 et 512 Go&quot;);
+            }
+        }
+
+        // Validation de la batterie
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (smartphone.getCapaciteBatterie() != null) {</span>
+<span class="pc bpc" id="L51" title="1 of 4 branches missed.">            if (smartphone.getCapaciteBatterie() &lt; 2000 || smartphone.getCapaciteBatterie() &gt; 6000) {</span>
+<span class="fc" id="L52">                errors.rejectValue(&quot;capaciteBatterie&quot;, &quot;capaciteBatterie.invalid&quot;, </span>
+                    &quot;La capacité de la batterie doit être comprise entre 2000 et 6000 mAh&quot;);
+            }
+        }
+<span class="fc" id="L56">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

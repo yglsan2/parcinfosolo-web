@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonneValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.validation</a> &gt; <span class="el_source">PersonneValidator.java</span></div><h1>PersonneValidator.java</h1><pre class="source lang-java linenums">package com.parcinfo.validation;
+
+import com.parcinfo.model.Personne;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Validateur pour les objets Personne.
+ * Vérifie que les données d'une personne sont valides avant leur enregistrement.
+ */
+@Component
+<span class="fc" id="L15">public class PersonneValidator {</span>
+
+    /**
+     * Valide une personne et retourne une liste d'erreurs éventuelles.
+     * Les validations de base sont gérées par les annotations de validation.
+     * Ce validateur ajoute des validations spécifiques qui ne peuvent pas être
+     * exprimées par les annotations.
+     * 
+     * @param personne La personne à valider
+     * @return Liste des messages d'erreur, vide si la personne est valide
+     */
+    public List&lt;String&gt; validate(Personne personne) {
+<span class="nc" id="L27">        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</span>
+
+        // Vérification du nom
+<span class="nc bnc" id="L30" title="All 4 branches missed.">        if (personne.getNom() == null || personne.getNom().trim().isEmpty()) {</span>
+<span class="nc" id="L31">            errors.add(&quot;Le nom est obligatoire&quot;);</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        } else if (personne.getNom().length() &gt; 30) {</span>
+<span class="nc" id="L33">            errors.add(&quot;Le nom ne doit pas dépasser 30 caractères&quot;);</span>
+        }
+
+        // Vérification du prénom
+<span class="nc bnc" id="L37" title="All 4 branches missed.">        if (personne.getPrenom() == null || personne.getPrenom().trim().isEmpty()) {</span>
+<span class="nc" id="L38">            errors.add(&quot;Le prénom est obligatoire&quot;);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        } else if (personne.getPrenom().length() &gt; 25) {</span>
+<span class="nc" id="L40">            errors.add(&quot;Le prénom ne doit pas dépasser 25 caractères&quot;);</span>
+        }
+
+        // Vérification de l'adresse
+<span class="nc bnc" id="L44" title="All 4 branches missed.">        if (personne.getAdresse() == null || personne.getAdresse().trim().isEmpty()) {</span>
+<span class="nc" id="L45">            errors.add(&quot;L'adresse est obligatoire&quot;);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        } else if (personne.getAdresse().length() &gt; 50) {</span>
+<span class="nc" id="L47">            errors.add(&quot;L'adresse ne doit pas dépasser 50 caractères&quot;);</span>
+        }
+
+        // Vérification de l'email
+<span class="nc bnc" id="L51" title="All 4 branches missed.">        if (personne.getEmail() == null || personne.getEmail().trim().isEmpty()) {</span>
+<span class="nc" id="L52">            errors.add(&quot;L'email est obligatoire&quot;);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        } else if (!personne.getEmail().matches(&quot;^[A-Za-z0-9+_.-]+@(.+)$&quot;)) {</span>
+<span class="nc" id="L54">            errors.add(&quot;L'email n'est pas valide&quot;);</span>
+        }
+
+        // Vérification du téléphone
+<span class="nc bnc" id="L58" title="All 4 branches missed.">        if (personne.getTelephone() == null || personne.getTelephone().trim().isEmpty()) {</span>
+<span class="nc" id="L59">            errors.add(&quot;Le numéro de téléphone est obligatoire&quot;);</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        } else if (!personne.getTelephone().matches(&quot;^\\+?[0-9. -]{10,}$&quot;)) {</span>
+<span class="nc" id="L61">            errors.add(&quot;Le numéro de téléphone n'est pas valide&quot;);</span>
+        }
+
+        // Vérification de la date de naissance
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (personne.getDateNaissance() == null) {</span>
+<span class="nc" id="L66">            errors.add(&quot;La date de naissance est obligatoire&quot;);</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        } else if (personne.getDateNaissance().isAfter(LocalDate.now())) {</span>
+<span class="nc" id="L68">            errors.add(&quot;La date de naissance ne peut pas être dans le futur&quot;);</span>
+        }
+
+        // Vérification du format du téléphone (validation spécifique)
+<span class="nc bnc" id="L72" title="All 4 branches missed.">        if (personne.getTelephone() != null &amp;&amp; !personne.getTelephone().trim().isEmpty() </span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            &amp;&amp; !personne.getTelephone().matches(&quot;^\\+?[0-9. -]{10,}$&quot;)) {</span>
+<span class="nc" id="L74">            errors.add(&quot;Le numéro de téléphone n'est pas valide&quot;);</span>
+        }
+
+<span class="nc" id="L77">        return errors;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

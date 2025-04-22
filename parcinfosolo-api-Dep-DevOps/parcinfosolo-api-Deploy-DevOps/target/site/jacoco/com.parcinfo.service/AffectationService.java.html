@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AffectationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.service</a> &gt; <span class="el_source">AffectationService.java</span></div><h1>AffectationService.java</h1><pre class="source lang-java linenums">package com.parcinfo.service;
+
+import com.parcinfo.model.Affectation;
+import com.parcinfo.model.Appareil;
+import com.parcinfo.model.Personne;
+import com.parcinfo.repository.AffectationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L15">public class AffectationService {</span>
+    
+    @Autowired
+    private AffectationRepository affectationRepository;
+    
+    @Autowired
+    private PersonneService personneService;
+    
+    @Autowired
+    private AppareilService appareilService;
+    
+    public List&lt;Affectation&gt; findAll() {
+<span class="nc" id="L27">        return affectationRepository.findAll();</span>
+    }
+    
+    public Optional&lt;Affectation&gt; findById(Long id) {
+<span class="nc" id="L31">        return affectationRepository.findById(id);</span>
+    }
+    
+    public List&lt;Affectation&gt; findByPersonneId(Long personneId) {
+<span class="nc" id="L35">        return affectationRepository.findByPersonneIdPersonne(personneId);</span>
+    }
+    
+    public List&lt;Affectation&gt; findByAppareilId(Long appareilId) {
+<span class="nc" id="L39">        return affectationRepository.findByAppareilIdAppareil(appareilId);</span>
+    }
+    
+    public Affectation createAffectation(Long personneId, Long appareilId) {
+<span class="nc" id="L43">        Personne personne = personneService.findById(personneId)</span>
+<span class="nc" id="L44">            .orElseThrow(() -&gt; new RuntimeException(&quot;Personne non trouvée&quot;));</span>
+            
+<span class="nc" id="L46">        Appareil appareil = appareilService.findById(appareilId)</span>
+<span class="nc" id="L47">            .orElseThrow(() -&gt; new RuntimeException(&quot;Appareil non trouvé&quot;));</span>
+            
+<span class="nc" id="L49">        Affectation affectation = new Affectation();</span>
+<span class="nc" id="L50">        affectation.setPersonne(personne);</span>
+<span class="nc" id="L51">        affectation.setAppareil(appareil);</span>
+<span class="nc" id="L52">        affectation.setDateAffectation(LocalDate.now());</span>
+        
+<span class="nc" id="L54">        return affectationRepository.save(affectation);</span>
+    }
+    
+    public void deleteById(Long id) {
+<span class="nc" id="L58">        affectationRepository.deleteById(id);</span>
+<span class="nc" id="L59">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PeripheriqueController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.controller</a> &gt; <span class="el_source">PeripheriqueController.java</span></div><h1>PeripheriqueController.java</h1><pre class="source lang-java linenums">package com.parcinfo.controller;
+
+import com.parcinfo.model.Peripherique;
+import com.parcinfo.model.TypePeripherique;
+import com.parcinfo.service.PeripheriqueService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/peripheriques&quot;)
+<span class="fc" id="L14">@RequiredArgsConstructor</span>
+public class PeripheriqueController {
+    private final PeripheriqueService peripheriqueService;
+
+    @GetMapping
+    public List&lt;Peripherique&gt; getAllPeripheriques() {
+<span class="fc" id="L20">        return peripheriqueService.getAllPeripheriques();</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Peripherique&gt; getPeripheriqueById(@PathVariable Long id) {
+<span class="fc" id="L25">        return peripheriqueService.getPeripheriqueById(id)</span>
+<span class="fc" id="L26">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L27">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @GetMapping(&quot;/numero-serie/{numeroSerie}&quot;)
+    public ResponseEntity&lt;Peripherique&gt; getPeripheriqueByNumeroSerie(@PathVariable String numeroSerie) {
+<span class="fc" id="L32">        return peripheriqueService.getPeripheriqueByNumeroSerie(numeroSerie)</span>
+<span class="fc" id="L33">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L34">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @GetMapping(&quot;/type/{type}&quot;)
+    public List&lt;Peripherique&gt; getPeripheriquesByType(@PathVariable TypePeripherique type) {
+<span class="fc" id="L39">        return peripheriqueService.getPeripheriquesByType(type);</span>
+    }
+
+    @GetMapping(&quot;/marque/{marque}&quot;)
+    public List&lt;Peripherique&gt; getPeripheriquesByMarque(@PathVariable String marque) {
+<span class="fc" id="L44">        return peripheriqueService.getPeripheriquesByMarque(marque);</span>
+    }
+
+    @GetMapping(&quot;/actifs&quot;)
+    public List&lt;Peripherique&gt; getPeripheriquesActifs() {
+<span class="fc" id="L49">        return peripheriqueService.getPeripheriquesActifs();</span>
+    }
+
+    @GetMapping(&quot;/objet-nomade/{idObjetNomade}&quot;)
+    public List&lt;Peripherique&gt; getPeripheriquesByObjetNomade(@PathVariable Long idObjetNomade) {
+<span class="nc" id="L54">        return peripheriqueService.getPeripheriquesByObjetNomade(idObjetNomade);</span>
+    }
+
+    @GetMapping(&quot;/ordinateur/{idOrdinateur}&quot;)
+    public List&lt;Peripherique&gt; getPeripheriquesByOrdinateur(@PathVariable Long idOrdinateur) {
+<span class="nc" id="L59">        return peripheriqueService.getPeripheriquesByOrdinateur(idOrdinateur);</span>
+    }
+
+    @PostMapping
+    public Peripherique createPeripherique(@RequestBody Peripherique peripherique) {
+<span class="fc" id="L64">        return peripheriqueService.createPeripherique(peripherique);</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Peripherique&gt; updatePeripherique(@PathVariable Long id, @RequestBody Peripherique peripherique) {
+        try {
+<span class="fc" id="L70">            Peripherique updatedPeripherique = peripheriqueService.updatePeripherique(id, peripherique);</span>
+<span class="fc" id="L71">            return ResponseEntity.ok(updatedPeripherique);</span>
+<span class="fc" id="L72">        } catch (RuntimeException e) {</span>
+<span class="fc" id="L73">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deletePeripherique(@PathVariable Long id) {
+        try {
+<span class="fc" id="L80">            peripheriqueService.deletePeripherique(id);</span>
+<span class="fc" id="L81">            return ResponseEntity.ok().build();</span>
+<span class="fc" id="L82">        } catch (RuntimeException e) {</span>
+<span class="fc" id="L83">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

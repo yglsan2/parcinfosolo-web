@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TypeObjetNomade.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.model</a> &gt; <span class="el_source">TypeObjetNomade.java</span></div><h1>TypeObjetNomade.java</h1><pre class="source lang-java linenums">package com.parcinfo.model;
+
+<span class="fc" id="L3">public enum TypeObjetNomade {</span>
+<span class="fc" id="L4">    SMARTPHONE(&quot;Smartphone&quot;),</span>
+<span class="fc" id="L5">    TABLETTE(&quot;Tablette&quot;),</span>
+<span class="fc" id="L6">    LAPTOP(&quot;Laptop&quot;),</span>
+<span class="fc" id="L7">    MONTRE_CONNECTEE(&quot;Montre connectée&quot;),</span>
+<span class="fc" id="L8">    LUNETTES_CONNECTEES(&quot;Lunettes connectées&quot;),</span>
+<span class="fc" id="L9">    LECTEUR_MP3(&quot;Lecteur MP3&quot;),</span>
+<span class="fc" id="L10">    LECTEUR_MP4(&quot;Lecteur MP4&quot;),</span>
+<span class="fc" id="L11">    CONSOLE_PORTABLE(&quot;Console portable&quot;),</span>
+<span class="fc" id="L12">    CAMERA_ACTION(&quot;Caméra d'action&quot;),</span>
+<span class="fc" id="L13">    DRONE(&quot;Drone&quot;),</span>
+<span class="fc" id="L14">    ENCEINTE_NOMADE(&quot;Enceinte nomade&quot;),</span>
+<span class="fc" id="L15">    CAISSE_ENREGISTREUSE(&quot;Caisse enregistreuse&quot;),</span>
+<span class="fc" id="L16">    TERMINAL_PAIEMENT(&quot;Terminal de paiement&quot;),</span>
+<span class="fc" id="L17">    SCANNER_CODE_BARRE(&quot;Scanner de code-barres&quot;),</span>
+<span class="fc" id="L18">    IMPRIMANTE_THERMIQUE(&quot;Imprimante thermique&quot;);</span>
+
+    private final String libelle;
+
+<span class="fc" id="L22">    TypeObjetNomade(String libelle) {</span>
+<span class="fc" id="L23">        this.libelle = libelle;</span>
+<span class="fc" id="L24">    }</span>
+
+    public String getLibelle() {
+<span class="nc" id="L27">        return libelle;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

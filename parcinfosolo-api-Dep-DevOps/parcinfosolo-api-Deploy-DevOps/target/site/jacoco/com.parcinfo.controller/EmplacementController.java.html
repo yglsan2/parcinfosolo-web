@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmplacementController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.controller</a> &gt; <span class="el_source">EmplacementController.java</span></div><h1>EmplacementController.java</h1><pre class="source lang-java linenums">package com.parcinfo.controller;
+
+import com.parcinfo.model.Emplacement;
+import com.parcinfo.service.EmplacementService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/emplacements&quot;)
+<span class="fc" id="L13">public class EmplacementController {</span>
+    
+    @Autowired
+    private EmplacementService emplacementService;
+    
+    @GetMapping
+    public List&lt;Emplacement&gt; getAllEmplacements() {
+<span class="nc" id="L20">        return emplacementService.findAll();</span>
+    }
+    
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Emplacement&gt; getEmplacementById(@PathVariable Long id) {
+<span class="nc" id="L25">        return emplacementService.findById(id)</span>
+<span class="nc" id="L26">            .map(ResponseEntity::ok)</span>
+<span class="nc" id="L27">            .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @GetMapping(&quot;/parc/{parcId}&quot;)
+    public List&lt;Emplacement&gt; getEmplacementsByParc(@PathVariable Long parcId) {
+<span class="nc" id="L32">        return emplacementService.findByParcId(parcId);</span>
+    }
+    
+    @GetMapping(&quot;/type/{typeEmplacementId}&quot;)
+    public List&lt;Emplacement&gt; getEmplacementsByType(@PathVariable Long typeEmplacementId) {
+<span class="nc" id="L37">        return emplacementService.findByTypeEmplacementId(typeEmplacementId);</span>
+    }
+    
+    @PostMapping
+    public Emplacement createEmplacement(@RequestBody Emplacement emplacement) {
+<span class="nc" id="L42">        return emplacementService.save(emplacement);</span>
+    }
+    
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Emplacement&gt; updateEmplacement(@PathVariable Long id, @RequestBody Emplacement emplacement) {
+<span class="nc" id="L47">        return emplacementService.findById(id)</span>
+<span class="nc" id="L48">            .map(existingEmplacement -&gt; {</span>
+<span class="nc" id="L49">                emplacement.setIdEmplacement(id);</span>
+<span class="nc" id="L50">                return ResponseEntity.ok(emplacementService.save(emplacement));</span>
+            })
+<span class="nc" id="L52">            .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteEmplacement(@PathVariable Long id) {
+<span class="nc" id="L57">        return emplacementService.findById(id)</span>
+<span class="nc" id="L58">            .map(emplacement -&gt; {</span>
+<span class="nc" id="L59">                emplacementService.deleteById(id);</span>
+<span class="nc" id="L60">                return ResponseEntity.ok().&lt;Void&gt;build();</span>
+            })
+<span class="nc" id="L62">            .orElse(ResponseEntity.notFound().build());</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

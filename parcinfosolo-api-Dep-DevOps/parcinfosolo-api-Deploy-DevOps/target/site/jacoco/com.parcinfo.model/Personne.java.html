@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Personne.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">parcinfo3-api</a> &gt; <a href="index.source.html" class="el_package">com.parcinfo.model</a> &gt; <span class="el_source">Personne.java</span></div><h1>Personne.java</h1><pre class="source lang-java linenums">package com.parcinfo.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+<span class="pc bpc" id="L16" title="61 of 102 branches missed.">@Data</span>
+<span class="fc" id="L17">@NoArgsConstructor</span>
+public class Personne {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="fc" id="L21">    private Long idPersonne;</span>
+    
+    @NotBlank(message = &quot;Le nom est obligatoire&quot;)
+    @Column(length = 30)
+<span class="fc" id="L25">    private String nom;</span>
+    
+    @NotBlank(message = &quot;Le prénom est obligatoire&quot;)
+    @Column(length = 25)
+<span class="fc" id="L29">    private String prenom;</span>
+    
+    @NotBlank(message = &quot;L'adresse est obligatoire&quot;)
+    @Column(length = 50)
+<span class="fc" id="L33">    private String adresse;</span>
+    
+    @NotBlank(message = &quot;Le numéro de téléphone est obligatoire&quot;)
+    @Column(length = 15)
+<span class="fc" id="L37">    private String telephone;</span>
+    
+    @NotBlank(message = &quot;L'email est obligatoire&quot;)
+    @Email(message = &quot;L'email n'est pas valide&quot;)
+    @Column(unique = true)
+<span class="fc" id="L42">    private String email;</span>
+    
+    @NotNull(message = &quot;La date de naissance est obligatoire&quot;)
+    @Past(message = &quot;La date de naissance doit être dans le passé&quot;)
+<span class="fc" id="L46">    private LocalDate dateNaissance;</span>
+    
+<span class="fc" id="L48">    @OneToMany(mappedBy = &quot;personne&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L49">    private List&lt;Affectation&gt; affectations = new ArrayList&lt;&gt;();</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L52">    private String firstname;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L55">    private String lastname;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L58">    private String password;</span>
+
+    @ManyToOne
+    @JoinColumn(name = &quot;role_id&quot;)
+<span class="fc" id="L62">    private Role role;</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
