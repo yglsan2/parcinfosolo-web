@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Liste des interventions sur objets nomades</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Liste des interventions sur objets nomades</h1>
+            <a th:href="@{/interventions-objets-nomades/new}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nouvelle intervention
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Objet nomade</th>
+                                <th>Type</th>
+                                <th>Date début</th>
+                                <th>Date fin</th>
+                                <th>Statut</th>
+                                <th>Coût</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="intervention : ${interventions}">
+                                <td th:text="${intervention.objetNomade.nom}">Nom de l'objet</td>
+                                <td th:text="${intervention.type}">Type d'intervention</td>
+                                <td th:text="${#temporals.format(intervention.dateIntervention, 'dd/MM/yyyy')}">Date début</td>
+                                <td th:text="${intervention.dateFinIntervention != null ? #temporals.format(intervention.dateFinIntervention, 'dd/MM/yyyy') : '-'}">Date fin</td>
+                                <td>
+                                    <span th:class="${'badge ' + 
+                                        (intervention.statut == 'EN_COURS' ? 'bg-primary' : 
+                                         intervention.statut == 'TERMINEE' ? 'bg-success' : 
+                                         intervention.statut == 'PLANIFIEE' ? 'bg-warning' : 'bg-danger')}"
+                                          th:text="${intervention.statut}">
+                                        Statut
+                                    </span>
+                                </td>
+                                <td th:text="${#numbers.formatDecimal(intervention.coutIntervention, 0, 'POINT', 2, 'COMMA') + ' €'}">Coût</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a th:href="@{/interventions-objets-nomades/{id}(id=${intervention.id})}" 
+                                           class="btn btn-sm btn-info" title="Voir">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/interventions-objets-nomades/{id}/edit(id=${intervention.id})}" 
+                                           class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form th:action="@{/interventions-objets-nomades/{id}/delete(id=${intervention.id})}" 
+                                              method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-danger" 
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?')"
+                                                    title="Supprimer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${interventions.empty}">
+                                <td colspan="7" class="text-center">Aucune intervention trouvée</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

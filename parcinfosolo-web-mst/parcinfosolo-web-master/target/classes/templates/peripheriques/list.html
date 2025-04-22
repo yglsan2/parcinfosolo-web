@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Périphériques - ParcInfo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .search-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+        
+        .action-buttons .btn {
+            margin: 0 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-keyboard me-2"></i>Liste des Périphériques</h2>
+            <a href="/peripheriques/new" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Nouveau Périphérique
+            </a>
+        </div>
+
+        <div class="search-box">
+            <form class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Rechercher par nom...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">Tous les types</option>
+                        <option value="CLAVIER">Clavier</option>
+                        <option value="SOURIS">Souris</option>
+                        <option value="ECRAN">Écran</option>
+                        <option value="IMPRIMANTE">Imprimante</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">Tous les états</option>
+                        <option value="DISPONIBLE">Disponible</option>
+                        <option value="EN_PANNE">En panne</option>
+                        <option value="EN_MAINTENANCE">En maintenance</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Rechercher
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Type</th>
+                            <th>Marque</th>
+                            <th>Modèle</th>
+                            <th>État</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="peripherique : ${peripheriques}">
+                            <td th:text="${peripherique.nom}">Nom</td>
+                            <td th:text="${peripherique.type}">Type</td>
+                            <td th:text="${peripherique.marque}">Marque</td>
+                            <td th:text="${peripherique.modele}">Modèle</td>
+                            <td>
+                                <span class="status-badge" 
+                                      th:classappend="${peripherique.etat == 'DISPONIBLE'} ? 'bg-success' : 
+                                                     (${peripherique.etat == 'EN_PANNE'} ? 'bg-danger' : 'bg-warning')"
+                                      th:text="${peripherique.etat}">État</span>
+                            </td>
+                            <td class="action-buttons">
+                                <a th:href="@{/peripheriques/{id}(id=${peripherique.id})}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/peripheriques/{id}/edit(id=${peripherique.id})}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn btn-sm btn-danger" 
+                                        th:onclick="'return confirm(\'Êtes-vous sûr de vouloir supprimer ce périphérique ?\');'">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

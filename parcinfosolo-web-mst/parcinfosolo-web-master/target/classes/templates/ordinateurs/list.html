@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Ordinateurs - ParcInfo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .search-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+        
+        .action-buttons .btn {
+            margin: 0 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-desktop me-2"></i>Liste des Ordinateurs</h2>
+            <a href="/ordinateurs/new" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Nouvel Ordinateur
+            </a>
+        </div>
+
+        <div class="search-box">
+            <form class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Rechercher par nom...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">Tous les états</option>
+                        <option value="DISPONIBLE">Disponible</option>
+                        <option value="EN_PANNE">En panne</option>
+                        <option value="EN_MAINTENANCE">En maintenance</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">Trier par</option>
+                        <option value="nom">Nom</option>
+                        <option value="date">Date d'ajout</option>
+                        <option value="etat">État</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Rechercher
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Type</th>
+                            <th>État</th>
+                            <th>Date d'ajout</th>
+                            <th>Dernière maintenance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="ordinateur : ${ordinateurs}">
+                            <td th:text="${ordinateur.nom}">Nom</td>
+                            <td th:text="${ordinateur.type}">Type</td>
+                            <td>
+                                <span class="status-badge" 
+                                      th:classappend="${ordinateur.etat == 'DISPONIBLE'} ? 'bg-success' : 
+                                                     (${ordinateur.etat == 'EN_PANNE'} ? 'bg-danger' : 'bg-warning')"
+                                      th:text="${ordinateur.etat}">État</span>
+                            </td>
+                            <td th:text="${#temporals.format(ordinateur.dateAjout, 'dd/MM/yyyy')}">Date</td>
+                            <td th:text="${#temporals.format(ordinateur.derniereMaintenance, 'dd/MM/yyyy')}">Maintenance</td>
+                            <td class="action-buttons">
+                                <a th:href="@{/ordinateurs/{id}(id=${ordinateur.id})}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/ordinateurs/{id}/edit(id=${ordinateur.id})}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn btn-sm btn-danger" 
+                                        th:onclick="'return confirm(\'Êtes-vous sûr de vouloir supprimer cet ordinateur ?\');'">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
