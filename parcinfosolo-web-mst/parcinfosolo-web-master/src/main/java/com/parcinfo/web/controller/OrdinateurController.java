@@ -22,7 +22,7 @@ public class OrdinateurController {
     public String listOrdinateurs(Model model) {
         List<Ordinateur> ordinateurs = ordinateurService.findAll();
         model.addAttribute("ordinateurs", ordinateurs);
-        return "ordinateurs/list";
+        return "ordinateurs/liste";
     }
 
     @GetMapping("/{id}")
@@ -30,7 +30,7 @@ public class OrdinateurController {
         try {
             Ordinateur ordinateur = ordinateurService.findById(id);
             model.addAttribute("ordinateur", ordinateur);
-            return "ordinateurs/view";
+            return "ordinateurs/detail";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", "Ordinateur non trouvé");
             return "redirect:/ordinateurs";
@@ -65,31 +65,18 @@ public class OrdinateurController {
         
         try {
             ordinateurService.save(ordinateur);
-            redirectAttributes.addFlashAttribute("success", "Ordinateur créé avec succès");
+            String message = ordinateur.getId() == null ? 
+                "Ordinateur créé avec succès" : 
+                "Ordinateur mis à jour avec succès";
+            redirectAttributes.addFlashAttribute("success", message);
             return "redirect:/ordinateurs";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la création de l'ordinateur: " + e.getMessage());
-            return "redirect:/ordinateurs/nouveau";
-        }
-    }
-
-    @PostMapping("/{id}")
-    public String updateOrdinateur(@PathVariable Long id, 
-                                 @Valid @ModelAttribute Ordinateur ordinateur, 
-                                 BindingResult bindingResult, 
-                                 RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            return "ordinateurs/form";
-        }
-        
-        try {
-            ordinateur.setId(id);
-            ordinateurService.save(ordinateur);
-            redirectAttributes.addFlashAttribute("success", "Ordinateur mis à jour avec succès");
-            return "redirect:/ordinateurs";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la mise à jour de l'ordinateur: " + e.getMessage());
-            return "redirect:/ordinateurs/" + id + "/modifier";
+            String action = ordinateur.getId() == null ? "création" : "mise à jour";
+            redirectAttributes.addFlashAttribute("error", 
+                "Erreur lors de la " + action + " de l'ordinateur: " + e.getMessage());
+            return ordinateur.getId() == null ? 
+                "redirect:/ordinateurs/nouveau" : 
+                "redirect:/ordinateurs/" + ordinateur.getId() + "/modifier";
         }
     }
 
@@ -100,7 +87,8 @@ public class OrdinateurController {
             redirectAttributes.addFlashAttribute("success", "Ordinateur supprimé avec succès");
             return "redirect:/ordinateurs";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la suppression de l'ordinateur: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", 
+                "Erreur lors de la suppression de l'ordinateur: " + e.getMessage());
             return "redirect:/ordinateurs";
         }
     }
