@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Détails de la Personne - ParcInfo</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-person me-2"></i>Détails de la Personne
+            </h1>
+            <div>
+                <a th:href="@{/personnes}" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-left me-1"></i>Retour à la liste
+                </a>
+                <a th:href="@{'/personnes/' + ${personne.idPersonne} + '/edit'}" class="btn btn-warning">
+                    <i class="bi bi-pencil me-1"></i>Modifier
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">ID</dt>
+                            <dd class="col-sm-8" th:text="${personne.idPersonne}">ID</dd>
+
+                            <dt class="col-sm-4">Nom</dt>
+                            <dd class="col-sm-8" th:text="${personne.nom}">Nom</dd>
+
+                            <dt class="col-sm-4">Prénom</dt>
+                            <dd class="col-sm-8" th:text="${personne.prenom}">Prénom</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Email</dt>
+                            <dd class="col-sm-8" th:text="${personne.email}">Email</dd>
+
+                            <dt class="col-sm-4">Téléphone</dt>
+                            <dd class="col-sm-8" th:text="${personne.telephone}">Téléphone</dd>
+
+                            <dt class="col-sm-4">Service</dt>
+                            <dd class="col-sm-8" th:text="${personne.service}">Service</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a th:href="@{'/personnes/' + ${personne.idPersonne} + '/delete'}" 
+               class="btn btn-danger"
+               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette personne ?')">
+                <i class="bi bi-trash me-1"></i>Supprimer
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

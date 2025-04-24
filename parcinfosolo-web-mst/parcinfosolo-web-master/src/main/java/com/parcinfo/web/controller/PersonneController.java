@@ -1,12 +1,14 @@
 package com.parcinfo.web.controller;
 
-import com.parcinfo.model.Personne;
-import com.parcinfo.service.PersonneService;
+import com.parcinfo.web.model.Personne;
+import com.parcinfo.web.service.PersonneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/personnes")
@@ -18,7 +20,7 @@ public class PersonneController {
     @GetMapping
     public String listPersonnes(Model model) {
         model.addAttribute("personnes", personneService.findAll());
-        return "personnes/list";
+        return "personnes/index";
     }
 
     @GetMapping("/new")
@@ -31,7 +33,7 @@ public class PersonneController {
     public String viewPersonne(@PathVariable Long id, Model model) {
         Personne personne = personneService.findById(id);
         model.addAttribute("personne", personne);
-        return "personnes/view";
+        return "personnes/show";
     }
 
     @GetMapping("/{id}/edit")

@@ -1,26 +1,36 @@
 package com.parcinfo.web.model;
 
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
+@Entity
+@Table(name = "personnes")
 public class Personne {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPersonne;
+
+    @NotBlank(message = "Le nom est requis")
     private String nom;
+
+    @NotBlank(message = "Le prénom est requis")
     private String prenom;
+
+    @Email(message = "L'email doit être valide")
+    @NotBlank(message = "L'email est requis")
     private String email;
+
+    @NotBlank(message = "Le téléphone est requis")
+    private String telephone;
+
+    @NotBlank(message = "Le service est requis")
     private String service;
-    private List<Appareil> appareils;
-
-    // Constructeurs
-    public Personne() {
-    }
-
-    public Personne(Long idPersonne, String nom, String prenom, String email, String service) {
-        this.idPersonne = idPersonne;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.email = email;
-        this.service = service;
-    }
 
     // Getters et Setters
     public Long getIdPersonne() {
@@ -55,31 +65,19 @@ public class Personne {
         this.email = email;
     }
 
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
     public String getService() {
         return service;
     }
 
     public void setService(String service) {
         this.service = service;
-    }
-
-    public List<Appareil> getAppareils() {
-        return appareils;
-    }
-
-    public void setAppareils(List<Appareil> appareils) {
-        this.appareils = appareils;
-    }
-
-    // Méthodes utilitaires
-    @Override
-    public String toString() {
-        return "Personne{" +
-                "idPersonne=" + idPersonne +
-                ", nom='" + nom + '\'' +
-                ", prenom='" + prenom + '\'' +
-                ", email='" + email + '\'' +
-                ", service='" + service + '\'' +
-                '}';
     }
 } 

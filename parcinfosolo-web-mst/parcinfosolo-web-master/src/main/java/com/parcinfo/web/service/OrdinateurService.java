@@ -1,38 +1,34 @@
 package com.parcinfo.web.service;
 
 import com.parcinfo.web.model.Ordinateur;
+import com.parcinfo.web.repository.OrdinateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrdinateurService {
 
     @Autowired
-    private ApiService apiService;
+    private OrdinateurRepository ordinateurRepository;
 
     public List<Ordinateur> findAll() {
-        return apiService.getAllAppareils().stream()
-                .filter(appareil -> appareil instanceof Ordinateur)
-                .map(appareil -> (Ordinateur) appareil)
-                .collect(Collectors.toList());
+        return ordinateurRepository.findAll();
     }
 
     public Ordinateur findById(Long id) {
-        return (Ordinateur) apiService.getAppareilById(id);
+        return ordinateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ordinateur non trouvé avec l'id : " + id));
     }
 
     public Ordinateur save(Ordinateur ordinateur) {
-        if (ordinateur.getIdAppareil() == null) {
-            return (Ordinateur) apiService.createAppareil(ordinateur);
-        } else {
-            return (Ordinateur) apiService.updateAppareil(ordinateur.getIdAppareil(), ordinateur);
-        }
+        return ordinateurRepository.save(ordinateur);
     }
 
     public void deleteById(Long id) {
-        apiService.deleteAppareil(id);
+        ordinateurRepository.deleteById(id);
     }
 } 

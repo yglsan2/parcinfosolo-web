@@ -1,89 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParcInfo - <th:block th:include=":: #pageTitle">Titre</th:block></title>
+    <title layout:title-pattern="$CONTENT_TITLE - ParcInfo">ParcInfo</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link th:href="@{/static/css/style.css}" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="/">ParcInfo</a>
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="fas fa-laptop me-2"></i>ParcInfo
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}" href="/">Accueil</a>
+                        <a class="nav-link" th:href="@{/ordinateurs}">
+                            <i class="fas fa-desktop me-1"></i>Ordinateurs
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:classappend="${#httpServletRequest.requestURI.startsWith('/personnes') ? 'active' : ''}" href="/personnes">Personnes</a>
+                        <a class="nav-link" th:href="@{/peripheriques}">
+                            <i class="fas fa-keyboard me-1"></i>Périphériques
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:classappend="${#httpServletRequest.requestURI.startsWith('/appareils') ? 'active' : ''}" href="/appareils">Appareils</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:classappend="${#httpServletRequest.requestURI.startsWith('/objets-nomades') ? 'active' : ''}" href="/objets-nomades">Objets nomades</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:classappend="${#httpServletRequest.requestURI.startsWith('/peripheriques') ? 'active' : ''}" href="/peripheriques">Périphériques</a>
+                        <a class="nav-link" th:href="@{/personnes}">
+                            <i class="fas fa-users me-1"></i>Personnes
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container-fluid">
-        <div th:if="${message}" class="alert fade-in" th:classappend="${messageType}" role="alert">
-            <span th:text="${message}"></span>
+    <!-- Messages -->
+    <div class="container mt-3">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        
-        <div th:replace=":: #content">
-            <!-- Le contenu spécifique à chaque page sera injecté ici -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     </div>
 
+    <!-- Content -->
+    <div layout:fragment="content">
+        <!-- Le contenu spécifique à chaque page sera injecté ici -->
+    </div>
+
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>À propos</h5>
-                    <p>ParcInfo - Solution de gestion de parc informatique</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liens rapides</h5>
-                    <ul>
-                        <li><a href="/">Accueil</a></li>
-                        <li><a href="/personnes">Personnes</a></li>
-                        <li><a href="/appareils">Appareils</a></li>
-                        <li><a href="/objets-nomades">Objets nomades</a></li>
-                        <li><a href="/peripheriques">Périphériques</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact</h5>
-                    <p>Support technique<br>support@parcinfo.fr</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2024 ParcInfo - Tous droits réservés</p>
-            </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 ParcInfo - Tous droits réservés</span>
         </div>
     </footer>
 
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom Scripts -->
-    <th:block layout:fragment="scripts"></th:block>
+    <!-- Custom JS -->
+    <script th:src="@{/static/js/script.js}"></script>
 </body>
 </html> 

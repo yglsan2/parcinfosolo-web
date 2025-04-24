@@ -1,79 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <title id="pageTitle" th:text="${personne.idPersonne == null ? 'Ajouter une personne' : 'Modifier une personne'}">Formulaire personne</title>
+    <title th:text="${personne.idPersonne} ? 'Modifier une Personne' : 'Nouvelle Personne' + ' - ParcInfo'">Nouvelle Personne - ParcInfo</title>
 </head>
 <body>
-    <div id="content">
+    <div layout:fragment="content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 th:text="${personne.idPersonne == null ? 'Ajouter une personne' : 'Modifier une personne'}">Formulaire personne</h1>
-            <a href="/personnes" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Retour à la liste
+            <h1>
+                <i class="bi bi-person-plus me-2"></i>
+                <span th:text="${personne.idPersonne} ? 'Modifier une Personne' : 'Nouvelle Personne'">Nouvelle Personne</span>
+            </h1>
+            <a th:href="@{/personnes}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Retour à la liste
             </a>
         </div>
-        
+
+        <!-- Formulaire -->
         <div class="card">
             <div class="card-body">
-                <form th:action="${personne.idPersonne == null ? @{/personnes} : @{/personnes/{id}(id=${personne.idPersonne})}" 
+                <form th:action="@{${personne.idPersonne} ? '/personnes/' + ${personne.idPersonne} : '/personnes'}" 
                       th:object="${personne}" method="post" class="needs-validation" novalidate>
                     
-                    <div class="row mb-3">
-                        <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
                             <label for="nom" class="form-label">Nom</label>
                             <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
                             <div class="invalid-feedback">Le nom est requis</div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <label for="prenom" class="form-label">Prénom</label>
                             <input type="text" class="form-control" id="prenom" th:field="*{prenom}" required>
                             <div class="invalid-feedback">Le prénom est requis</div>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" th:field="*{email}" required>
-                        <div class="invalid-feedback">Veuillez entrer une adresse email valide</div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                            <div class="invalid-feedback">Un email valide est requis</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="telephone" class="form-label">Téléphone</label>
+                            <input type="tel" class="form-control" id="telephone" th:field="*{telephone}" required>
+                            <div class="invalid-feedback">Un numéro de téléphone est requis</div>
+                        </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="service" class="form-label">Service</label>
-                        <input type="text" class="form-control" id="service" th:field="*{service}" required>
-                        <div class="invalid-feedback">Le service est requis</div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="service" class="form-label">Service</label>
+                            <input type="text" class="form-control" id="service" th:field="*{service}" required>
+                            <div class="invalid-feedback">Le service est requis</div>
+                        </div>
                     </div>
-                    
+
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Enregistrer
+                            <i class="bi bi-save me-1"></i>
+                            <span th:text="${personne.idPersonne} ? 'Mettre à jour' : 'Créer'">Créer</span>
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    
-    <!-- Script pour la validation des formulaires Bootstrap -->
-    <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function () {
-            'use strict'
-            
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
-            
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
 </body>
 </html> 

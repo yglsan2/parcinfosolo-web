@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(title='Erreur')}">
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            <h4 class="mb-0">Erreur</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-danger" th:if="${error}" th:text="${error}">
+                                Une erreur est survenue.
+                            </div>
+                            <div class="alert alert-danger" th:unless="${error}">
+                                Une erreur inattendue est survenue. Veuillez réessayer plus tard.
+                            </div>
+                            <div class="text-center mt-4">
+                                <a th:href="@{/}" class="btn btn-primary">
+                                    <i class="fas fa-home me-2"></i>Retour à l'accueil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
