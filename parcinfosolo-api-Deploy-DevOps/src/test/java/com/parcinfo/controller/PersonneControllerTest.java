@@ -1,10 +1,10 @@
 package com.parcinfo.controller;
 
-import com.parcinfo.api.response.ApiResponse;
 import com.parcinfo.model.Personne;
 import com.parcinfo.model.Role;
 import com.parcinfo.model.RoleType;
-import com.parcinfo.service.PersonneService;
+import com.parcinfo.web.service.PersonneService;
+import com.parcinfo.web.controller.PersonneController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +30,15 @@ class PersonneControllerTest {
 
     @Mock
     private PersonneService personneService;
+
+    @Mock
+    private Model model;
+
+    @Mock
+    private BindingResult bindingResult;
+
+    @Mock
+    private RedirectAttributes redirectAttributes;
 
     @InjectMocks
     private PersonneController personneController;
@@ -44,71 +56,117 @@ class PersonneControllerTest {
     }
 
     @Test
-    @DisplayName("Devrait récupérer toutes les personnes")
-    void shouldGetAllPersonnes() {
+    @DisplayName("Devrait afficher la liste des personnes")
+    void shouldListPersonnes() {
         // Arrange
         List<Personne> personnes = Arrays.asList(personne);
         when(personneService.findAll()).thenReturn(personnes);
 
         // Act
-        ResponseEntity<ApiResponse<List<Personne>>> response = personneController.getAllPersonnes();
+        String viewName = personneController.listPersonnes(model);
 
         // Assert
-        assertNotNull(response);
-        assertTrue(response.getBody().isSuccess());
-        assertEquals(1, response.getBody().getData().size());
-        verify(personneService).findAll();
+        assertEquals("personnes/list", viewName);
+        verify(model).addAttribute("personnes", personnes);
     }
 
     @Test
-    @DisplayName("Devrait récupérer une personne par son ID")
-    void shouldGetPersonneById() {
+    @DisplayName("Devrait afficher les détails d'une personne")
+    void shouldViewPersonne() {
         // Arrange
         Long id = 1L;
         when(personneService.findById(id)).thenReturn(Optional.of(personne));
 
         // Act
-        ResponseEntity<ApiResponse<Personne>> response = personneController.getPersonneById(id);
+        String viewName = personneController.viewPersonne(id, model, redirectAttributes);
 
         // Assert
-        assertNotNull(response);
-        assertTrue(response.getBody().isSuccess());
-        assertEquals(personne.getEmail(), response.getBody().getData().getEmail());
-        verify(personneService).findById(id);
+        assertEquals("personnes/view", viewName);
+        verify(model).addAttribute("personne", personne);
     }
 
     @Test
-    @DisplayName("Devrait retourner une erreur si la personne n'est pas trouvée")
-    void shouldReturnErrorWhenPersonneNotFound() {
+    @DisplayName("Devrait rediriger si la personne n'est pas trouvée")
+    void shouldRedirectWhenPersonneNotFound() {
         // Arrange
         Long id = 1L;
         when(personneService.findById(id)).thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<ApiResponse<Personne>> response = personneController.getPersonneById(id);
+        String viewName = personneController.viewPersonne(id, model, redirectAttributes);
 
         // Assert
-        assertNotNull(response);
-        assertFalse(response.getBody().isSuccess());
-        assertEquals("Personne non trouvée", response.getBody().getMessage());
-        verify(personneService).findById(id);
+        assertEquals("redirect:/personnes", viewName);
+        verify(redirectAttributes).addFlashAttribute("error", "Personne non trouvée");
     }
 
     @Test
-    @DisplayName("Devrait créer une nouvelle personne")
-    void shouldCreatePersonne() {
+    @DisplayName("Devrait afficher le formulaire de création")
+    void shouldShowCreateForm() {
+        // Act
+        String viewName = personneController.showCreateForm(model);
+
+        // Assert
+        assertEquals("personnes/form", viewName);
+        verify(model).addAttribute(eq("personne"), any(Personne.class));
+    }
+
+    @Test
+    @DisplayName("Devrait afficher le formulaire de modification")
+    void shouldShowEditForm() {
         // Arrange
+        Long id = 1L;
+        when(personneService.findById(id)).thenReturn(Optional.of(personne));
+
+        // Act
+        String viewName = personneController.showEditForm(id, model, redirectAttributes);
+
+        // Assert
+        assertEquals("personnes/form", viewName);
+        verify(model).addAttribute("personne", personne);
+    }
+
+    @Test
+    @DisplayName("Devrait rediriger si la personne à modifier n'est pas trouvée")
+    void shouldRedirectWhenEditingNonExistentPersonne() {
+        // Arrange
+        Long id = 1L;
+        when(personneService.findById(id)).thenReturn(Optional.empty());
+
+        // Act
+        String viewName = personneController.showEditForm(id, model, redirectAttributes);
+
+        // Assert
+        assertEquals("redirect:/personnes", viewName);
+        verify(redirectAttributes).addFlashAttribute("error", "Personne non trouvée");
+    }
+
+    @Test
+    @DisplayName("Devrait sauvegarder une nouvelle personne")
+    void shouldSavePersonne() {
+        // Arrange
+        when(bindingResult.hasErrors()).thenReturn(false);
         when(personneService.save(any(Personne.class))).thenReturn(personne);
 
         // Act
-        ResponseEntity<ApiResponse<Personne>> response = personneController.createPersonne(personne);
+        String viewName = personneController.savePersonne(personne, bindingResult, redirectAttributes);
 
         // Assert
-        assertNotNull(response);
-        assertTrue(response.getBody().isSuccess());
-        assertEquals("Personne créée avec succès", response.getBody().getMessage());
-        assertEquals(personne.getEmail(), response.getBody().getData().getEmail());
-        verify(personneService).save(personne);
+        assertEquals("redirect:/personnes", viewName);
+        verify(redirectAttributes).addFlashAttribute("success", "Personne créée avec succès");
+    }
+
+    @Test
+    @DisplayName("Devrait retourner au formulaire si la validation échoue")
+    void shouldReturnToFormWhenValidationFails() {
+        // Arrange
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        // Act
+        String viewName = personneController.savePersonne(personne, bindingResult, redirectAttributes);
+
+        // Assert
+        assertEquals("personnes/form", viewName);
     }
 
     @Test
@@ -116,36 +174,45 @@ class PersonneControllerTest {
     void shouldUpdatePersonne() {
         // Arrange
         Long id = 1L;
-        when(personneService.existsById(id)).thenReturn(true);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(personneService.findById(id)).thenReturn(Optional.of(personne));
         when(personneService.save(any(Personne.class))).thenReturn(personne);
 
         // Act
-        ResponseEntity<ApiResponse<Personne>> response = personneController.updatePersonne(id, personne);
+        String viewName = personneController.updatePersonne(id, personne, bindingResult, redirectAttributes);
 
         // Assert
-        assertNotNull(response);
-        assertTrue(response.getBody().isSuccess());
-        assertEquals("Personne mise à jour avec succès", response.getBody().getMessage());
-        assertEquals(personne.getEmail(), response.getBody().getData().getEmail());
-        verify(personneService).existsById(id);
-        verify(personneService).save(personne);
+        assertEquals("redirect:/personnes", viewName);
+        verify(redirectAttributes).addFlashAttribute("success", "Personne mise à jour avec succès");
     }
 
     @Test
-    @DisplayName("Devrait retourner une erreur lors de la mise à jour d'une personne inexistante")
-    void shouldReturnErrorWhenUpdatingNonExistentPersonne() {
+    @DisplayName("Devrait supprimer une personne")
+    void shouldDeletePersonne() {
         // Arrange
         Long id = 1L;
-        when(personneService.existsById(id)).thenReturn(false);
+        when(personneService.findById(id)).thenReturn(Optional.of(personne));
 
         // Act
-        ResponseEntity<ApiResponse<Personne>> response = personneController.updatePersonne(id, personne);
+        String viewName = personneController.deletePersonne(id, redirectAttributes);
 
         // Assert
-        assertNotNull(response);
-        assertFalse(response.getBody().isSuccess());
-        assertEquals("Personne non trouvée", response.getBody().getMessage());
-        verify(personneService).existsById(id);
-        verify(personneService, never()).save(any(Personne.class));
+        assertEquals("redirect:/personnes", viewName);
+        verify(redirectAttributes).addFlashAttribute("success", "Personne supprimée avec succès");
+    }
+
+    @Test
+    @DisplayName("Devrait rediriger si la personne à supprimer n'est pas trouvée")
+    void shouldRedirectWhenDeletingNonExistentPersonne() {
+        // Arrange
+        Long id = 1L;
+        when(personneService.findById(id)).thenReturn(Optional.empty());
+
+        // Act
+        String viewName = personneController.deletePersonne(id, redirectAttributes);
+
+        // Assert
+        assertEquals("redirect:/personnes", viewName);
+        verify(redirectAttributes).addFlashAttribute("error", "Personne non trouvée");
     }
 } 

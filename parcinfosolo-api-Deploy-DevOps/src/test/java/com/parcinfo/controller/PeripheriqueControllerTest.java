@@ -2,7 +2,8 @@ package com.parcinfo.controller;
 
 import com.parcinfo.model.Peripherique;
 import com.parcinfo.model.TypePeripherique;
-import com.parcinfo.service.PeripheriqueService;
+import com.parcinfo.web.service.PeripheriqueService;
+import com.parcinfo.web.controller.PeripheriqueController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -46,7 +47,7 @@ class PeripheriqueControllerTest {
     @BeforeEach
     void setUp() {
         testPeripherique = new Peripherique();
-        testPeripherique.setIdPeripherique(1L);
+        testPeripherique.setId(1L);
         testPeripherique.setType(TypePeripherique.SOURIS);
         testPeripherique.setMarque("Test Marque");
         testPeripherique.setModele("Test Modele");
@@ -57,32 +58,33 @@ class PeripheriqueControllerTest {
     }
 
     @Test
-    void list_ShouldReturnListView() {
+    void listPeripheriques_ShouldReturnListView() {
         when(peripheriqueService.findAll()).thenReturn(testPeripheriques);
 
-        String viewName = peripheriqueController.list(model);
+        String viewName = peripheriqueController.listPeripheriques(model);
         
         assertEquals("peripheriques/list", viewName);
         verify(model).addAttribute("peripheriques", testPeripheriques);
     }
 
     @Test
-    void view_WhenExists_ShouldReturnView() {
+    void viewPeripherique_WhenExists_ShouldReturnView() {
         when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
 
-        String viewName = peripheriqueController.view(1L, model);
+        String viewName = peripheriqueController.viewPeripherique(1L, model, redirectAttributes);
         
         assertEquals("peripheriques/view", viewName);
         verify(model).addAttribute("peripherique", testPeripherique);
     }
 
     @Test
-    void view_WhenNotExists_ShouldThrowException() {
+    void viewPeripherique_WhenNotExists_ShouldRedirectToList() {
         when(peripheriqueService.findById(1L)).thenReturn(Optional.empty());
+
+        String viewName = peripheriqueController.viewPeripherique(1L, model, redirectAttributes);
         
-        assertThrows(IllegalArgumentException.class, () -> {
-            peripheriqueController.view(1L, model);
-        });
+        assertEquals("redirect:/peripheriques", viewName);
+        verify(redirectAttributes).addFlashAttribute("error", "Périphérique non trouvé");
     }
 
     @Test
@@ -91,66 +93,86 @@ class PeripheriqueControllerTest {
         
         assertEquals("peripheriques/form", viewName);
         verify(model).addAttribute(eq("peripherique"), any(Peripherique.class));
-        verify(model).addAttribute("mode", "create");
     }
 
     @Test
     void showEditForm_WhenExists_ShouldReturnFormView() {
         when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
 
-        String viewName = peripheriqueController.showEditForm(1L, model);
+        String viewName = peripheriqueController.showEditForm(1L, model, redirectAttributes);
         
         assertEquals("peripheriques/form", viewName);
         verify(model).addAttribute("peripherique", testPeripherique);
-        verify(model).addAttribute("mode", "edit");
     }
 
     @Test
-    void showEditForm_WhenNotExists_ShouldThrowException() {
+    void showEditForm_WhenNotExists_ShouldRedirectToList() {
         when(peripheriqueService.findById(1L)).thenReturn(Optional.empty());
+
+        String viewName = peripheriqueController.showEditForm(1L, model, redirectAttributes);
         
-        assertThrows(IllegalArgumentException.class, () -> {
-            peripheriqueController.showEditForm(1L, model);
-        });
+        assertEquals("redirect:/peripheriques", viewName);
+        verify(redirectAttributes).addFlashAttribute("error", "Périphérique non trouvé");
     }
 
     @Test
-    void save_WhenValid_ShouldRedirectToList() {
+    void savePeripherique_WhenValid_ShouldRedirectToList() {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(peripheriqueService.save(any(Peripherique.class))).thenReturn(testPeripherique);
 
-        String viewName = peripheriqueController.save(testPeripherique, bindingResult, redirectAttributes);
+        String viewName = peripheriqueController.savePeripherique(testPeripherique, bindingResult, redirectAttributes);
         
         assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("message", "Le périphérique a été enregistré avec succès.");
+        verify(redirectAttributes).addFlashAttribute("success", "Périphérique créé avec succès");
     }
 
     @Test
-    void save_WhenInvalid_ShouldReturnFormView() {
+    void savePeripherique_WhenInvalid_ShouldReturnFormView() {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        String viewName = peripheriqueController.save(testPeripherique, bindingResult, redirectAttributes);
+        String viewName = peripheriqueController.savePeripherique(testPeripherique, bindingResult, redirectAttributes);
         
         assertEquals("peripheriques/form", viewName);
     }
 
     @Test
-    void delete_WhenSuccess_ShouldRedirectToList() {
+    void updatePeripherique_WhenValid_ShouldRedirectToList() {
+        when(bindingResult.hasErrors()).thenReturn(false);
         when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
-        doNothing().when(peripheriqueService).delete(any(Peripherique.class));
+        when(peripheriqueService.save(any(Peripherique.class))).thenReturn(testPeripherique);
 
-        String viewName = peripheriqueController.delete(1L, redirectAttributes);
+        String viewName = peripheriqueController.updatePeripherique(1L, testPeripherique, bindingResult, redirectAttributes);
         
         assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("message", "Le périphérique a été supprimé avec succès.");
+        verify(redirectAttributes).addFlashAttribute("success", "Périphérique mis à jour avec succès");
     }
 
     @Test
-    void delete_WhenNotExists_ShouldThrowException() {
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.empty());
+    void updatePeripherique_WhenInvalid_ShouldReturnFormView() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        String viewName = peripheriqueController.updatePeripherique(1L, testPeripherique, bindingResult, redirectAttributes);
         
-        assertThrows(IllegalArgumentException.class, () -> {
-            peripheriqueController.delete(1L, redirectAttributes);
-        });
+        assertEquals("peripheriques/form", viewName);
+    }
+
+    @Test
+    void deletePeripherique_WhenSuccess_ShouldRedirectToList() {
+        when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
+
+        String viewName = peripheriqueController.deletePeripherique(1L, redirectAttributes);
+        
+        assertEquals("redirect:/peripheriques", viewName);
+        verify(redirectAttributes).addFlashAttribute("success", "Périphérique supprimé avec succès");
+    }
+
+    @Test
+    void deletePeripherique_WhenNotExists_ShouldRedirectToList() {
+        when(peripheriqueService.findById(1L)).thenReturn(Optional.empty());
+
+        String viewName = peripheriqueController.deletePeripherique(1L, redirectAttributes);
+        
+        assertEquals("redirect:/peripheriques", viewName);
+        verify(redirectAttributes).addFlashAttribute("error", "Périphérique non trouvé");
     }
 } 

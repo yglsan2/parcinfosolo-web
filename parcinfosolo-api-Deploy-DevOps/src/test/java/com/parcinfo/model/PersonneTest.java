@@ -108,4 +108,54 @@ class PersonneTest {
         assertEquals("jane.smith@example.com", personne.getEmail());
         assertEquals("newPassword", personne.getPassword());
     }
+
+    @Test
+    void testPersonneBuilder() {
+        // Given
+        String nom = "Dupont";
+        String prenom = "Jean";
+        String email = "jean.dupont@example.com";
+        String telephone = "0123456789";
+        Role role = Role.USER;
+
+        // When
+        Personne personne = Personne.builder()
+                .nom(nom)
+                .prenom(prenom)
+                .email(email)
+                .telephone(telephone)
+                .role(role)
+                .build();
+
+        // Then
+        assertEquals(nom, personne.getNom());
+        assertEquals(prenom, personne.getPrenom());
+        assertEquals(email, personne.getEmail());
+        assertEquals(telephone, personne.getTelephone());
+        assertEquals(role, personne.getRole());
+    }
+
+    @Test
+    void testPersonneEquality() {
+        // Given
+        Personne personne1 = Personne.builder()
+                .nom("Dupont")
+                .prenom("Jean")
+                .email("jean.dupont@example.com")
+                .telephone("0123456789")
+                .role(Role.USER)
+                .build();
+
+        Personne personne2 = Personne.builder()
+                .nom("Dupont")
+                .prenom("Jean")
+                .email("jean.dupont@example.com")
+                .telephone("0123456789")
+                .role(Role.USER)
+                .build();
+
+        // Then
+        assertEquals(personne1, personne2);
+        assertEquals(personne1.hashCode(), personne2.hashCode());
+    }
 } 

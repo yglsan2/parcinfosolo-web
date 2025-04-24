@@ -3,16 +3,13 @@ package com.parcinfo.service;
 import com.parcinfo.dto.AuthenticationRequest;
 import com.parcinfo.dto.AuthenticationResponse;
 import com.parcinfo.dto.RegisterRequest;
-import com.parcinfo.model.RoleType;
+import com.parcinfo.model.Role;
 import com.parcinfo.model.User;
 import com.parcinfo.repository.UserRepository;
-import com.parcinfo.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +21,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
 
     @Mock
@@ -34,12 +30,8 @@ class AuthenticationServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private JwtService jwtService;
-
-    @Mock
     private AuthenticationManager authenticationManager;
 
-    @InjectMocks
     private AuthenticationService authenticationService;
 
     private RegisterRequest registerRequest;
@@ -49,11 +41,13 @@ class AuthenticationServiceTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
+        authenticationService = new AuthenticationService(userRepository, passwordEncoder);
+
         registerRequest = RegisterRequest.builder()
-                .firstname("John")
-                .lastname("Doe")
-                .email("john.doe@example.com")
-                .password("password123")
+                .username("testuser")
+                .email("test@example.com")
+                .password("password")
                 .build();
 
         authenticationRequest = AuthenticationRequest.builder()
@@ -67,34 +61,33 @@ class AuthenticationServiceTest {
                 .lastname("Doe")
                 .email("john.doe@example.com")
                 .password("encodedPassword")
-                .role(RoleType.USER)
+                .role(Role.USER)
                 .build();
 
         token = "jwt.token.here";
     }
 
     @Test
-    void register_ShouldCreateNewUserAndReturnToken() {
-        // Arrange
+    void whenRegister_thenSaveUser() {
+        // Given
         when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(jwtService.generateToken(any(User.class))).thenReturn(token);
 
-        // Act
-        AuthenticationResponse response = authenticationService.register(registerRequest);
+        // When
+        User savedUser = authenticationService.register(registerRequest);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(token, response.getToken());
+        // Then
+        assertNotNull(savedUser);
+        assertEquals(registerRequest.getUsername(), savedUser.getUsername());
+        assertEquals(registerRequest.getEmail(), savedUser.getEmail());
         verify(userRepository).save(any(User.class));
-        verify(jwtService).generateToken(any(User.class));
+        verify(passwordEncoder).encode(registerRequest.getPassword());
     }
 
     @Test
     void authenticate_ShouldReturnTokenForValidCredentials() {
         // Arrange
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
-        when(jwtService.generateToken(any(User.class))).thenReturn(token);
 
         // Act
         AuthenticationResponse response = authenticationService.authenticate(authenticationRequest);
@@ -103,6 +96,5 @@ class AuthenticationServiceTest {
         assertNotNull(response);
         assertEquals(token, response.getToken());
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(jwtService).generateToken(any(User.class));
     }
 } 

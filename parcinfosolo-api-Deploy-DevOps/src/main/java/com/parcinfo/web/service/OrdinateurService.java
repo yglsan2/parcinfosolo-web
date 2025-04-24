@@ -1,29 +1,25 @@
 package com.parcinfo.web.service;
 
-import com.parcinfo.model.Ordinateur;
-import com.parcinfo.repository.OrdinateurRepository;
+import com.parcinfo.web.model.Ordinateur;
+import com.parcinfo.web.repository.OrdinateurRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional
 public class OrdinateurService {
 
-    private final OrdinateurRepository ordinateurRepository;
-
-    public OrdinateurService(OrdinateurRepository ordinateurRepository) {
-        this.ordinateurRepository = ordinateurRepository;
-    }
+    @Autowired
+    private OrdinateurRepository ordinateurRepository;
 
     public List<Ordinateur> findAll() {
         return ordinateurRepository.findAll();
     }
 
-    public Ordinateur findById(Long id) {
-        return ordinateurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordinateur non trouvé avec l'id : " + id));
+    public Optional<Ordinateur> findById(Long id) {
+        return ordinateurRepository.findById(id);
     }
 
     public Ordinateur save(Ordinateur ordinateur) {

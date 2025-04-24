@@ -1,91 +1,89 @@
 package com.parcinfo.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.parcinfo.dto.AuthenticationRequest;
-import com.parcinfo.dto.AuthenticationResponse;
 import com.parcinfo.dto.RegisterRequest;
+import com.parcinfo.model.Role;
+import com.parcinfo.model.User;
 import com.parcinfo.service.AuthenticationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(AuthenticationController.class)
 class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockBean
     private AuthenticationService authenticationService;
 
-    @Test
-    void register_ShouldReturnToken() throws Exception {
-        // Arrange
-        RegisterRequest request = RegisterRequest.builder()
-                .firstname("John")
-                .lastname("Doe")
-                .email("john.doe@example.com")
-                .password("password123")
+    private User testUser;
+    private RegisterRequest registerRequest;
+
+    @BeforeEach
+    void setUp() {
+        registerRequest = RegisterRequest.builder()
+                .username("testuser")
+                .email("test@example.com")
+                .password("password")
                 .build();
 
+        testUser = User.builder()
+                .username("testuser")
+                .email("test@example.com")
+                .password("encodedPassword")
+                .role(Role.USER)
+                .build();
+    }
+
+    @Test
+    void loginPage_ShouldReturnLoginView() throws Exception {
+        mockMvc.perform(get("/auth/login"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("auth/login"));
+    }
+
+    @Test
+    void registerPage_ShouldReturnRegisterView() throws Exception {
+        mockMvc.perform(get("/auth/register"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("auth/register"))
+                .andExpect(model().attributeExists("registerRequest"));
+    }
+
+    @Test
+    void register_WhenSuccessful_ShouldRedirectToLogin() throws Exception {
+        when(authenticationService.register(any(RegisterRequest.class))).thenReturn(testUser);
+
+        mockMvc.perform(post("/auth/register")
+                        .param("username", registerRequest.getUsername())
+                        .param("email", registerRequest.getEmail())
+                        .param("password", registerRequest.getPassword()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/auth/login"))
+                .andExpect(flash().attributeExists("success"));
+    }
+
+    @Test
+    void register_WhenError_ShouldRedirectToRegister() throws Exception {
         when(authenticationService.register(any(RegisterRequest.class)))
-                .thenReturn(new AuthenticationResponse("jwt.token.here"));
+                .thenThrow(new RuntimeException("Test error"));
 
-        // Act & Assert
-        mockMvc.perform(post("/api/v1/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("jwt.token.here"));
-    }
-
-    @Test
-    void authenticate_ShouldReturnToken() throws Exception {
-        // Arrange
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .email("john.doe@example.com")
-                .password("password123")
-                .build();
-
-        when(authenticationService.authenticate(any(AuthenticationRequest.class)))
-                .thenReturn(new AuthenticationResponse("jwt.token.here"));
-
-        // Act & Assert
-        mockMvc.perform(post("/api/v1/auth/authenticate")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("jwt.token.here"));
-    }
-
-    @Test
-    void register_ShouldValidateInput() throws Exception {
-        // Arrange
-        RegisterRequest request = RegisterRequest.builder()
-                .firstname("")
-                .lastname("")
-                .email("invalid-email")
-                .password("")
-                .build();
-
-        // Act & Assert
-        mockMvc.perform(post("/api/v1/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+        mockMvc.perform(post("/auth/register")
+                        .param("username", registerRequest.getUsername())
+                        .param("email", registerRequest.getEmail())
+                        .param("password", registerRequest.getPassword()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/auth/register"))
+                .andExpect(flash().attributeExists("error"));
     }
 } 
