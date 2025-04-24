@@ -1,0 +1,184 @@
+pipeline {
+    agent {
+        docker {
+            image 'maven:3.8.4-openjdk-17'
+            args '-v $HOME/.m2:/root/.m2'
+        }
+    }
+    
+    environment {
+        DOCKER_IMAGE = 'parcinfo-api'
+        DOCKER_TAG = "${BUILD_NUMBER}"
+        DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
+        DOCKER_CREDENTIALS = credentials('docker-credentials')
+        PROD_SERVER = credentials('prod-server')
+        PROD_SSH_KEY = credentials('prod-ssh-key')
+        SLACK_CHANNEL = '#deployments'
+        SLACK_CREDENTIALS = credentials('slack-token')
+    }
+    
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['staging', 'production'], description: 'Select deployment environment')
+        string(name: 'VERSION', defaultValue: '', description: 'Version to deploy (optional)')
+    }
+    
+    stages {
+        stage('Validate') {
+            steps {
+                script {
+                    if (params.ENVIRONMENT == 'production') {
+                        // Add production deployment validation logic
+                        echo "Validating production deployment..."
+                    }
+                }
+            }
+        }
+        
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                sh '''
+                    mvn org.owasp:dependency-check-maven:check
+                    mvn org.owasp:dependency-check-maven:aggregate
+                '''
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    if (params.VERSION) {
+                        docker.tag("${DOCKER_IMAGE}:${DOCKER_TAG}", "${DOCKER_IMAGE}:${params.VERSION}")
+                    }
+                }
+            }
+        }
+        
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", 'docker-credentials') {
+                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                        if (params.VERSION) {
+                            docker.image("${DOCKER_IMAGE}:${params.VERSION}").push()
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                script {
+                    def deployScript = """
+                        #!/bin/bash
+                        set -e
+                        
+                        # Variables
+                        DOCKER_REGISTRY="${DOCKER_REGISTRY}"
+                        DOCKER_IMAGE="${DOCKER_IMAGE}"
+                        DOCKER_TAG="${DOCKER_TAG}"
+                        ENVIRONMENT="${params.ENVIRONMENT}"
+                        
+                        # Pull latest image
+                        docker pull \${DOCKER_REGISTRY}/\${DOCKER_IMAGE}:\${DOCKER_TAG}
+                        
+                        # Stop and remove existing container
+                        docker stop parcinfo-api || true
+                        docker rm parcinfo-api || true
+                        
+                        # Run new container
+                        docker run -d \\
+                            --name parcinfo-api \\
+                            --restart unless-stopped \\
+                            -p 8080:8080 \\
+                            -e SPRING_PROFILES_ACTIVE=\${ENVIRONMENT} \\
+                            -e JAVA_OPTS="-Xms512m -Xmx1024m" \\
+                            -v /opt/parcinfo/logs:/app/logs \\
+                            -v /opt/parcinfo/config:/app/config \\
+                            \${DOCKER_REGISTRY}/\${DOCKER_IMAGE}:\${DOCKER_TAG}
+                            
+                        # Health check
+                        sleep 10
+                        if curl -s http://localhost:8080/actuator/health | grep -q "UP"; then
+                            echo "Deployment successful!"
+                            exit 0
+                        else
+                            echo "Deployment failed! Application is not healthy."
+                            exit 1
+                        fi
+                    """
+                    
+                    writeFile file: 'deploy.sh', text: deployScript
+                    
+                    sshagent(['prod-ssh-key']) {
+                        sh """
+                            scp deploy.sh ${PROD_SERVER}:/tmp/
+                            ssh ${PROD_SERVER} 'chmod +x /tmp/deploy.sh && /tmp/deploy.sh'
+                        """
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            script {
+                slackSend(
+                    channel: SLACK_CHANNEL,
+                    color: 'good',
+                    message: """
+                        ✅ Deployment Successful
+                        *Environment:* ${params.ENVIRONMENT}
+                        *Version:* ${params.VERSION ?: DOCKER_TAG}
+                        *Build:* ${BUILD_NUMBER}
+                        *Triggered by:* ${currentBuild.getBuildCauses()[0].userId}
+                    """
+                )
+            }
+        }
+        failure {
+            script {
+                slackSend(
+                    channel: SLACK_CHANNEL,
+                    color: 'danger',
+                    message: """
+                        ❌ Deployment Failed
+                        *Environment:* ${params.ENVIRONMENT}
+                        *Version:* ${params.VERSION ?: DOCKER_TAG}
+                        *Build:* ${BUILD_NUMBER}
+                        *Triggered by:* ${currentBuild.getBuildCauses()[0].userId}
+                        *Check console output:* ${BUILD_URL}
+                    """
+                )
+            }
+        }
+        always {
+            cleanWs()
+        }
+    }
+} 
