@@ -29,4 +29,8 @@ public class TypeEmplacementService {
     public void deleteById(Long id) {
         typeEmplacementRepository.deleteById(id);
     }
+    
+    public boolean existsById(Long id) {
+        return typeEmplacementRepository.existsById(id);
+    }
 } 

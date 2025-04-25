@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PersonneTest {
@@ -19,37 +21,42 @@ class PersonneTest {
     @DisplayName("Devrait créer une personne avec des valeurs valides")
     void shouldCreateValidPersonne() {
         // Arrange
-        String firstname = "John";
-        String lastname = "Doe";
-        String email = "john.doe@example.com";
-        String password = "password123";
+        String nom = "Dupont";
+        String prenom = "Jean";
+        String email = "jean.dupont@example.com";
+        String telephone = "0123456789";
+        String adresse = "123 rue Example";
+        LocalDate dateNaissance = LocalDate.of(1990, 1, 1);
 
         // Act
-        personne.setFirstname(firstname);
-        personne.setLastname(lastname);
+        personne.setNom(nom);
+        personne.setPrenom(prenom);
         personne.setEmail(email);
-        personne.setPassword(password);
+        personne.setTelephone(telephone);
+        personne.setAdresse(adresse);
+        personne.setDateNaissance(dateNaissance);
 
         // Assert
-        assertEquals(firstname, personne.getFirstname());
-        assertEquals(lastname, personne.getLastname());
+        assertEquals(nom, personne.getNom());
+        assertEquals(prenom, personne.getPrenom());
         assertEquals(email, personne.getEmail());
-        assertEquals(password, personne.getPassword());
+        assertEquals(telephone, personne.getTelephone());
+        assertEquals(adresse, personne.getAdresse());
+        assertEquals(dateNaissance, personne.getDateNaissance());
     }
 
     @Test
     @DisplayName("Devrait gérer le rôle de la personne")
     void shouldHandleRole() {
         // Arrange
-        Role userRole = new Role(RoleType.USER);
+        Role role = Role.USER;
         
         // Act
-        personne.setRole(userRole);
+        personne.setRole(role);
 
         // Assert
         assertNotNull(personne.getRole());
-        assertEquals(userRole, personne.getRole());
-        assertEquals(RoleType.USER, personne.getRole().getName());
+        assertEquals(role, personne.getRole());
     }
 
     @Test
@@ -59,12 +66,12 @@ class PersonneTest {
         Personne personne1 = new Personne();
         Personne personne2 = new Personne();
         
-        personne1.setFirstname("John");
-        personne1.setLastname("Doe");
+        personne1.setNom("John");
+        personne1.setPrenom("Doe");
         personne1.setEmail("john.doe@example.com");
         
-        personne2.setFirstname("John");
-        personne2.setLastname("Doe");
+        personne2.setNom("John");
+        personne2.setPrenom("Doe");
         personne2.setEmail("john.doe@example.com");
         
         // Act & Assert
@@ -80,10 +87,12 @@ class PersonneTest {
     @DisplayName("Devrait gérer les valeurs nulles")
     void shouldHandleNullValues() {
         // Act & Assert
-        assertNull(personne.getFirstname());
-        assertNull(personne.getLastname());
+        assertNull(personne.getNom());
+        assertNull(personne.getPrenom());
         assertNull(personne.getEmail());
-        assertNull(personne.getPassword());
+        assertNull(personne.getTelephone());
+        assertNull(personne.getAdresse());
+        assertNull(personne.getDateNaissance());
         assertNull(personne.getRole());
     }
 
@@ -91,22 +100,28 @@ class PersonneTest {
     @DisplayName("Devrait mettre à jour les informations de la personne")
     void shouldUpdatePersonneInfo() {
         // Arrange
-        personne.setFirstname("John");
-        personne.setLastname("Doe");
+        personne.setNom("John");
+        personne.setPrenom("Doe");
         personne.setEmail("john.doe@example.com");
-        personne.setPassword("oldPassword");
+        personne.setTelephone("0123456789");
+        personne.setAdresse("123 rue Example");
+        personne.setDateNaissance(LocalDate.of(1990, 1, 1));
 
         // Act
-        personne.setFirstname("Jane");
-        personne.setLastname("Smith");
+        personne.setNom("Jane");
+        personne.setPrenom("Smith");
         personne.setEmail("jane.smith@example.com");
-        personne.setPassword("newPassword");
+        personne.setTelephone("0123456789");
+        personne.setAdresse("123 rue Example");
+        personne.setDateNaissance(LocalDate.of(1990, 1, 1));
 
         // Assert
-        assertEquals("Jane", personne.getFirstname());
-        assertEquals("Smith", personne.getLastname());
+        assertEquals("Jane", personne.getNom());
+        assertEquals("Smith", personne.getPrenom());
         assertEquals("jane.smith@example.com", personne.getEmail());
-        assertEquals("newPassword", personne.getPassword());
+        assertEquals("0123456789", personne.getTelephone());
+        assertEquals("123 rue Example", personne.getAdresse());
+        assertEquals(LocalDate.of(1990, 1, 1), personne.getDateNaissance());
     }
 
     @Test
@@ -138,21 +153,19 @@ class PersonneTest {
     @Test
     void testPersonneEquality() {
         // Given
-        Personne personne1 = Personne.builder()
-                .nom("Dupont")
-                .prenom("Jean")
-                .email("jean.dupont@example.com")
-                .telephone("0123456789")
-                .role(Role.USER)
-                .build();
+        Personne personne1 = new Personne();
+        personne1.setNom("Dupont");
+        personne1.setPrenom("Jean");
+        personne1.setEmail("jean.dupont@example.com");
+        personne1.setTelephone("0123456789");
+        personne1.setRole(Role.USER);
 
-        Personne personne2 = Personne.builder()
-                .nom("Dupont")
-                .prenom("Jean")
-                .email("jean.dupont@example.com")
-                .telephone("0123456789")
-                .role(Role.USER)
-                .build();
+        Personne personne2 = new Personne();
+        personne2.setNom("Dupont");
+        personne2.setPrenom("Jean");
+        personne2.setEmail("jean.dupont@example.com");
+        personne2.setTelephone("0123456789");
+        personne2.setRole(Role.USER);
 
         // Then
         assertEquals(personne1, personne2);

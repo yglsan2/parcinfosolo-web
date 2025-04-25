@@ -43,7 +43,7 @@ public class ObjetNomadeService {
     }
 
     public List<ObjetNomade> getObjetsNomadesByUtilisateur(Long utilisateurId) {
-        return objetNomadeRepository.findByUtilisateurIdPersonne(utilisateurId);
+        return objetNomadeRepository.findByUtilisateurId(utilisateurId);
     }
 
     @Transactional
@@ -81,11 +81,8 @@ public class ObjetNomadeService {
         objetNomadeRepository.save(objetNomade);
     }
 
-    public List<Peripherique> getPeripheriques(Long idObjetNomade) {
-        if (!existsById(idObjetNomade)) {
-            throw new RuntimeException("Objet nomade non trouvé");
-        }
-        return peripheriqueRepository.findByObjetNomadeIdObjetNomade(idObjetNomade);
+    public List<Peripherique> getPeripheriques(Long objetNomadeId) {
+        return peripheriqueRepository.findByObjetNomadeId(objetNomadeId);
     }
 
     public Peripherique ajouterPeripherique(Long idObjetNomade, Peripherique peripherique) {

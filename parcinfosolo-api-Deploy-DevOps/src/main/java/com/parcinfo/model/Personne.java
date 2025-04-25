@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Personne {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +50,7 @@ public class Personne {
     private LocalDate dateNaissance;
     
     @OneToMany(mappedBy = "personne", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Affectation> affectations = new ArrayList<>();
 
     @Column(nullable = false)
@@ -57,7 +62,6 @@ public class Personne {
     @Column(nullable = false)
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
+    @Enumerated(EnumType.STRING)
     private Role role;
 } 

@@ -37,12 +37,11 @@ class AuthenticationServiceTest {
     private RegisterRequest registerRequest;
     private AuthenticationRequest authenticationRequest;
     private User user;
-    private String token;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        authenticationService = new AuthenticationService(userRepository, passwordEncoder);
+        authenticationService = new AuthenticationService(userRepository, passwordEncoder, authenticationManager);
 
         registerRequest = RegisterRequest.builder()
                 .username("testuser")
@@ -51,20 +50,17 @@ class AuthenticationServiceTest {
                 .build();
 
         authenticationRequest = AuthenticationRequest.builder()
-                .email("john.doe@example.com")
+                .username("testuser")
                 .password("password123")
                 .build();
 
         user = User.builder()
                 .id(1L)
-                .firstname("John")
-                .lastname("Doe")
-                .email("john.doe@example.com")
+                .username("testuser")
+                .email("test@example.com")
                 .password("encodedPassword")
                 .role(Role.USER)
                 .build();
-
-        token = "jwt.token.here";
     }
 
     @Test
@@ -74,27 +70,29 @@ class AuthenticationServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         // When
-        User savedUser = authenticationService.register(registerRequest);
+        AuthenticationResponse response = authenticationService.register(registerRequest);
 
         // Then
-        assertNotNull(savedUser);
-        assertEquals(registerRequest.getUsername(), savedUser.getUsername());
-        assertEquals(registerRequest.getEmail(), savedUser.getEmail());
+        assertNotNull(response);
+        assertEquals(registerRequest.getUsername(), response.getUsername());
+        assertEquals(registerRequest.getEmail(), response.getEmail());
         verify(userRepository).save(any(User.class));
         verify(passwordEncoder).encode(registerRequest.getPassword());
     }
 
     @Test
-    void authenticate_ShouldReturnTokenForValidCredentials() {
+    void authenticate_ShouldReturnResponseForValidCredentials() {
         // Arrange
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
 
         // Act
         AuthenticationResponse response = authenticationService.authenticate(authenticationRequest);
 
         // Assert
         assertNotNull(response);
-        assertEquals(token, response.getToken());
+        assertEquals(user.getUsername(), response.getUsername());
+        assertEquals(user.getEmail(), response.getEmail());
+        assertEquals(user.getRole().name(), response.getRole());
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
     }
 } 

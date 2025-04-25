@@ -14,5 +14,5 @@ public interface ObjetNomadeRepository extends JpaRepository<ObjetNomade, Long> 
     List<ObjetNomade> findByType(TypeObjetNomade type);
     List<ObjetNomade> findByMarque(String marque);
     List<ObjetNomade> findByEstActif(boolean estActif);
-    List<ObjetNomade> findByUtilisateurIdPersonne(Long utilisateurId);
+    List<ObjetNomade> findByUtilisateurId(Long utilisateurId);
 } 

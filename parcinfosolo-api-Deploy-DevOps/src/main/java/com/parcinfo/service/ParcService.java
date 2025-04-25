@@ -29,4 +29,8 @@ public class ParcService {
     public void deleteById(Long id) {
         parcRepository.deleteById(id);
     }
+    
+    public boolean existsById(Long id) {
+        return parcRepository.existsById(id);
+    }
 } 

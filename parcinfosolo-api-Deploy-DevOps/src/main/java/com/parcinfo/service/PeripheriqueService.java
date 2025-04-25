@@ -1,22 +1,18 @@
-package com.parcinfo.web.service;
+package com.parcinfo.service;
 
 import com.parcinfo.model.Peripherique;
 import com.parcinfo.repository.PeripheriqueRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class PeripheriqueService {
 
-    private final PeripheriqueRepository peripheriqueRepository;
-
-    public PeripheriqueService(PeripheriqueRepository peripheriqueRepository) {
-        this.peripheriqueRepository = peripheriqueRepository;
-    }
+    @Autowired
+    private PeripheriqueRepository peripheriqueRepository;
 
     public List<Peripherique> findAll() {
         return peripheriqueRepository.findAll();
@@ -30,7 +26,7 @@ public class PeripheriqueService {
         return peripheriqueRepository.save(peripherique);
     }
 
-    public void deletePeripherique(Long id) {
+    public void deleteById(Long id) {
         peripheriqueRepository.deleteById(id);
     }
 } 

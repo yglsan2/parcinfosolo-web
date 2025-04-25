@@ -23,11 +23,11 @@ public class EmplacementService {
     }
     
     public List<Emplacement> findByParcId(Long parcId) {
-        return emplacementRepository.findByParcIdParc(parcId);
+        return emplacementRepository.findByParcId(parcId);
     }
     
     public List<Emplacement> findByTypeEmplacementId(Long typeEmplacementId) {
-        return emplacementRepository.findByTypeEmplacementIdTypeEmplacement(typeEmplacementId);
+        return emplacementRepository.findByTypeEmplacementId(typeEmplacementId);
     }
     
     public Emplacement save(Emplacement emplacement) {
@@ -36,5 +36,9 @@ public class EmplacementService {
     
     public void deleteById(Long id) {
         emplacementRepository.deleteById(id);
+    }
+    
+    public boolean existsById(Long id) {
+        return emplacementRepository.existsById(id);
     }
 } 

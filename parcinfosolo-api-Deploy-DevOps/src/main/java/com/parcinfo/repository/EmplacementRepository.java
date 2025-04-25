@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface EmplacementRepository extends JpaRepository<Emplacement, Long> {
-    List<Emplacement> findByParcIdParc(Long parcId);
-    List<Emplacement> findByTypeEmplacementIdTypeEmplacement(Long typeEmplacementId);
+    List<Emplacement> findByParcId(Long parcId);
+    List<Emplacement> findByTypeEmplacementId(Long typeEmplacementId);
 } 

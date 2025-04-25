@@ -34,4 +34,9 @@ public class OrdinateurPortableServiceImpl implements OrdinateurPortableService 
     public void deleteById(Long id) {
         ordinateurPortableRepository.deleteById(id);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return ordinateurPortableRepository.existsById(id);
+    }
 } 

@@ -1,0 +1,42 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Fichiers de développement
+.vscode/
+*.code-workspace
+
+# Fichiers de build et dépendances
+target/
+*.class
+*.jar
+
+# Fichiers temporaires
+*.bak
+*.swp
+*~
+.~*
+
+# Dossiers externes
+../23-04/
+../24-04*/
+../Analyse*
+../CONSIGNES*
+../Capture*
+../Document*
+../ECF-DevOps*
+../GitHub*
+../Logo*
+../Parcinfo*
+../Plan_Projet*
+../Projet*
+../Rangement2/
+../Sauvegarde*
+../Spring15-04/
+../Tous les PDF*
+../apercu*
+../charte*
+../endpoint*
+../parcinfo*
+../src/ 

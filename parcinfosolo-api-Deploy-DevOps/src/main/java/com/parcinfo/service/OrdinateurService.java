@@ -1,18 +1,21 @@
-package com.parcinfo.web.service;
+package com.parcinfo.service;
 
-import com.parcinfo.web.model.Ordinateur;
-import com.parcinfo.web.repository.OrdinateurRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.parcinfo.model.Ordinateur;
+import com.parcinfo.repository.OrdinateurRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class OrdinateurService {
+    
+    private final OrdinateurRepository ordinateurRepository;
 
-    @Autowired
-    private OrdinateurRepository ordinateurRepository;
+    public OrdinateurService(OrdinateurRepository ordinateurRepository) {
+        this.ordinateurRepository = ordinateurRepository;
+    }
 
     public List<Ordinateur> findAll() {
         return ordinateurRepository.findAll();

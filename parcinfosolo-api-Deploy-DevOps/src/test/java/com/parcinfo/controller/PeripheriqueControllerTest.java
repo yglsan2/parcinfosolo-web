@@ -1,178 +1,135 @@
 package com.parcinfo.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.parcinfo.config.TestSecurityConfig;
 import com.parcinfo.model.Peripherique;
 import com.parcinfo.model.TypePeripherique;
-import com.parcinfo.web.service.PeripheriqueService;
-import com.parcinfo.web.controller.PeripheriqueController;
-import org.junit.jupiter.api.BeforeEach;
+import com.parcinfo.service.PeripheriqueService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-class PeripheriqueControllerTest {
+@WebMvcTest(PeripheriqueController.class)
+@Import(TestSecurityConfig.class)
+public class PeripheriqueControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private PeripheriqueService peripheriqueService;
 
-    @Mock
-    private Model model;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Mock
-    private BindingResult bindingResult;
+    @Test
+    public void testGetAllPeripheriques() throws Exception {
+        Peripherique peripherique = new Peripherique();
+        peripherique.setId(1L);
+        peripherique.setMarque("HP");
+        peripherique.setModele("LaserJet");
+        peripherique.setType(TypePeripherique.IMPRIMANTE);
+        peripherique.setNumeroSerie("123456");
+        peripherique.setDateAcquisition(LocalDateTime.now());
 
-    @Mock
-    private RedirectAttributes redirectAttributes;
+        when(peripheriqueService.findAll()).thenReturn(Arrays.asList(peripherique));
 
-    @InjectMocks
-    private PeripheriqueController peripheriqueController;
-
-    private Peripherique testPeripherique;
-    private List<Peripherique> testPeripheriques;
-
-    @BeforeEach
-    void setUp() {
-        testPeripherique = new Peripherique();
-        testPeripherique.setId(1L);
-        testPeripherique.setType(TypePeripherique.SOURIS);
-        testPeripherique.setMarque("Test Marque");
-        testPeripherique.setModele("Test Modele");
-        testPeripherique.setNumeroSerie("Test NumeroSerie");
-        testPeripherique.setDateAcquisition(LocalDateTime.now());
-        testPeripherique.setEtat(Peripherique.EtatPeripherique.BON);
-        testPeripheriques = Arrays.asList(testPeripherique);
+        mockMvc.perform(get("/api/peripheriques"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].marque").value("HP"))
+                .andExpect(jsonPath("$[0].modele").value("LaserJet"))
+                .andExpect(jsonPath("$[0].type").value("IMPRIMANTE"))
+                .andExpect(jsonPath("$[0].numeroSerie").value("123456"));
     }
 
     @Test
-    void listPeripheriques_ShouldReturnListView() {
-        when(peripheriqueService.findAll()).thenReturn(testPeripheriques);
+    public void testGetPeripheriqueById() throws Exception {
+        Peripherique peripherique = new Peripherique();
+        peripherique.setId(1L);
+        peripherique.setMarque("HP");
+        peripherique.setModele("LaserJet");
+        peripherique.setType(TypePeripherique.IMPRIMANTE);
+        peripherique.setNumeroSerie("123456");
+        peripherique.setDateAcquisition(LocalDateTime.now());
 
-        String viewName = peripheriqueController.listPeripheriques(model);
-        
-        assertEquals("peripheriques/list", viewName);
-        verify(model).addAttribute("peripheriques", testPeripheriques);
+        when(peripheriqueService.findById(1L)).thenReturn(Optional.of(peripherique));
+
+        mockMvc.perform(get("/api/peripheriques/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.marque").value("HP"))
+                .andExpect(jsonPath("$.modele").value("LaserJet"))
+                .andExpect(jsonPath("$.type").value("IMPRIMANTE"))
+                .andExpect(jsonPath("$.numeroSerie").value("123456"));
     }
 
     @Test
-    void viewPeripherique_WhenExists_ShouldReturnView() {
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
+    public void testCreatePeripherique() throws Exception {
+        Peripherique peripherique = new Peripherique();
+        peripherique.setMarque("HP");
+        peripherique.setModele("LaserJet");
+        peripherique.setType(TypePeripherique.IMPRIMANTE);
+        peripherique.setNumeroSerie("123456");
+        peripherique.setDateAcquisition(LocalDateTime.now());
 
-        String viewName = peripheriqueController.viewPeripherique(1L, model, redirectAttributes);
-        
-        assertEquals("peripheriques/view", viewName);
-        verify(model).addAttribute("peripherique", testPeripherique);
+        when(peripheriqueService.save(any(Peripherique.class))).thenReturn(peripherique);
+
+        mockMvc.perform(post("/api/peripheriques")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(peripherique)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.marque").value("HP"))
+                .andExpect(jsonPath("$.modele").value("LaserJet"))
+                .andExpect(jsonPath("$.type").value("IMPRIMANTE"))
+                .andExpect(jsonPath("$.numeroSerie").value("123456"));
     }
 
     @Test
-    void viewPeripherique_WhenNotExists_ShouldRedirectToList() {
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.empty());
+    public void testUpdatePeripherique() throws Exception {
+        Peripherique peripherique = new Peripherique();
+        peripherique.setId(1L);
+        peripherique.setMarque("HP");
+        peripherique.setModele("LaserJet");
+        peripherique.setType(TypePeripherique.IMPRIMANTE);
+        peripherique.setNumeroSerie("123456");
+        peripherique.setDateAcquisition(LocalDateTime.now());
 
-        String viewName = peripheriqueController.viewPeripherique(1L, model, redirectAttributes);
-        
-        assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("error", "Périphérique non trouvé");
+        when(peripheriqueService.findById(1L)).thenReturn(Optional.of(peripherique));
+        when(peripheriqueService.save(any(Peripherique.class))).thenReturn(peripherique);
+
+        mockMvc.perform(put("/api/peripheriques/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(peripherique)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.marque").value("HP"))
+                .andExpect(jsonPath("$.modele").value("LaserJet"))
+                .andExpect(jsonPath("$.type").value("IMPRIMANTE"))
+                .andExpect(jsonPath("$.numeroSerie").value("123456"));
     }
 
     @Test
-    void showCreateForm_ShouldReturnFormView() {
-        String viewName = peripheriqueController.showCreateForm(model);
-        
-        assertEquals("peripheriques/form", viewName);
-        verify(model).addAttribute(eq("peripherique"), any(Peripherique.class));
-    }
-
-    @Test
-    void showEditForm_WhenExists_ShouldReturnFormView() {
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
-
-        String viewName = peripheriqueController.showEditForm(1L, model, redirectAttributes);
-        
-        assertEquals("peripheriques/form", viewName);
-        verify(model).addAttribute("peripherique", testPeripherique);
-    }
-
-    @Test
-    void showEditForm_WhenNotExists_ShouldRedirectToList() {
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.empty());
-
-        String viewName = peripheriqueController.showEditForm(1L, model, redirectAttributes);
-        
-        assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("error", "Périphérique non trouvé");
-    }
-
-    @Test
-    void savePeripherique_WhenValid_ShouldRedirectToList() {
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(peripheriqueService.save(any(Peripherique.class))).thenReturn(testPeripherique);
-
-        String viewName = peripheriqueController.savePeripherique(testPeripherique, bindingResult, redirectAttributes);
-        
-        assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("success", "Périphérique créé avec succès");
-    }
-
-    @Test
-    void savePeripherique_WhenInvalid_ShouldReturnFormView() {
-        when(bindingResult.hasErrors()).thenReturn(true);
-
-        String viewName = peripheriqueController.savePeripherique(testPeripherique, bindingResult, redirectAttributes);
-        
-        assertEquals("peripheriques/form", viewName);
-    }
-
-    @Test
-    void updatePeripherique_WhenValid_ShouldRedirectToList() {
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
-        when(peripheriqueService.save(any(Peripherique.class))).thenReturn(testPeripherique);
-
-        String viewName = peripheriqueController.updatePeripherique(1L, testPeripherique, bindingResult, redirectAttributes);
-        
-        assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("success", "Périphérique mis à jour avec succès");
-    }
-
-    @Test
-    void updatePeripherique_WhenInvalid_ShouldReturnFormView() {
-        when(bindingResult.hasErrors()).thenReturn(true);
-
-        String viewName = peripheriqueController.updatePeripherique(1L, testPeripherique, bindingResult, redirectAttributes);
-        
-        assertEquals("peripheriques/form", viewName);
-    }
-
-    @Test
-    void deletePeripherique_WhenSuccess_ShouldRedirectToList() {
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.of(testPeripherique));
-
-        String viewName = peripheriqueController.deletePeripherique(1L, redirectAttributes);
-        
-        assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("success", "Périphérique supprimé avec succès");
-    }
-
-    @Test
-    void deletePeripherique_WhenNotExists_ShouldRedirectToList() {
-        when(peripheriqueService.findById(1L)).thenReturn(Optional.empty());
-
-        String viewName = peripheriqueController.deletePeripherique(1L, redirectAttributes);
-        
-        assertEquals("redirect:/peripheriques", viewName);
-        verify(redirectAttributes).addFlashAttribute("error", "Périphérique non trouvé");
+    public void testDeletePeripherique() throws Exception {
+        mockMvc.perform(delete("/api/peripheriques/1"))
+                .andExpect(status().isNoContent());
     }
 } 

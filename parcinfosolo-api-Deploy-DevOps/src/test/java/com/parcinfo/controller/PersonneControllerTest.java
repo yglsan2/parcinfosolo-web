@@ -1,218 +1,107 @@
 package com.parcinfo.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcinfo.model.Personne;
-import com.parcinfo.model.Role;
-import com.parcinfo.model.RoleType;
-import com.parcinfo.web.service.PersonneService;
-import com.parcinfo.web.controller.PersonneController;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import com.parcinfo.service.PersonneService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
-class PersonneControllerTest {
+@WebMvcTest(PersonneController.class)
+public class PersonneControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private PersonneService personneService;
 
-    @Mock
-    private Model model;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Mock
-    private BindingResult bindingResult;
+    @Test
+    public void getAllPersonnes_ShouldReturnPersonnes() throws Exception {
+        Personne personne = new Personne();
+        personne.setId(1L);
+        personne.setNom("Test");
+        personne.setPrenom("User");
 
-    @Mock
-    private RedirectAttributes redirectAttributes;
+        when(personneService.findAll()).thenReturn(Arrays.asList(personne));
 
-    @InjectMocks
-    private PersonneController personneController;
-
-    private Personne personne;
-
-    @BeforeEach
-    void setUp() {
-        personne = new Personne();
-        personne.setFirstname("John");
-        personne.setLastname("Doe");
-        personne.setEmail("john.doe@example.com");
-        personne.setPassword("password123");
-        personne.setRole(new Role(RoleType.USER));
+        mockMvc.perform(get("/personnes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].nom").value("Test"))
+                .andExpect(jsonPath("$[0].prenom").value("User"));
     }
 
     @Test
-    @DisplayName("Devrait afficher la liste des personnes")
-    void shouldListPersonnes() {
-        // Arrange
-        List<Personne> personnes = Arrays.asList(personne);
-        when(personneService.findAll()).thenReturn(personnes);
+    public void getPersonneById_ShouldReturnPersonne() throws Exception {
+        Personne personne = new Personne();
+        personne.setId(1L);
+        personne.setNom("Test");
+        personne.setPrenom("User");
 
-        // Act
-        String viewName = personneController.listPersonnes(model);
+        when(personneService.findById(1L)).thenReturn(Optional.of(personne));
 
-        // Assert
-        assertEquals("personnes/list", viewName);
-        verify(model).addAttribute("personnes", personnes);
+        mockMvc.perform(get("/personnes/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nom").value("Test"))
+                .andExpect(jsonPath("$.prenom").value("User"));
     }
 
     @Test
-    @DisplayName("Devrait afficher les détails d'une personne")
-    void shouldViewPersonne() {
-        // Arrange
-        Long id = 1L;
-        when(personneService.findById(id)).thenReturn(Optional.of(personne));
+    public void createPersonne_ShouldReturnCreatedPersonne() throws Exception {
+        Personne personne = new Personne();
+        personne.setNom("Test");
+        personne.setPrenom("User");
 
-        // Act
-        String viewName = personneController.viewPersonne(id, model, redirectAttributes);
-
-        // Assert
-        assertEquals("personnes/view", viewName);
-        verify(model).addAttribute("personne", personne);
-    }
-
-    @Test
-    @DisplayName("Devrait rediriger si la personne n'est pas trouvée")
-    void shouldRedirectWhenPersonneNotFound() {
-        // Arrange
-        Long id = 1L;
-        when(personneService.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        String viewName = personneController.viewPersonne(id, model, redirectAttributes);
-
-        // Assert
-        assertEquals("redirect:/personnes", viewName);
-        verify(redirectAttributes).addFlashAttribute("error", "Personne non trouvée");
-    }
-
-    @Test
-    @DisplayName("Devrait afficher le formulaire de création")
-    void shouldShowCreateForm() {
-        // Act
-        String viewName = personneController.showCreateForm(model);
-
-        // Assert
-        assertEquals("personnes/form", viewName);
-        verify(model).addAttribute(eq("personne"), any(Personne.class));
-    }
-
-    @Test
-    @DisplayName("Devrait afficher le formulaire de modification")
-    void shouldShowEditForm() {
-        // Arrange
-        Long id = 1L;
-        when(personneService.findById(id)).thenReturn(Optional.of(personne));
-
-        // Act
-        String viewName = personneController.showEditForm(id, model, redirectAttributes);
-
-        // Assert
-        assertEquals("personnes/form", viewName);
-        verify(model).addAttribute("personne", personne);
-    }
-
-    @Test
-    @DisplayName("Devrait rediriger si la personne à modifier n'est pas trouvée")
-    void shouldRedirectWhenEditingNonExistentPersonne() {
-        // Arrange
-        Long id = 1L;
-        when(personneService.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        String viewName = personneController.showEditForm(id, model, redirectAttributes);
-
-        // Assert
-        assertEquals("redirect:/personnes", viewName);
-        verify(redirectAttributes).addFlashAttribute("error", "Personne non trouvée");
-    }
-
-    @Test
-    @DisplayName("Devrait sauvegarder une nouvelle personne")
-    void shouldSavePersonne() {
-        // Arrange
-        when(bindingResult.hasErrors()).thenReturn(false);
         when(personneService.save(any(Personne.class))).thenReturn(personne);
 
-        // Act
-        String viewName = personneController.savePersonne(personne, bindingResult, redirectAttributes);
-
-        // Assert
-        assertEquals("redirect:/personnes", viewName);
-        verify(redirectAttributes).addFlashAttribute("success", "Personne créée avec succès");
+        mockMvc.perform(post("/personnes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personne)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nom").value("Test"))
+                .andExpect(jsonPath("$.prenom").value("User"));
     }
 
     @Test
-    @DisplayName("Devrait retourner au formulaire si la validation échoue")
-    void shouldReturnToFormWhenValidationFails() {
-        // Arrange
-        when(bindingResult.hasErrors()).thenReturn(true);
+    public void updatePersonne_ShouldReturnUpdatedPersonne() throws Exception {
+        Personne personne = new Personne();
+        personne.setId(1L);
+        personne.setNom("Test");
+        personne.setPrenom("User");
 
-        // Act
-        String viewName = personneController.savePersonne(personne, bindingResult, redirectAttributes);
-
-        // Assert
-        assertEquals("personnes/form", viewName);
-    }
-
-    @Test
-    @DisplayName("Devrait mettre à jour une personne existante")
-    void shouldUpdatePersonne() {
-        // Arrange
-        Long id = 1L;
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(personneService.findById(id)).thenReturn(Optional.of(personne));
+        when(personneService.existsById(1L)).thenReturn(true);
         when(personneService.save(any(Personne.class))).thenReturn(personne);
 
-        // Act
-        String viewName = personneController.updatePersonne(id, personne, bindingResult, redirectAttributes);
-
-        // Assert
-        assertEquals("redirect:/personnes", viewName);
-        verify(redirectAttributes).addFlashAttribute("success", "Personne mise à jour avec succès");
+        mockMvc.perform(put("/personnes/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personne)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nom").value("Test"))
+                .andExpect(jsonPath("$.prenom").value("User"));
     }
 
     @Test
-    @DisplayName("Devrait supprimer une personne")
-    void shouldDeletePersonne() {
-        // Arrange
-        Long id = 1L;
-        when(personneService.findById(id)).thenReturn(Optional.of(personne));
+    public void deletePersonne_ShouldReturnNoContent() throws Exception {
+        when(personneService.existsById(1L)).thenReturn(true);
 
-        // Act
-        String viewName = personneController.deletePersonne(id, redirectAttributes);
-
-        // Assert
-        assertEquals("redirect:/personnes", viewName);
-        verify(redirectAttributes).addFlashAttribute("success", "Personne supprimée avec succès");
-    }
-
-    @Test
-    @DisplayName("Devrait rediriger si la personne à supprimer n'est pas trouvée")
-    void shouldRedirectWhenDeletingNonExistentPersonne() {
-        // Arrange
-        Long id = 1L;
-        when(personneService.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        String viewName = personneController.deletePersonne(id, redirectAttributes);
-
-        // Assert
-        assertEquals("redirect:/personnes", viewName);
-        verify(redirectAttributes).addFlashAttribute("error", "Personne non trouvée");
+        mockMvc.perform(delete("/personnes/1"))
+                .andExpect(status().isNoContent());
     }
 } 

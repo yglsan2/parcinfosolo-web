@@ -1,14 +1,21 @@
 package com.parcinfo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.parcinfo.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponse {
-    private String token;
+    private Long id;
+    private String username;
+    private String email;
+    private String role;
+
+    public AuthenticationResponse(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.role = user.getRole().name();
+    }
 }

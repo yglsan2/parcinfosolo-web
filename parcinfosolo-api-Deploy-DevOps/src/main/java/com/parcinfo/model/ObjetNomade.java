@@ -17,6 +17,7 @@ import java.util.List;
 public class ObjetNomade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_objet_nomade")
     private Long id;
 
     @NotBlank(message = "Le nom est obligatoire")

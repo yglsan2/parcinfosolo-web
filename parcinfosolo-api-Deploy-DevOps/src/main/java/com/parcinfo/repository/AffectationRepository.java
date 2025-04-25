@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface AffectationRepository extends JpaRepository<Affectation, Long> {
-    List<Affectation> findByPersonneIdPersonne(Long personneId);
-    List<Affectation> findByAppareilIdAppareil(Long appareilId);
+    List<Affectation> findByPersonneId(Long personneId);
+    List<Affectation> findByAppareilId(Long appareilId);
 } 

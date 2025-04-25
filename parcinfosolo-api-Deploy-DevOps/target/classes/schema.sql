@@ -83,9 +83,40 @@ CREATE TABLE IF NOT EXISTS peripherique (
 -- Table des affectations
 CREATE TABLE IF NOT EXISTS affectation (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    personne_id BIGINT NOT NULL,
-    appareil_id BIGINT NOT NULL,
+    id_personne BIGINT NOT NULL,
+    id_appareil BIGINT NOT NULL,
     date_affectation DATE NOT NULL,
-    FOREIGN KEY (personne_id) REFERENCES personne(id_personne),
-    FOREIGN KEY (appareil_id) REFERENCES appareil(id_appareil)
+    FOREIGN KEY (id_personne) REFERENCES personne(id_personne),
+    FOREIGN KEY (id_appareil) REFERENCES appareil(id_appareil)
+);
+
+-- Table des parcs
+CREATE TABLE IF NOT EXISTS parc (
+    id_parc BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    adresse VARCHAR(255),
+    code_postal VARCHAR(10),
+    ville VARCHAR(100),
+    pays VARCHAR(100),
+    est_actif BOOLEAN DEFAULT TRUE
+);
+
+-- Table des types d'emplacements
+CREATE TABLE IF NOT EXISTS type_emplacement (
+    id_type_emplacement BIGINT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT
+);
+
+-- Table des emplacements
+CREATE TABLE IF NOT EXISTS emplacement (
+    id_emplacement BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    description TEXT,
+    parc_id BIGINT NOT NULL,
+    type_emplacement_id BIGINT NOT NULL,
+    est_actif BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (parc_id) REFERENCES parc(id_parc),
+    FOREIGN KEY (type_emplacement_id) REFERENCES type_emplacement(id_type_emplacement)
 ); 

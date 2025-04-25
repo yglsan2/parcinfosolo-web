@@ -8,4 +8,5 @@ public interface OrdinateurPortableService {
     OrdinateurPortable findById(Long id);
     OrdinateurPortable save(OrdinateurPortable ordinateur);
     void deleteById(Long id);
+    boolean existsById(Long id);
 } 

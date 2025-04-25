@@ -1,0 +1,128 @@
+pipeline {
+    agent any
+
+    environment {
+        // Charger les webhooks depuis le fichier de configuration
+        DISCORD_WEBHOOK = credentials('discord-webhook-url')
+        // Variables d'environnement pour Maven
+        MAVEN_HOME = tool 'Maven'
+        JAVA_HOME = tool 'JDK21'
+        PATH = "${MAVEN_HOME}/bin:${JAVA_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        
+        stage('Database Migration') {
+            steps {
+                script {
+                    try {
+                        // Vérifier que MySQL est en cours d'exécution
+                        sh 'mysql --version'
+                        
+                        // Exécuter les scripts SQL si nécessaire
+                        sh """
+                            mysql -u root -e "CREATE DATABASE IF NOT EXISTS parcinfodb;"
+                            mysql -u root parcinfodb < src/main/resources/schema.sql
+                            mysql -u root parcinfodb < src/main/resources/data.sql
+                        """
+                        
+                        echo "Migration de la base de données réussie"
+                    } catch (Exception e) {
+                        echo "Erreur lors de la migration de la base de données: ${e.message}"
+                        throw e
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Production') {
+            steps {
+                script {
+                    try {
+                        // Arrêter l'application existante si elle est en cours d'exécution
+                        sh 'pkill -f parcinfo3 || true'
+                        
+                        // Démarrer l'application
+                        sh """
+                            nohup java -jar target/parcinfo3-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &
+                            echo \$! > app.pid
+                        """
+                        
+                        // Attendre que l'application démarre
+                        sh 'sleep 10'
+                        
+                        // Vérifier que l'application est en cours d'exécution
+                        sh 'curl -s http://localhost:8083/actuator/health || exit 1'
+                        
+                        echo "Déploiement réussi"
+                        
+                        // Envoyer la notification de succès
+                        sh """
+                            chmod +x ./jenkinsDiscord/notify-discord.sh
+                            ./jenkinsDiscord/notify-discord.sh \
+                            "${DISCORD_WEBHOOK}" \
+                            "PRODUCTION" \
+                            "SUCCESS" \
+                            "${BUILD_NUMBER}" \
+                            "${GIT_COMMIT_MESSAGE}" \
+                            "${currentBuild.durationString}"
+                        """
+                    } catch (Exception e) {
+                        // Envoyer la notification d'échec
+                        sh """
+                            chmod +x ./jenkinsDiscord/notify-discord.sh
+                            ./jenkinsDiscord/notify-discord.sh \
+                            "${DISCORD_WEBHOOK}" \
+                            "PRODUCTION" \
+                            "FAILURE" \
+                            "${BUILD_NUMBER}" \
+                            "${GIT_COMMIT_MESSAGE}" \
+                            "${currentBuild.durationString}"
+                        """
+                        throw e
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Notification pour les builds instables
+            script {
+                if (currentBuild.result == 'UNSTABLE') {
+                    sh """
+                        chmod +x ./jenkinsDiscord/notify-discord.sh
+                        ./jenkinsDiscord/notify-discord.sh \
+                        "${DISCORD_WEBHOOK}" \
+                        "PRODUCTION" \
+                        "UNSTABLE" \
+                        "${BUILD_NUMBER}" \
+                        "${GIT_COMMIT_MESSAGE}" \
+                        "${currentBuild.durationString}"
+                    """
+                }
+            }
+            
+            // Nettoyage
+            sh 'rm -f app.pid || true'
+        }
+    }
+} 
