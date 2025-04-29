@@ -3,10 +3,10 @@
 ## 🚀 Vue d'ensemble
 
 ParcInfoSolo est une application de gestion de parc informatique divisée en deux parties distinctes :
-- **API** : Service backend RESTful (projet séparé)
+- **API** : Service Spring Boot MVC avec endpoints (projet séparé)
 - **Web** : Interface utilisateur (ce projet)
 
-Cette partie Web est une application Spring Boot qui consomme l'API via des endpoints REST et présente les données via une interface utilisateur Thymeleaf.
+Cette partie Web est une application Spring Boot qui consomme l'API via des endpoints et présente les données via une interface utilisateur Thymeleaf.
 
 ## 🛠 Technologies utilisées
 
@@ -55,7 +55,7 @@ L'application sera accessible à l'adresse : `http://localhost:8080`
 
 L'application suit une architecture MVC (Model-View-Controller) :
 
-- **Controllers** : Gèrent les requêtes HTTP et la logique métier
+- **Controllers** : Gèrent les requêtes HTTP avec des endpoints Spring MVC
 - **Services** : Implémentent la logique métier
 - **Models** : Représentent les entités de l'application
 - **Templates** : Vues Thymeleaf pour l'interface utilisateur
@@ -67,19 +67,19 @@ src/
 ├── main/
 │   ├── java/
 │   │   └── com/parcinfo/web/
-│   │       ├── controller/    # Contrôleurs REST
+│   │       ├── controller/    # Contrôleurs Spring MVC
 │   │       ├── service/       # Services métier
 │   │       ├── model/         # Entités
 │   │       └── config/        # Configuration Spring
 │   └── resources/
 │       ├── templates/         # Templates Thymeleaf
-│       ├── static/           # Ressources statiques (CSS, JS)
+│       ├── static/           # Ressources statiques (CSS)
 │       └── application.properties
 ```
 
 ## 🔄 Communication avec l'API
 
-L'application web communique avec l'API via des appels REST. Les endpoints principaux sont :
+L'application web communique avec l'API via des endpoints Spring MVC. Les endpoints principaux sont :
 
 - Gestion des ordinateurs
 - Gestion des périphériques
@@ -114,5 +114,4 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 🙏 Remerciements
 
-- La communauté Spring Boot pour leur documentation exceptionnelle
-- Les contributeurs open source dont le travail a rendu ce projet possible 
+- La communauté Spring Boot pour leur documentation exceptionnelle 
