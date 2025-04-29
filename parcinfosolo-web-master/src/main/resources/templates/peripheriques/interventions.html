@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interventions - ParcInfo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .intervention-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+        }
+        
+        .required-field::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+        
+        .intervention-type {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-tools me-2"></i>Interventions sur le Périphérique
+            </h2>
+            <a th:href="@{/peripheriques/{id}(id=${peripherique.id})}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour aux détails
+            </a>
+        </div>
+
+        <div class="intervention-container">
+            <h4 class="mb-4">Nouvelle Intervention</h4>
+            <form th:action="@{/peripheriques/{id}/interventions(id=${peripherique.id})}" method="post" class="needs-validation" novalidate>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="type" class="form-label required-field">Type d'intervention</label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="">Sélectionnez un type</option>
+                            <option value="MAINTENANCE">Maintenance</option>
+                            <option value="REPARATION">Réparation</option>
+                            <option value="INCIDENT">Incident</option>
+                            <option value="INSPECTION">Inspection</option>
+                        </select>
+                        <div class="invalid-feedback">Veuillez sélectionner un type d'intervention.</div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="date" class="form-label required-field">Date</label>
+                        <input type="datetime-local" class="form-control" id="date" name="date" required>
+                        <div class="invalid-feedback">Veuillez saisir une date.</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label required-field">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    <div class="invalid-feedback">Veuillez saisir une description.</div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="technicien" class="form-label required-field">Technicien</label>
+                        <input type="text" class="form-control" id="technicien" name="technicien" required>
+                        <div class="invalid-feedback">Veuillez saisir le nom du technicien.</div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="duree" class="form-label">Durée (minutes)</label>
+                        <input type="number" class="form-control" id="duree" name="duree" min="0">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="resultat" class="form-label required-field">Résultat</label>
+                    <select class="form-select" id="resultat" name="resultat" required>
+                        <option value="">Sélectionnez un résultat</option>
+                        <option value="REUSSI">Réussi</option>
+                        <option value="ECHEC">Échec</option>
+                        <option value="EN_COURS">En cours</option>
+                    </select>
+                    <div class="invalid-feedback">Veuillez sélectionner un résultat.</div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Enregistrer l'intervention
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="intervention-container">
+            <h4 class="mb-4">Historique des Interventions</h4>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Technicien</th>
+                            <th>Durée</th>
+                            <th>Résultat</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="intervention : ${interventions}">
+                            <td th:text="${#temporals.format(intervention.date, 'dd/MM/yyyy HH:mm')}">Date</td>
+                            <td>
+                                <span class="intervention-type" 
+                                      th:classappend="${intervention.type == 'MAINTENANCE'} ? 'bg-info' : 
+                                                     (${intervention.type == 'REPARATION'} ? 'bg-warning' : 
+                                                     (${intervention.type == 'INCIDENT'} ? 'bg-danger' : 'bg-secondary'))"
+                                      th:text="${intervention.type}">Type</span>
+                            </td>
+                            <td th:text="${intervention.description}">Description</td>
+                            <td th:text="${intervention.technicien}">Technicien</td>
+                            <td th:text="${intervention.duree != null ? intervention.duree + ' min' : '-'}">Durée</td>
+                            <td>
+                                <span class="intervention-type" 
+                                      th:classappend="${intervention.resultat == 'REUSSI'} ? 'bg-success' : 
+                                                     (${intervention.resultat == 'ECHEC'} ? 'bg-danger' : 'bg-warning')"
+                                      th:text="${intervention.resultat}">Résultat</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/peripheriques/{id}/interventions/{interventionId}/edit(id=${peripherique.id}, interventionId=${intervention.id})}" 
+                                   class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn btn-sm btn-danger" 
+                                        th:onclick="'return confirm(\'Êtes-vous sûr de vouloir supprimer cette intervention ?\');'">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${interventions.empty}">
+                            <td colspan="7" class="text-center">Aucune intervention enregistrée</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validation des formulaires Bootstrap
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+</body>
+</html> 

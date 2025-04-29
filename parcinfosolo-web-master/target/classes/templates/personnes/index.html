@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Gestion des Personnes - ParcInfo</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-people me-2"></i>Gestion des Personnes
+            </h1>
+            <a th:href="@{/personnes/new}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>Nouvelle Personne
+            </a>
+        </div>
+
+        <!-- Liste des personnes -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>
+                                <th>Service</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="personne : ${personnes}">
+                                <td th:text="${personne.idPersonne}">ID</td>
+                                <td th:text="${personne.nom}">Nom</td>
+                                <td th:text="${personne.prenom}">Prénom</td>
+                                <td th:text="${personne.email}">Email</td>
+                                <td th:text="${personne.telephone}">Téléphone</td>
+                                <td th:text="${personne.service}">Service</td>
+                                <td class="text-end">
+                                    <div class="btn-group">
+                                        <a th:href="@{'/personnes/' + ${personne.idPersonne}}" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{'/personnes/' + ${personne.idPersonne} + '/edit'}" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a th:href="@{'/personnes/' + ${personne.idPersonne} + '/delete'}" 
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette personne ?')">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

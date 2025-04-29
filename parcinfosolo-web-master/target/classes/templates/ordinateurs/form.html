@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(title=${ordinateur.id} ? 'Modifier Ordinateur' : 'Nouvel Ordinateur')}">
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <h2 th:text="${ordinateur.id} ? 'Modifier l''ordinateur' : 'Nouvel ordinateur'">Formulaire Ordinateur</h2>
+            
+            <form th:action="@{/ordinateurs}" th:object="${ordinateur}" method="post" class="mt-4">
+                <input type="hidden" th:if="${ordinateur.id}" th:field="*{id}">
+                
+                <div class="form-group mb-3">
+                    <label for="nom" class="form-label">Nom</label>
+                    <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="type" class="form-label">Type</label>
+                    <select class="form-select" id="type" th:field="*{type}" required>
+                        <option value="">Sélectionnez un type</option>
+                        <option value="FIXE">Ordinateur fixe</option>
+                        <option value="PORTABLE">Ordinateur portable</option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="etat" class="form-label">État</label>
+                    <select class="form-select" id="etat" th:field="*{etat}" required>
+                        <option value="">Sélectionnez un état</option>
+                        <option value="DISPONIBLE">Disponible</option>
+                        <option value="EN_PANNE">En panne</option>
+                        <option value="EN_MAINTENANCE">En maintenance</option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('etat')}" th:errors="*{etat}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="processeur" class="form-label">Processeur</label>
+                    <input type="text" class="form-control" id="processeur" th:field="*{processeur}" required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('processeur')}" th:errors="*{processeur}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="ram" class="form-label">RAM</label>
+                    <input type="text" class="form-control" id="ram" th:field="*{ram}" required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('ram')}" th:errors="*{ram}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="disqueDur" class="form-label">Disque dur</label>
+                    <input type="text" class="form-control" id="disqueDur" th:field="*{disqueDur}" required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('disqueDur')}" th:errors="*{disqueDur}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="carteGraphique" class="form-label">Carte graphique</label>
+                    <input type="text" class="form-control" id="carteGraphique" th:field="*{carteGraphique}">
+                    <div class="text-danger" th:if="${#fields.hasErrors('carteGraphique')}" th:errors="*{carteGraphique}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="systemeExploitation" class="form-label">Système d'exploitation</label>
+                    <input type="text" class="form-control" id="systemeExploitation" th:field="*{systemeExploitation}" required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('systemeExploitation')}" th:errors="*{systemeExploitation}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="dateAjout" class="form-label">Date d'ajout</label>
+                    <input type="date" class="form-control" id="dateAjout" th:field="*{dateAjout}" required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('dateAjout')}" th:errors="*{dateAjout}"></div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="derniereMaintenance" class="form-label">Dernière maintenance</label>
+                    <input type="date" class="form-control" id="derniereMaintenance" th:field="*{derniereMaintenance}">
+                    <div class="text-danger" th:if="${#fields.hasErrors('derniereMaintenance')}" th:errors="*{derniereMaintenance}"></div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${ordinateur.id} ? 'Mettre à jour' : 'Créer'">Enregistrer</span>
+                    </button>
+                    <a th:href="@{/ordinateurs}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

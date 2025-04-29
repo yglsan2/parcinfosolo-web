@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ParcInfo - Détails du Périphérique</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>Détails du Périphérique</h2>
+                <div>
+                    <a th:href="@{/peripheriques/{id}/edit(id=${peripherique.idPeripherique})}" 
+                       class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                    <a th:href="@{/peripheriques}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">ID</dt>
+                            <dd class="col-sm-8" th:text="${peripherique.idPeripherique}"></dd>
+
+                            <dt class="col-sm-4">Type</dt>
+                            <dd class="col-sm-8" th:text="${peripherique.type}"></dd>
+
+                            <dt class="col-sm-4">Marque</dt>
+                            <dd class="col-sm-8" th:text="${peripherique.marque}"></dd>
+
+                            <dt class="col-sm-4">Modèle</dt>
+                            <dd class="col-sm-8" th:text="${peripherique.modele}"></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Numéro de série</dt>
+                            <dd class="col-sm-8" th:text="${peripherique.numeroSerie}"></dd>
+
+                            <dt class="col-sm-4">État</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge" 
+                                      th:classappend="${peripherique.etat == T(com.parcinfo.model.Peripherique.EtatPeripherique).NEUF ? 'badge-success' : 
+                                                     (peripherique.etat == T(com.parcinfo.model.Peripherique.EtatPeripherique).BON ? 'badge-info' : 'badge-warning')}"
+                                      th:text="${peripherique.etat}">
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4">Date d'acquisition</dt>
+                            <dd class="col-sm-8" th:text="${#temporals.format(peripherique.dateAcquisition, 'dd/MM/yyyy HH:mm')}"></dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>Commentaire</h4>
+                        <p th:text="${peripherique.commentaire}" class="text-muted"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

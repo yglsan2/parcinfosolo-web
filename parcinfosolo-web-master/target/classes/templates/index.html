@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(title='Accueil')}">
+<body>
+    <div layout:fragment="content">
+        <div class="jumbotron bg-light">
+            <h1 class="display-4">Bienvenue sur ParcInfo</h1>
+            <p class="lead">Solution de gestion de parc informatique</p>
+            <hr class="my-4">
+            <p>Gérez facilement vos périphériques, ordinateurs, utilisateurs et interventions.</p>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-keyboard fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Périphériques</h5>
+                        <p class="card-text">Gérez vos périphériques informatiques</p>
+                        <a th:href="@{/peripheriques}" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-laptop fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Ordinateurs</h5>
+                        <p class="card-text">Gérez vos ordinateurs portables et fixes</p>
+                        <a th:href="@{/ordinateurs}" class="btn btn-success">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x text-info mb-3"></i>
+                        <h5 class="card-title">Personnes</h5>
+                        <p class="card-text">Gérez les utilisateurs du parc</p>
+                        <a th:href="@{/personnes}" class="btn btn-info">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tools fa-3x text-warning mb-3"></i>
+                        <h5 class="card-title">Interventions</h5>
+                        <p class="card-text">Suivez les interventions techniques</p>
+                        <a th:href="@{/interventions}" class="btn btn-warning">Accéder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Dernières interventions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${interventions != null && !interventions.empty}">
+                            <ul class="list-group">
+                                <li th:each="intervention : ${interventions}" class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong th:text="${intervention.type}">Type</strong>
+                                            <span class="text-muted" th:text="${intervention.description}">Description</span>
+                                        </div>
+                                        <small th:text="${#temporals.format(intervention.date, 'dd/MM/yyyy')}">Date</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div th:if="${interventions == null || interventions.empty}" class="text-center py-3">
+                            <p class="text-muted">Aucune intervention récente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Statistiques</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <h3 th:text="${stats != null ? stats.nbPeripheriques : 0}">0</h3>
+                                <p class="text-muted">Périphériques</p>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h3 th:text="${stats != null ? stats.nbOrdinateurs : 0}">0</h3>
+                                <p class="text-muted">Ordinateurs</p>
+                            </div>
+                            <div class="col-6">
+                                <h3 th:text="${stats != null ? stats.nbPersonnes : 0}">0</h3>
+                                <p class="text-muted">Utilisateurs</p>
+                            </div>
+                            <div class="col-6">
+                                <h3 th:text="${stats != null ? stats.nbInterventions : 0}">0</h3>
+                                <p class="text-muted">Interventions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
